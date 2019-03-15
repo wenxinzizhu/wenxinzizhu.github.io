@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zn">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Reflection,反射,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="项目所有演示代码见：源码 1. Java类型系统 获取Java类型系统，主要有两个方式：一种是传统的RTTI（Run-Time Type Identification），它假定我们在编译时已经知道了所有的类型信息；另一种是反射(Reflect)，它允许我们在程序运行时获取并使用类型信息。  假如有一个简单的继承体系，让我们看下在 RTTI 和 Reflect 不同情况下如何获取类型信息。 Anim">
+<meta name="keywords" content="Reflection,反射">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 反射">
+<meta property="og:url" content="http://yoursite.com/2018/08/16/java/basics/reflection/index.html">
+<meta property="og:site_name" content="极客之光">
+<meta property="og:description" content="项目所有演示代码见：源码 1. Java类型系统 获取Java类型系统，主要有两个方式：一种是传统的RTTI（Run-Time Type Identification），它假定我们在编译时已经知道了所有的类型信息；另一种是反射(Reflect)，它允许我们在程序运行时获取并使用类型信息。  假如有一个简单的继承体系，让我们看下在 RTTI 和 Reflect 不同情况下如何获取类型信息。 Anim">
+<meta property="og:locale" content="zn">
+<meta property="og:updated_time" content="2019-03-15T03:23:36.555Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 反射">
+<meta name="twitter:description" content="项目所有演示代码见：源码 1. Java类型系统 获取Java类型系统，主要有两个方式：一种是传统的RTTI（Run-Time Type Identification），它假定我们在编译时已经知道了所有的类型信息；另一种是反射(Reflect)，它允许我们在程序运行时获取并使用类型信息。  假如有一个简单的继承体系，让我们看下在 RTTI 和 Reflect 不同情况下如何获取类型信息。 Anim">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/08/16/java/basics/reflection/">
+
+
+
+
+
+  <title>Java 反射 | 极客之光</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zn">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">极客之光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">技术改变生活</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/16/java/basics/reflection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wenxinzizhu">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="极客之光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java 反射</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-16T21:37:34+08:00">
+                2018-08-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/基础/" itemprop="url" rel="index">
+                    <span itemprop="name">基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>项目所有演示代码见<a href="https://gitee.com/litao851025/book-demo/tree/master/reflect-demo" target="_blank" rel="noopener">：源码</a></p>
+<h3 id="1-Java类型系统"><a href="#1-Java类型系统" class="headerlink" title="1. Java类型系统"></a>1. Java类型系统</h3><blockquote>
+<p>获取Java类型系统，主要有两个方式：一种是传统的RTTI（Run-Time Type Identification），它假定我们在编译时已经知道了所有的类型信息；另一种是反射(Reflect)，它允许我们在程序运行时获取并使用类型信息。</p>
+</blockquote>
+<p>假如有一个简单的继承体系，让我们看下在 RTTI 和 Reflect 不同情况下如何获取类型信息。</p>
+<p>Animal 为接口，定义 getType 以返回不同动物的类型，Cat、Dog、Elephant 等为具体实现类，均实现 getType 接口。一般情况下，我们会创建一个具体的对象（Cat，Dog，Elephant等），把它向上转型为Animal，并在程序后面直接使用 Animal 引用。</p>
+<p>具体样例代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 动物</span><br><span class="line"> */</span><br><span class="line">public interface Animal &#123;</span><br><span class="line">    /**</span><br><span class="line">     * 获取动物类型</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    String getType();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 动物具体子类 猫</span><br><span class="line"> */</span><br><span class="line">public class Cat implements Animal&#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String getType() &#123;</span><br><span class="line">        return &quot;猫&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 动物具体子类 狗</span><br><span class="line"> */</span><br><span class="line">public class Dog implements Animal&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public String getType() &#123;</span><br><span class="line">        return &quot;狗&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 动物具体实现 大象</span><br><span class="line"> */</span><br><span class="line">public class Elephant implements Animal&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public String getType() &#123;</span><br><span class="line">        return &quot;大象&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>让我们看下相同的功能通过 <strong>硬编码</strong> 与 <strong>反射</strong> 两个机制如何实现。</p>
+<h4 id="1-1-硬编码"><a href="#1-1-硬编码" class="headerlink" title="1.1. 硬编码"></a>1.1. 硬编码</h4><blockquote>
+<p>RTTI 假定在编译期，已经知道了所有的类型信息。在编码时，可以直接使用具体的类型信息，这是我们最常见的类型用法。</p>
+</blockquote>
+<p>在编译期，编译器通过容器、泛型保障类型系统的完整性；在运行时，由类型转换操作来确保这一点。</p>
+<p>硬编码样例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String... args)&#123;</span><br><span class="line">    List&lt;Animal&gt; animals = createAnimals();</span><br><span class="line">    for (Animal animal : animals)&#123;</span><br><span class="line">        System.out.println(animal.getType());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * RTTI假定我们在编译时已经知道了所有的类型</span><br><span class="line"> * @return</span><br><span class="line"> */</span><br><span class="line">private static List&lt;Animal&gt; createAnimals() &#123;</span><br><span class="line">    List&lt;Animal&gt; animals = new ArrayList&lt;&gt;();</span><br><span class="line">    animals.add(new Cat()); // 已知类型Cat</span><br><span class="line">    animals.add(new Elephant()); // 已知类型Elephant</span><br><span class="line">    animals.add(new Dog()); // 已知类型 Dog</span><br><span class="line">    return animals;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在这个例子中，我们把 Cat、Elephant、Dog 等向上转型为 Animal 并存放于 List&lt;Animal&gt; 中，在转型过程中丢失了具体的类型信息（只保留了接口信息 Animal ）；当我们从 List&lt;Animal&gt; 中取出元素时，这时容器（容器内部所有的元素都被当做 Object）会自动将结果转型成 Animal。这是 RTTI 最基本的用法，在 Java 中所有的类型转换都是在运行时进行有效性检查。这也是 RTTI 的含义，在运行时，识别一个对象的类型。</p>
+<h4 id="1-2-Reflect"><a href="#1-2-Reflect" class="headerlink" title="1.2. Reflect"></a>1.2. Reflect</h4><blockquote>
+<p>Reflect 允许我们在运行时获取并使用类型信息，它主要用于在编译阶段无法获得所有的类型信息的场景，如各类框架。</p>
+</blockquote>
+<p>反射样例如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">private static final String[] ANIMAL_TYPES = new String[]&#123;</span><br><span class="line">        &quot;com.example.reflectdemo.base.Cat&quot;,</span><br><span class="line">        &quot;com.example.reflectdemo.base.Elephant&quot;,</span><br><span class="line">        &quot;com.example.reflectdemo.base.Dog&quot;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">public static void main(String... args)&#123;</span><br><span class="line">    List&lt;Object&gt; animals = createAnimals();</span><br><span class="line">    for (Object animal : animals)&#123;</span><br><span class="line">        System.out.println(invokeGetType(animal));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 利用反射API执行getType方法（等同于animal.getType）</span><br><span class="line"> * @param animal</span><br><span class="line"> * @return</span><br><span class="line"> */</span><br><span class="line">private static String invokeGetType(Object animal)&#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        Method getTypeMethod = Animal.class.getMethod(&quot;getType&quot;);</span><br><span class="line">        return (String) getTypeMethod.invoke(animal);</span><br><span class="line">    &#125;catch (Exception e)&#123;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 反射允许我们在运行时获取类型信息</span><br><span class="line"> * @return</span><br><span class="line"> */</span><br><span class="line">private static List&lt;Object&gt; createAnimals() &#123;</span><br><span class="line">    List&lt;Object&gt; animals = new ArrayList&lt;&gt;();</span><br><span class="line">    for (String cls : ANIMAL_TYPES)&#123;</span><br><span class="line">        animals.add(instanceByReflect(cls));</span><br><span class="line">    &#125;</span><br><span class="line">    return animals;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 使用反射机制，在运行时动态的实例化对象(等同于new关键字)</span><br><span class="line"> * @param clsStr</span><br><span class="line"> * @return</span><br><span class="line"> */</span><br><span class="line">private static Object instanceByReflect(String clsStr) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        // 通过反射获取类型信息</span><br><span class="line">        Class cls = Class.forName(clsStr);</span><br><span class="line">        // 通过Class实例化对象</span><br><span class="line">        Object object = cls.newInstance();</span><br><span class="line">        return object;</span><br><span class="line">    &#125;catch (Exception e)&#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>反射</strong>，可以通过一组特殊的 API，在运行时，动态执行所有 Java 硬编码完成的功能（如对象创建、方法调用等）。</p>
+<p>相比硬编码，Java 反射 API 要复杂的多，但其给我们带来了更大的灵活性。</p>
+<h3 id="2-Class对象"><a href="#2-Class对象" class="headerlink" title="2. Class对象"></a>2. Class对象</h3><blockquote>
+<p>要理解 RTTI 在 Java 中的工作原理，首先需要知道类型信息在 Java 中是如何表示的。这个工作是由称为 Class 对象的特殊对象完成的，它包含了与类相关的所有信息。Java 使用 Class 对象来执行 RTTI。</p>
+</blockquote>
+<p>类是程序的一部分，每个类都会有一个 Class 对象。每当编写并编译一个新类（动态代理、CGLIB、运行时编译都能创建新类），就会产生一个 Class 对象，为了生成这个类的对象，运行这个程序的 JVM 将使用称为 “<strong>类加载器</strong>” 的子系统。</p>
+<h4 id="2-1-Class-Loader"><a href="#2-1-Class-Loader" class="headerlink" title="2.1. Class Loader"></a>2.1. Class Loader</h4><blockquote>
+<p>类加载器子系统，是 JVM 体系重要的一环，主要完成将 class 二进制文件加载到 JVM 中，并将其转换为 Class 对象的过程。</p>
+</blockquote>
+<p>类加载器子系统实际上是一条类加载器链，但是只有一个原生类加载器，它是 JVM 实现的一部分。原生类加载器加载的是可信类，包括 Java API 类，他们通常是从本地加载。在这条链中，通常不需要添加额外的类加载器，但是如果有特殊需求，可以挂载新的类加载器（比如 Web 容器）。</p>
+<p>所有的类都是在第一次使用时，动态加载到 JVM 中的，当程序第一次对类的静态成员引用时，就会加载这个类。实际上构造函数也是类的静态方法，因此使用 new 关键字创建类的新对象也会被当做对类的静态引用，从而触发类加载器对类的加载。</p>
+<p>Java 程序在它开始运行之前并非被全部加载，各个部分是在需要时按需加载的。类加载器在加载类之前，首先检查这个类的 Class 是否已经加载，如果尚未加载，加载器会按照类名查找 class 文件，并对字节码进行有效性校验，一旦 Class 对象被载入内存，它就用来创建这个类的所有对象。</p>
+<p><strong>static初始化块</strong> 在类加载时调用，因此可以用于观察类在什么时候进行加载，样例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">static class C1&#123;</span><br><span class="line">    static &#123;</span><br><span class="line">        System.out.println(&quot;C1&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static class C2&#123;</span><br><span class="line">    static &#123;</span><br><span class="line">        System.out.println(&quot;C2&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static class C3&#123;</span><br><span class="line">    static &#123;</span><br><span class="line">        System.out.println(&quot;C3&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void main(String... args) throws Exception&#123;</span><br><span class="line">    System.out.println(&quot;new start&quot;);</span><br><span class="line">    // 构造函数为类的静态引用，触发类型加载</span><br><span class="line">    new C1();</span><br><span class="line">    new C1();</span><br><span class="line">    System.out.println(&quot;new end&quot;);</span><br><span class="line"></span><br><span class="line">    System.out.println();</span><br><span class="line"></span><br><span class="line">    System.out.println(&quot;Class.forName start&quot;);</span><br><span class="line">    // Class.forName为Class上的静态函数，用于强制加载Class</span><br><span class="line">    Class.forName(&quot;com.example.reflectdemo.classloader.ClassLoaderTest$C2&quot;);</span><br><span class="line">    Class.forName(&quot;com.example.reflectdemo.classloader.ClassLoaderTest$C2&quot;);</span><br><span class="line">    System.out.println(&quot;Class.forName end&quot;);</span><br><span class="line"></span><br><span class="line">    System.out.println();</span><br><span class="line"></span><br><span class="line">    System.out.println(&quot;C3.class start&quot;);</span><br><span class="line">    // Class引用，会触发Class加载，但是不会触发初始化</span><br><span class="line">    Class c1 = C3.class;</span><br><span class="line">    Class c2 = C3.class;</span><br><span class="line">    System.out.println(&quot;C3.class end&quot;);</span><br><span class="line"></span><br><span class="line">    System.out.println();</span><br><span class="line"></span><br><span class="line">    System.out.println(&quot;c1.newInstance start&quot;);</span><br><span class="line">    // 调用class上的方法，触发初始化逻辑</span><br><span class="line">    c1.newInstance();</span><br><span class="line">    System.out.println(&quot;c1.newInstance end&quot;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">new start</span><br><span class="line">C1</span><br><span class="line">new end</span><br><span class="line"></span><br><span class="line">Class.forName start</span><br><span class="line">C2</span><br><span class="line">Class.forName end</span><br><span class="line"></span><br><span class="line">C3.class start</span><br><span class="line">C3.class end</span><br><span class="line"></span><br><span class="line">c1.newInstance start</span><br><span class="line">C3</span><br><span class="line">c1.newInstance end</span><br></pre></td></tr></table></figure></p>
+<p>看结果，C3.class 的调用不会自动的初始化该 Class 对象（调用 static 块）。为了使用 Class 而做的准备工作主要包括三个步骤：</p>
+<ol>
+<li><strong>加载</strong>，这个是由类加载器执行。该步骤将查找字节码文件，并根据字节码创建一个 Class 对象。</li>
+<li><strong>链接</strong>，在链接阶段将验证类中的字节码，为静态域分配存储空间，如果必要的话，将解析这个类创建的对其他类的引用。</li>
+<li><strong>初始化</strong>，如果该类有超类，则对其进行初始化，执行静态初始化器和静态初始化块。初始化被延时到对静态方法或非常数静态域进行首次访问时才执行。</li>
+</ol>
+<h4 id="2-2-Class-实例获取"><a href="#2-2-Class-实例获取" class="headerlink" title="2.2. Class 实例获取"></a>2.2. Class 实例获取</h4><blockquote>
+<p>Class 对象作为 Java 类型体系的入口，如何获取实例成为第一个要解决的问题。</p>
+</blockquote>
+<p>Class 对象的获取主要有以下几种途径：</p>
+<ol>
+<li>ClassName.class，获取 Class 对象最简单最安全的方法，其在编译时会受到编译检测，但上例中已经证实，该方法不会触发初始化逻辑。</li>
+<li>Class.forName，这是反射机制最常用的方法之一，可以在不知具体类型时，通过一个字符串加载所对应的 Class 对象。</li>
+<li>object.getClass，这也是比较常用的方式之一，通过一个对象获取生成该对象的 Class 实例。</li>
+</ol>
+<p>对于基本数据类型对应的包装器类，还提供了一个 TYPE 字段，指向对应的基本类型的 Class 对象。</p>
+<table>
+<thead>
+<tr>
+<th>基本类型</th>
+<th>TYPE类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>boolean.class</td>
+<td>Boolean.TYPE</td>
+</tr>
+<tr>
+<td>char.class</td>
+<td>Char.TYPE</td>
+</tr>
+<tr>
+<td>byte.class</td>
+<td>Byte.TYPE</td>
+</tr>
+<tr>
+<td>short.class</td>
+<td>Short.TYPE</td>
+</tr>
+<tr>
+<td>int.class</td>
+<td>Integer.TYPE</td>
+</tr>
+<tr>
+<td>long.class</td>
+<td>Long.TYPE</td>
+</tr>
+<tr>
+<td>float.class</td>
+<td>Float.TYPE</td>
+</tr>
+<tr>
+<td>double.class</td>
+<td>Double.TYPE</td>
+</tr>
+<tr>
+<td>void.class</td>
+<td>Void.TYPE</td>
+</tr>
+</tbody>
+</table>
+<h4 id="2-3-Class-类型信息"><a href="#2-3-Class-类型信息" class="headerlink" title="2.3. Class 类型信息"></a>2.3. Class 类型信息</h4><blockquote>
+<p>Class 对象存储了一个 class 的所有信息，当获取到 Class 对象后，便能通过 API 获取到这些信息。</p>
+</blockquote>
+<p>在进入 Class 类型信息之前，需要简单的了解下几个反射的基类，以便更好的理解反射实现体系。</p>
+<h5 id="2-3-1-Class-API-基础"><a href="#2-3-1-Class-API-基础" class="headerlink" title="2.3.1 Class API 基础"></a>2.3.1 Class API 基础</h5><blockquote>
+<p>Class API 基础主要是为反射 API 提供通用特性的接口或基类。由于其通用性，现统一介绍，在具体的 API 中将对其进行忽略。</p>
+</blockquote>
+<h6 id="2-3-1-1-AnnotatedElement"><a href="#2-3-1-1-AnnotatedElement" class="headerlink" title="2.3.1.1 AnnotatedElement"></a>2.3.1.1 AnnotatedElement</h6><blockquote>
+<p><strong>AnnotatedElement</strong> 为 Java1.5 新增接口，该接口代表程序中可以接受注解的程序元素，并提供统一的 Annotation 访问方式，赋予 API 通过反射获取 Annotation 的能力，当一个 Annotation 类型被定义为运行时后，该注解才能是运行时可见，当 class 文件被装载时被保存在 class 文件中的 Annotation 才会被虚拟机读取。</p>
+</blockquote>
+<p> <strong>AnnotatedElement接口</strong>是所有注解元素（Class、Method、Field、Package 和 Constructor）的父接口，所以程序通过反射获取了某个类的 AnnotatedElement 对象之后，程序就可以调用该对象的下列方法来访问 Annotation 信息：<br> 方法 | 含义<br>—|—<br>&lt;T extends Annotation&gt; T getAnnotation(Class&lt;T&gt; annotationClass) | 返回程序元素上存在的、指定类型的注解，如果该类型注解不存在，则返回null<br>Annotation[] getAnnotations() | 返回该程序元素上存在的所有注解<br>boolean is AnnotationPresent(Class&lt;?extends Annotation&gt; annotationClass) | 判断该程序元素上是否包含指定类型的注解，存在则返回 true，否则返回 false<br>Annotation[] getDeclaredAnnotations() | 返回直接存在于此元素上的所有注释。与此接口中的其他方法不同，该方法将忽略继承的注释。（如果没有注释直接存在于此元素上，则返回长度为零的一个数组）该方法的调用者可以随意修改返回的数组；这不会对其他调用者返回的数组产生任何影响。</p>
+<p><strong>AnnotatedElement子类</strong>涵盖所有可以出现Annotation的地方，其中包括：</p>
+<ol>
+<li>Constructor 构造函数</li>
+<li>Method 方法</li>
+<li>Class 类型</li>
+<li>Field 字段</li>
+<li>Package 包</li>
+<li>Parameter 参数</li>
+<li>AnnotatedParameterizedType 泛型</li>
+<li>AnnotatedTypeVariable 变量</li>
+<li>AnnotatedArrayType 数组类型</li>
+<li>AnnotatedWildcardType</li>
+</ol>
+<p>样例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">public class AnnotatedElementTest &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String... args)&#123;</span><br><span class="line">        System.out.println(&quot;getAnnotations：&quot;);</span><br><span class="line">        for (Annotation annotation :  A.class.getAnnotations())&#123;</span><br><span class="line">            System.out.println(annotation);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;getAnnotation：&quot; + A.class.getAnnotation(TestAnn1.class));</span><br><span class="line"></span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;isAnnotationPresent：&quot; + A.class.isAnnotationPresent(TestAnn1.class));</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Target(ElementType.TYPE)</span><br><span class="line">    @Retention(RetentionPolicy.RUNTIME)</span><br><span class="line">    public @interface TestAnn1&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Target(ElementType.TYPE)</span><br><span class="line">    @Retention(RetentionPolicy.RUNTIME)</span><br><span class="line">    public @interface TestAnn2&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @TestAnn1</span><br><span class="line">    @TestAnn2</span><br><span class="line">    public class A&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">getAnnotations：</span><br><span class="line">@com.example.reflectdemo.annotatedElement.AnnotatedElementTest$TestAnn1()</span><br><span class="line">@com.example.reflectdemo.annotatedElement.AnnotatedElementTest$TestAnn2()</span><br><span class="line"></span><br><span class="line">getAnnotation：@com.example.reflectdemo.annotatedElement.AnnotatedElementTest$TestAnn1()</span><br><span class="line"></span><br><span class="line">isAnnotationPresent：true</span><br></pre></td></tr></table></figure></p>
+<h6 id="2-3-1-2-Member"><a href="#2-3-1-2-Member" class="headerlink" title="2.3.1.2. Member"></a>2.3.1.2. Member</h6><blockquote>
+<p>Member用于标记反射中简单元素。</p>
+</blockquote>
+<p>所涉及方法如下：<br>方法 | 含义<br>—|—<br>getDeclaringClass | 元素所在类<br>getName | 元素名称<br>getModifiers | 元素修饰<br>isSynthetic | 是否为 Synthetic，synthetic 是由编译器引入的字段、方法、类或其他结构，主要用于 JVM 内部使用。</p>
+<p>其子类主要包括：</p>
+<ol>
+<li>Class 类型</li>
+<li>Field 字段</li>
+<li>Method 方法</li>
+<li>Constructor 构造函数</li>
+</ol>
+<h6 id="2-3-1-3-AccessibleObject"><a href="#2-3-1-3-AccessibleObject" class="headerlink" title="2.3.1.3. AccessibleObject"></a>2.3.1.3. AccessibleObject</h6><blockquote>
+<p>AccessibleObject 可访问对象，其对元素的可见性进行统一封装。同时实现 AnnotatedElement 接口，提供对 Annotation 元素的访问。</p>
+</blockquote>
+<p>所涉及方法如下：<br>方法 | 含义<br>—|—<br>isAccessible | 是否可访问<br>setAccessible | 重新访问性</p>
+<p>其中 AccessibleObject 所涉及的子类主要包括：</p>
+<ol>
+<li>Field 字段</li>
+<li>Constructor 构造函数</li>
+<li>Method 方法</li>
+</ol>
+<p><strong>AccessibleObject</strong> 对可见性提供了强大的支持，使我们能够通过反射扩展访问限制，甚至可以对 private成员进行访问。</p>
+<p>样例代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public class TestBean &#123;</span><br><span class="line">    private String id;</span><br><span class="line"></span><br><span class="line">    public String getId() &#123;</span><br><span class="line">        return id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void setId(String id) &#123;</span><br><span class="line">        this.id = id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">public class AccessibleObjectBase &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String... args) throws Exception&#123;</span><br><span class="line">        TestBean testBean = new TestBean();</span><br><span class="line">        // private方法， 不能直接调用</span><br><span class="line">        Method setId = TestBean.class.getDeclaredMethod(&quot;setId&quot;, String.class);</span><br><span class="line">        System.out.println(&quot;setId:&quot; + setId.isAccessible());</span><br><span class="line">        try &#123;</span><br><span class="line">            setId.invoke(testBean, &quot;111&quot;);</span><br><span class="line">        &#125;catch (Exception e)&#123;</span><br><span class="line">            System.out.println(&quot;private不能直接调用&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        setId.setAccessible(true);</span><br><span class="line">        System.out.println(&quot;设置可访问:&quot; + setId.isAccessible());</span><br><span class="line"></span><br><span class="line">        setId.invoke(testBean, &quot;111&quot;);</span><br><span class="line">        System.out.println(&quot;设置可访问后，可以绕过private限制，进行调用，结果为：&quot; + testBean.getId());</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">setId:false</span><br><span class="line">private不能直接调用</span><br><span class="line">设置可访问:true</span><br><span class="line">设置可访问后，可以绕过private限制，进行调用，结果为：111</span><br></pre></td></tr></table></figure></p>
+<h6 id="2-3-1-4-Executable"><a href="#2-3-1-4-Executable" class="headerlink" title="2.3.1.4. Executable"></a>2.3.1.4. Executable</h6><blockquote>
+<p>Executable 表示可执行元素的一种封装，可以获取方法签名相关信息。</p>
+</blockquote>
+<p>所涉及方法如下：<br>方法 | 含义<br>—|—<br>getName | 获取名称<br>getModifiers | 获取修饰符<br>getTypeParameters | 获取类型参数(泛型)<br>getParameterTypes | 获取参数列表<br>getParameterCount | 获取参数数量<br>getGenericParameterTypes | 获取参数类型<br>getExceptionTypes | 获取异常列表<br>getGenericExceptionTypes | 获取异常列表</p>
+<p>锁涉及的子类主要有：</p>
+<ol>
+<li>Constructor 构造函数</li>
+<li>Method 方法</li>
+</ol>
+<p>样例代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">public class TestBean &#123;</span><br><span class="line">    private String id;</span><br><span class="line"></span><br><span class="line">    public &lt;T, R&gt;TestBean(String id) throws IllegalArgumentException, NotImplementedException &#123;</span><br><span class="line">        this.id = id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getId() &#123;</span><br><span class="line">        return id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void setId(String id) &#123;</span><br><span class="line">        this.id = id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class ExecutableTest &#123;</span><br><span class="line">    public static void main(String... args) throws Exception&#123;</span><br><span class="line">        for (Constructor constructor : TestBean.class.getConstructors())&#123;</span><br><span class="line">            System.out.println(&quot;getName: &quot; + constructor.getName());</span><br><span class="line"></span><br><span class="line">            System.out.println();</span><br><span class="line"></span><br><span class="line">            System.out.println(&quot;getModifiers: &quot; + Modifier.toString(constructor.getModifiers()));</span><br><span class="line"></span><br><span class="line">            System.out.println();</span><br><span class="line"></span><br><span class="line">            System.out.println(&quot;getTypeParameters:&quot;);</span><br><span class="line">            for (TypeVariable&lt;Constructor&gt; t : constructor.getTypeParameters())&#123;</span><br><span class="line">                System.out.println(&quot;type var:&quot; + t.getName());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            System.out.println();</span><br><span class="line">            System.out.println(&quot;getParameterCount:&quot; + constructor.getParameterCount());</span><br><span class="line"></span><br><span class="line">            System.out.println();</span><br><span class="line">            System.out.println(&quot;getParameterTypes:&quot;);</span><br><span class="line">            for (Class cls : constructor.getParameterTypes())&#123;</span><br><span class="line">                System.out.println(cls.getName());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            System.out.println();</span><br><span class="line">            System.out.println(&quot;getExceptionTypes:&quot;);</span><br><span class="line">            for (Class cls : constructor.getExceptionTypes())&#123;</span><br><span class="line">                System.out.println(cls.getName());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">getName: com.example.reflectdemo.reflectbase.TestBean</span><br><span class="line"></span><br><span class="line">getModifiers: public</span><br><span class="line"></span><br><span class="line">getTypeParameters:</span><br><span class="line">type var:T</span><br><span class="line">type var:R</span><br><span class="line"></span><br><span class="line">getParameterCount:1</span><br><span class="line"></span><br><span class="line">getParameterTypes:</span><br><span class="line">java.lang.String</span><br><span class="line"></span><br><span class="line">getExceptionTypes:</span><br><span class="line">java.lang.IllegalArgumentException</span><br><span class="line">sun.reflect.generics.reflectiveObjects.NotImplementedException</span><br></pre></td></tr></table></figure></p>
+<h6 id="2-3-1-5-方法命名规则"><a href="#2-3-1-5-方法命名规则" class="headerlink" title="2.3.1.5. 方法命名规则"></a>2.3.1.5. 方法命名规则</h6><blockquote>
+<p>整个反射机制存在着通用的命名规则，了解这些规则，可以大大减少理解方法的阻力。</p>
+</blockquote>
+<p><strong>getXXX</strong> 和 <strong>getDeclaredXXX</strong>， 两者主要区别在于获取元素的可见性不同，一般情况下 getXXX 返回 public 类型的元素，而 getDeclaredXXX 获取所有的元素，其中包括private、protected、public 和 package。</p>
+<h5 id="2-3-2-类型信息"><a href="#2-3-2-类型信息" class="headerlink" title="2.3.2. 类型信息"></a>2.3.2. 类型信息</h5><blockquote>
+<p>Class 自身信息包括类名、包名、父类以及实现的接口等。</p>
+</blockquote>
+<p>Class类实现 AnnotatedElement 接口，以提供对注解的支持。除此以外，涉及方法如下：<br>方法 | 含义<br>—|—<br>getName | 获取类名<br>getCanonicalName | 得到目标类的全名(包名+类名)<br>getSimpleName | 等同于getCanonicalName<br>getTypeParameters | 获取类型参数（泛型）<br>getSuperclass | 获取父类<br>getPackage | 获取包信息<br>getInterfaces | 获取实现接口<br>getModifiers | 获取修饰符<br>isAnonymousClass | 是否匿名类<br>isLocalClass | 是否局部类<br>isMemberClass | 是否成员类<br>isEnum | 是否枚举<br>isInterface | 是否是接口<br>isArray | 是否是数组<br>getComponentType | 获取数组元素类型<br>isPrimitive | 是否是基本类型<br>isAnnotation | 是否是注解<br>getEnumConstants | 获取枚举所有类型<br>getClasses | 获取定义在该类中的public类型<br>getDeclaredClasses | 获取定义在该类中的类型 </p>
+<p>实例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">class Base&lt;T&gt; implements Callable&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public T call() throws Exception &#123;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public final class BaseClassInfo&lt;T, R extends Runnable&gt; extends Base&lt;T&gt; implements Runnable, Serializable &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public static void main(String... args)&#123;</span><br><span class="line">        Class&lt;BaseClassInfo&gt; cls = BaseClassInfo.class;</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;getName：&quot; + cls.getName());</span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;getCanonicalName:&quot;  + cls.getCanonicalName());</span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;getSimpleName:&quot; + cls.getSimpleName());</span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;getSuperclass:&quot; + cls.getSuperclass());</span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;getPackage:&quot; + cls.getPackage());</span><br><span class="line"></span><br><span class="line">        System.out.println();</span><br><span class="line">        for (Class c : cls.getInterfaces())&#123;</span><br><span class="line">            System.out.println(&quot;interface : &quot; + c.getSimpleName());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println();</span><br><span class="line">        for (TypeVariable&lt;Class&lt;BaseClassInfo&gt;&gt; typeVariable : cls.getTypeParameters())&#123;</span><br><span class="line">            System.out.println(&quot;type var : &quot; + typeVariable.getTypeName());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;getModifiers:&quot; + Modifier.toString(cls.getModifiers()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">getName：com.example.reflectdemo.classdetail.BaseClassInfo</span><br><span class="line"></span><br><span class="line">getCanonicalName:com.example.reflectdemo.classdetail.BaseClassInfo</span><br><span class="line"></span><br><span class="line">getSimpleName:BaseClassInfo</span><br><span class="line"></span><br><span class="line">getSuperclass:class com.example.reflectdemo.classdetail.Base</span><br><span class="line"></span><br><span class="line">getPackage:package com.example.reflectdemo.classdetail</span><br><span class="line"></span><br><span class="line">interface : Runnable</span><br><span class="line">interface : Serializable</span><br><span class="line"></span><br><span class="line">type var : T</span><br><span class="line">type var : R</span><br><span class="line"></span><br><span class="line">getModifiers:public final</span><br></pre></td></tr></table></figure></p>
+<p>Class类型判断，实例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line">public class ClassTypeTest &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String... args)&#123;</span><br><span class="line">        Runnable runnable = new Runnable() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                printClassType(getClass());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        System.out.println(&quot;匿名内部类&quot;);</span><br><span class="line">        runnable.run();</span><br><span class="line"></span><br><span class="line">        class M implements Runnable&#123;</span><br><span class="line"></span><br><span class="line">            @Override</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                printClassType(getClass());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;方法内部类&quot;);</span><br><span class="line">        new M().run();</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;内部类&quot;);</span><br><span class="line">        new ClassTypeTest().new T().run();</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;静态内部类&quot;);</span><br><span class="line">        new S().run();</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;枚举&quot;);</span><br><span class="line">        printClassType(EnumTest.class);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;接口&quot;);</span><br><span class="line">        printClassType(Runnable.class);</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;数组&quot;);</span><br><span class="line">        printClassType(int[].class);</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;int&quot;);</span><br><span class="line">        printClassType(int.class);</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;注解&quot;);</span><br><span class="line">        printClassType(AnnTest.class);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    class T implements Runnable&#123;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void run() &#123;</span><br><span class="line">            printClassType(getClass());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    static class S implements Runnable&#123;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void run() &#123;</span><br><span class="line">            printClassType(getClass());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    enum EnumTest&#123;</span><br><span class="line">        A, B, C</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @interface AnnTest&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    private static void printClassType(Class cls)&#123;</span><br><span class="line">        System.out.println(&quot;Class:&quot; + cls.getName());</span><br><span class="line">        System.out.println(&quot;isAnonymousClass:&quot; + cls.isAnonymousClass());</span><br><span class="line">        System.out.println(&quot;isLocalClass:&quot; + cls.isLocalClass());</span><br><span class="line">        System.out.println(&quot;isMemberClass:&quot; + cls.isMemberClass());</span><br><span class="line">        System.out.println(&quot;isEnum:&quot; + cls.isEnum());</span><br><span class="line">        System.out.println(&quot;isInterface:&quot; + cls.isInterface());</span><br><span class="line">        System.out.println(&quot;isArray:&quot; + cls.isArray());</span><br><span class="line">        System.out.println(&quot;isPrimitive:&quot; + cls.isPrimitive());</span><br><span class="line">        System.out.println(&quot;isAnnotation:&quot; + cls.isAnnotation());</span><br><span class="line"></span><br><span class="line">        if (cls.isEnum())&#123;</span><br><span class="line">            System.out.println(&quot;getEnumConstants:&quot;);</span><br><span class="line">            for (Object o : cls.getEnumConstants())&#123;</span><br><span class="line">                System.out.println(o);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (cls.isArray())&#123;</span><br><span class="line">            System.out.println(&quot;getComponentType:&quot; + cls.getComponentType());</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line">匿名内部类</span><br><span class="line">Class:com.example.reflectdemo.classdetail.ClassTypeTest$1</span><br><span class="line">isAnonymousClass:true</span><br><span class="line">isLocalClass:false</span><br><span class="line">isMemberClass:false</span><br><span class="line">isEnum:false</span><br><span class="line">isInterface:false</span><br><span class="line">isArray:false</span><br><span class="line">isPrimitive:false</span><br><span class="line">isAnnotation:false</span><br><span class="line"></span><br><span class="line">方法内部类</span><br><span class="line">Class:com.example.reflectdemo.classdetail.ClassTypeTest$1M</span><br><span class="line">isAnonymousClass:false</span><br><span class="line">isLocalClass:true</span><br><span class="line">isMemberClass:false</span><br><span class="line">isEnum:false</span><br><span class="line">isInterface:false</span><br><span class="line">isArray:false</span><br><span class="line">isPrimitive:false</span><br><span class="line">isAnnotation:false</span><br><span class="line"></span><br><span class="line">内部类</span><br><span class="line">Class:com.example.reflectdemo.classdetail.ClassTypeTest$T</span><br><span class="line">isAnonymousClass:false</span><br><span class="line">isLocalClass:false</span><br><span class="line">isMemberClass:true</span><br><span class="line">isEnum:false</span><br><span class="line">isInterface:false</span><br><span class="line">isArray:false</span><br><span class="line">isPrimitive:false</span><br><span class="line">isAnnotation:false</span><br><span class="line"></span><br><span class="line">静态内部类</span><br><span class="line">Class:com.example.reflectdemo.classdetail.ClassTypeTest$S</span><br><span class="line">isAnonymousClass:false</span><br><span class="line">isLocalClass:false</span><br><span class="line">isMemberClass:true</span><br><span class="line">isEnum:false</span><br><span class="line">isInterface:false</span><br><span class="line">isArray:false</span><br><span class="line">isPrimitive:false</span><br><span class="line">isAnnotation:false</span><br><span class="line"></span><br><span class="line">枚举</span><br><span class="line">Class:com.example.reflectdemo.classdetail.ClassTypeTest$EnumTest</span><br><span class="line">isAnonymousClass:false</span><br><span class="line">isLocalClass:false</span><br><span class="line">isMemberClass:true</span><br><span class="line">isEnum:true</span><br><span class="line">isInterface:false</span><br><span class="line">isArray:false</span><br><span class="line">isPrimitive:false</span><br><span class="line">isAnnotation:false</span><br><span class="line">getEnumConstants:</span><br><span class="line">A</span><br><span class="line">B</span><br><span class="line">C</span><br><span class="line"></span><br><span class="line">接口</span><br><span class="line">Class:java.lang.Runnable</span><br><span class="line">isAnonymousClass:false</span><br><span class="line">isLocalClass:false</span><br><span class="line">isMemberClass:false</span><br><span class="line">isEnum:false</span><br><span class="line">isInterface:true</span><br><span class="line">isArray:false</span><br><span class="line">isPrimitive:false</span><br><span class="line">isAnnotation:false</span><br><span class="line"></span><br><span class="line">数组</span><br><span class="line">Class:[I</span><br><span class="line">isAnonymousClass:false</span><br><span class="line">isLocalClass:false</span><br><span class="line">isMemberClass:false</span><br><span class="line">isEnum:false</span><br><span class="line">isInterface:false</span><br><span class="line">isArray:true</span><br><span class="line">isPrimitive:false</span><br><span class="line">isAnnotation:false</span><br><span class="line">getComponentType:int</span><br><span class="line"></span><br><span class="line">int</span><br><span class="line">Class:int</span><br><span class="line">isAnonymousClass:false</span><br><span class="line">isLocalClass:false</span><br><span class="line">isMemberClass:false</span><br><span class="line">isEnum:false</span><br><span class="line">isInterface:false</span><br><span class="line">isArray:false</span><br><span class="line">isPrimitive:true</span><br><span class="line">isAnnotation:false</span><br><span class="line"></span><br><span class="line">注解</span><br><span class="line">Class:com.example.reflectdemo.classdetail.ClassTypeTest$AnnTest</span><br><span class="line">isAnonymousClass:false</span><br><span class="line">isLocalClass:false</span><br><span class="line">isMemberClass:true</span><br><span class="line">isEnum:false</span><br><span class="line">isInterface:true</span><br><span class="line">isArray:false</span><br><span class="line">isPrimitive:false</span><br><span class="line">isAnnotation:true</span><br></pre></td></tr></table></figure></p>
+<p>内部类型样例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public class InnerClassTest &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String... args)&#123;</span><br><span class="line">        System.out.println(&quot;getClasses&quot;);</span><br><span class="line">        for (Class cls : InnerClassTest.class.getClasses())&#123;</span><br><span class="line">            System.out.println(cls.getName());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public interface I&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public class A implements I&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public class B implements I&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">getClasses</span><br><span class="line">com.example.reflectdemo.classdetail.InnerClassTest$B</span><br><span class="line">com.example.reflectdemo.classdetail.InnerClassTest$A</span><br><span class="line">com.example.reflectdemo.classdetail.InnerClassTest$I</span><br></pre></td></tr></table></figure></p>
+<h5 id="2-3-3-对象实例化"><a href="#2-3-3-对象实例化" class="headerlink" title="2.3.3. 对象实例化"></a>2.3.3. 对象实例化</h5><blockquote>
+<p>对象实例化，主要通过 Constructor 实例完成，首先通过相关方法获取 Constructor 对象，然后进行实例化操作。</p>
+</blockquote>
+<p>所涉及的方法如下：<br>方法 | 含义<br>—|—<br>newInstance | 使用默认构造函数实例化对象<br>getConstructors | 获取public构造函数<br>getConstructor(Class&lt;?&gt;… parameterTypes) | 获取特定public构造函数<br>getDeclaredConstructors | 获取所有的构造函数<br>getDeclaredConstructor | 获取特定构造函数</p>
+<p>实例化涉及的核心类为 Constructor，Constructor 继承自 Executable，拥有 AnnotatedElement、AccessibleObject、Executable 等相关功能，其核心方法如下：<br>方法 | 含义<br>—|—<br>newInstance | 调用构造函数，实例化对象</p>
+<p>样例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class TestBean &#123;</span><br><span class="line">    private final Integer id;</span><br><span class="line">    private final String name;</span><br><span class="line"></span><br><span class="line">    public &lt;T, R&gt;TestBean(Integer id, String name) throws IllegalArgumentException, NotImplementedException &#123;</span><br><span class="line">        this.id = id;</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        return &quot;TestBean&#123;&quot; +</span><br><span class="line">                &quot;id=&quot; + id +</span><br><span class="line">                &quot;, name=&apos;&quot; + name + &apos;\&apos;&apos; +</span><br><span class="line">                &apos;&#125;&apos;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class ConstructorTest &#123;</span><br><span class="line">    public static void main(String... args) throws Exception&#123;</span><br><span class="line">        for (Constructor constructor : TestBean.class.getConstructors())&#123;</span><br><span class="line">            TestBean bean = (TestBean) constructor.newInstance(1, &quot;Test&quot;);</span><br><span class="line">            System.out.println(&quot;newInstance:&quot; + bean);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">newInstance:TestBean&#123;id=1, name=&apos;Test&apos;&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="2-3-4-属性信息"><a href="#2-3-4-属性信息" class="headerlink" title="2.3.4. 属性信息"></a>2.3.4. 属性信息</h5><blockquote>
+<p>对象属性是类型中最主要的信息之一，主要通过 Field 表示，首先通过相关方法获取 Field 实例，然后进行属性值操作。</p>
+</blockquote>
+<p>所涉及的方法如下：<br>方法 | 含义<br>—|—<br>getFields | 获取public字段<br>getField(String name)|获取特定public字段<br>getDeclaredFields|获取所有的的属性<br>getDeclaredField | 获取特定字段</p>
+<p>Field 继承自 AccessibleObject 实现 Member 接口，拥有 AccessibleObject、AnnotatedElement、Member 相关功能，其核心方法如下：<br>方法 | 含义<br>—|—<br>isEnumConstant | 是否枚举常量<br>getType | 获取类型<br>get | 获取属性值<br>getBoolean | 获取boolean值<br>getByte | 获取byte值<br>getChar | 获取chat值<br>getShort | 获取short值<br>getInt | 获取int值<br>getLong | 获取long值<br>getFloat | 获取float值<br>getDouble | 获取double值<br>set | 设置属性值<br>setBoolean | 设置boolean值<br>setByte | 设置byte值<br>setChar | 设置char值<br>setShort | 设置short值<br>setInt | 设置int值<br>setLong | 设置long值<br>setFloat | 设置float值<br>setDouble | 设置double值<br>实例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">public enum EnumTest &#123;</span><br><span class="line">    A</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class FieldBean &#123;</span><br><span class="line">    private EnumTest aEnum;</span><br><span class="line">    private String aString;</span><br><span class="line">    private boolean aBoolean;</span><br><span class="line">    private byte aByte;</span><br><span class="line">    private char aChar;</span><br><span class="line">    private short aShort;</span><br><span class="line">    private int anInt;</span><br><span class="line">    private long aLong;</span><br><span class="line">    private float aFloat;</span><br><span class="line">    private double aDouble;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class FieldTest &#123;</span><br><span class="line">    public static void main(String... args) throws NoSuchFieldException, IllegalAccessException &#123;</span><br><span class="line">        FieldBean fieldBean = new FieldBean();</span><br><span class="line">        Field aEnum = getByName(&quot;aEnum&quot;);</span><br><span class="line">        Field aString = getByName(&quot;aString&quot;);</span><br><span class="line">        Field aBoolean = getByName(&quot;aBoolean&quot;);</span><br><span class="line">        Field aByte = getByName(&quot;aByte&quot;);</span><br><span class="line">        Field aChar = getByName(&quot;aChar&quot;);</span><br><span class="line">        Field aShort = getByName(&quot;aShort&quot;);</span><br><span class="line">        Field anInt = getByName(&quot;anInt&quot;);</span><br><span class="line">        Field aLong = getByName(&quot;aLong&quot;);</span><br><span class="line">        Field aFloat = getByName(&quot;aFloat&quot;);</span><br><span class="line">        Field aDouble = getByName(&quot;aDouble&quot;);</span><br><span class="line"></span><br><span class="line">        aEnum.set(fieldBean, EnumTest.A);</span><br><span class="line">        System.out.println(&quot;isEnumConstant: &quot; + aEnum.isEnumConstant());</span><br><span class="line">        System.out.println(&quot;set and get enum : &quot; + aEnum.get(fieldBean));</span><br><span class="line"></span><br><span class="line">        aString.set(fieldBean, &quot;Test&quot;);</span><br><span class="line">        System.out.println(&quot;set and get String : &quot; + aString.get(fieldBean));</span><br><span class="line"></span><br><span class="line">        aBoolean.setBoolean(fieldBean, true);</span><br><span class="line">        System.out.println(&quot;set and get Boolean : &quot; + aBoolean.getBoolean(fieldBean));</span><br><span class="line"></span><br><span class="line">        aByte.setByte(fieldBean, (byte) 1);</span><br><span class="line">        System.out.println(&quot;set and get Byte : &quot; + aByte.getByte(fieldBean));</span><br><span class="line"></span><br><span class="line">        aChar.setChar(fieldBean, &apos;a&apos;);</span><br><span class="line">        System.out.println(&quot;set and get Char : &quot; + aChar.getChar(fieldBean));</span><br><span class="line"></span><br><span class="line">        aShort.setShort(fieldBean, (short) 1);</span><br><span class="line">        System.out.println(&quot;set and get Short : &quot; + aShort.getShort(fieldBean));</span><br><span class="line"></span><br><span class="line">        anInt.setInt(fieldBean, 1);</span><br><span class="line">        System.out.println(&quot;set and get Int : &quot; + anInt.getInt(fieldBean));</span><br><span class="line"></span><br><span class="line">        aLong.setLong(fieldBean, 1L);</span><br><span class="line">        System.out.println(&quot;set and get Long : &quot; + aLong.getLong(fieldBean));</span><br><span class="line"></span><br><span class="line">        aFloat.setFloat(fieldBean, 1f);</span><br><span class="line">        System.out.println(&quot;set and get Float : &quot; + aLong.getFloat(fieldBean));</span><br><span class="line"></span><br><span class="line">        aDouble.setDouble(fieldBean, 1.1);</span><br><span class="line">        System.out.println(&quot;set and get Double : &quot; + aLong.getDouble(fieldBean));</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static Field getByName(String name) throws NoSuchFieldException &#123;</span><br><span class="line">        Field field = FieldBean.class.getDeclaredField(name);</span><br><span class="line">        field.setAccessible(true);</span><br><span class="line">        return field;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="2-3-5-方法信息"><a href="#2-3-5-方法信息" class="headerlink" title="2.3.5. 方法信息"></a>2.3.5. 方法信息</h5><blockquote>
+<p>类型中的方法通过 Method 表示，首先通过相关方法获取 Method 实现，然后通过反射执行方法。</p>
+</blockquote>
+<p>所涉及的方法如下：<br>方法 | 含义<br>—|—<br>getMethods | 获取public方法<br>getMethod(String name, Class&lt;?&gt;… parameterTypes) | 获取特定public方法<br>getDeclaredMethods | 获取所有方法<br>getDeclaredMethod | 获取特定方法</p>
+<p>Method 继承自 Executable，拥有 AnnotatedElement、AccessibleObject、Executable 等相关功能，其核心方法如下：<br>方法 | 含义<br>—|—<br>getReturnType | 获取方法返回类型<br>invoke | 调用方法<br>isBridge | 是否为桥接方法。桥接方法是 JDK 1.5 引入泛型后，为了使Java的泛型方法生成的字节码和 1.5 版本前的字节码相兼容，由编译器自动生成的方法。我们可以通过Method.isBridge()方法来判断一个方法是否是桥接方法。<br>isDefault | 是否为默认方法</p>
+<p>实例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">public interface SayHi &#123;</span><br><span class="line">    String get();</span><br><span class="line"></span><br><span class="line">    default void hi()&#123;</span><br><span class="line">        System.out.println(&quot;Hi &quot; + get());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public class MethodBean implements Function&lt;String, String&gt;, SayHi &#123;</span><br><span class="line">    private final String name;</span><br><span class="line"></span><br><span class="line">    public MethodBean(String name) &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String get() &#123;</span><br><span class="line">        return &quot;Hi &quot; + name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String apply(String s) &#123;</span><br><span class="line">        return s + name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public class MethodTest &#123;</span><br><span class="line">    public static void main(String... args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException &#123;</span><br><span class="line">        Method strMethod = MethodBean.class.getDeclaredMethod(&quot;apply&quot;, String.class);</span><br><span class="line">        Method objMethod = MethodBean.class.getDeclaredMethod(&quot;apply&quot;, Object.class);</span><br><span class="line">        Method hiMethod = SayHi.class.getDeclaredMethod(&quot;hi&quot;);</span><br><span class="line"></span><br><span class="line">        MethodBean methodBean = new MethodBean(&quot;张三&quot;);</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;Return Type:&quot;);</span><br><span class="line">        System.out.println(&quot;getMethod(String):&quot; + strMethod.getReturnType());</span><br><span class="line">        System.out.println(&quot;getMethod(Object):&quot; + objMethod.getReturnType());</span><br><span class="line">        System.out.println(&quot;hi():&quot; + hiMethod.getReturnType());</span><br><span class="line"></span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;isBridge:&quot;);</span><br><span class="line">        System.out.println(&quot;getMethod(String):&quot; + strMethod.isBridge());</span><br><span class="line">        System.out.println(&quot;getMethod(Object):&quot; + objMethod.isBridge());</span><br><span class="line">        System.out.println(&quot;hi():&quot; + hiMethod.isBridge());</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;isDefault:&quot;);</span><br><span class="line">        System.out.println(&quot;getMethod(String):&quot; + strMethod.isDefault());</span><br><span class="line">        System.out.println(&quot;getMethod(Object):&quot; + objMethod.isDefault());</span><br><span class="line">        System.out.println(&quot;hi():&quot; + hiMethod.isDefault());</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;invoke:&quot;);</span><br><span class="line">        System.out.println(&quot;invoke(String):&quot; + strMethod.invoke(methodBean, &quot;Test&quot;));</span><br><span class="line">        System.out.println(&quot;invoke(Object):&quot; + objMethod.invoke(methodBean, &quot;Test&quot;));</span><br><span class="line">        System.out.println(&quot;hi():&quot; + hiMethod.invoke(methodBean));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">Return Type:</span><br><span class="line">getMethod(String):class java.lang.String</span><br><span class="line">getMethod(Object):class java.lang.Object</span><br><span class="line">hi():void</span><br><span class="line"></span><br><span class="line">isBridge:</span><br><span class="line">getMethod(String):false</span><br><span class="line">getMethod(Object):true</span><br><span class="line">hi():false</span><br><span class="line"></span><br><span class="line">isDefault:</span><br><span class="line">getMethod(String):false</span><br><span class="line">getMethod(Object):false</span><br><span class="line">hi():true</span><br><span class="line"></span><br><span class="line">invoke:</span><br><span class="line">invoke(String):Test张三</span><br><span class="line">invoke(Object):Test张三</span><br><span class="line">Hi Hi 张三</span><br><span class="line">hi():null</span><br></pre></td></tr></table></figure></p>
+<h5 id="2-3-6-其他"><a href="#2-3-6-其他" class="headerlink" title="2.3.6. 其他"></a>2.3.6. 其他</h5><blockquote>
+<p>除上述核心方法外，Class 对象提供了一些使用方法。</p>
+</blockquote>
+<p>所涉及方法如下：<br>方法 | 含义<br>—|—<br>isInstance | 判断某对象是否是该类的实例<br><strong>isAssignableFrom</strong> | 判定此 Class 对象所表示的类或接口与指定的 Class 参数所表示的类或接口是否相同，或是否是其超类或超接口。如果是则返回 true；否则返回 false。<br>getClassLoader | 获取加载当前类的ClassLoader<br>getResourceAsStream | 根据该ClassLoader加载资源<br>getResource | 根据该ClassLoader加载资源</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public class Task implements Runnable&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public class OtherTest &#123;</span><br><span class="line">    public static void main(String...args)&#123;</span><br><span class="line">        Task task = new Task();</span><br><span class="line">        System.out.println(&quot;Runnable isInstance Task:&quot; + Runnable.class.isInstance(task));</span><br><span class="line">        System.out.println(&quot;Task isInstance Task:&quot; + Task.class.isInstance(task));</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;Task isAssignableFrom Task:&quot; + Task.class.isAssignableFrom(Task.class));</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;Runnable isAssignableFrom Task :&quot; + Runnable.class.isAssignableFrom(Task.class));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Runnable isInstance Task:true</span><br><span class="line">Task isInstance Task:true</span><br><span class="line">Task isAssignableFrom Task:true</span><br><span class="line">Runnable isAssignableFrom Task :true</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-动态代理"><a href="#3-动态代理" class="headerlink" title="3. 动态代理"></a>3. 动态代理</h3><blockquote>
+<p>代理是基本的设计模式之一，它是我们为了提供额外的或不同的操作，而插入的用来代替 “实际” 对象的对象。这些操作通常与 “实际” 对象通信，因此代理通常充当中间人的角色。</p>
+</blockquote>
+<p>例如，我们已有一个 Handler 接口，和一个实现类 HandlerImpl，现需要对其进行性能统计，使用代理模式，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * handler接口</span><br><span class="line"> */</span><br><span class="line">public interface Handler &#123;</span><br><span class="line">    /**</span><br><span class="line">     * 数据处理</span><br><span class="line">     * @param data</span><br><span class="line">     */</span><br><span class="line">    void handle(String data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Handler 实现</span><br><span class="line"> */</span><br><span class="line">public class HandlerImpl implements Handler&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void handle(String data) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            TimeUnit.MILLISECONDS.sleep(100);</span><br><span class="line">            System.out.println(data);</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Handler代理&lt;br /&gt;</span><br><span class="line"> * 实现Handler接口，记录耗时情况，并将请求发送给目标对象</span><br><span class="line"> */</span><br><span class="line">public class HandlerProxy implements Handler&#123;</span><br><span class="line">    private final Handler handler;</span><br><span class="line"></span><br><span class="line">    public HandlerProxy(Handler handler) &#123;</span><br><span class="line">        this.handler = handler;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void handle(String data) &#123;</span><br><span class="line">        long start = System.currentTimeMillis();</span><br><span class="line">        this.handler.handle(data);</span><br><span class="line">        long end = System.currentTimeMillis();</span><br><span class="line">        System.out.println(&quot;cost &quot; + (end - start) + &quot; ms&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void main(String... args)&#123;</span><br><span class="line">    Handler handler = new HandlerImpl();</span><br><span class="line">    Handler proxy = new HandlerProxy(handler);</span><br><span class="line">    proxy.handle(&quot;Test&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>采用代理模式，比较优雅的解决了该问题，但如果 Handler 接口存在多个方法，并且需要对所有方法进行性能监控，那 HandlerProxy 的复杂性将会提高。<br><strong>Java动态代理</strong>比代理更进一步，因为它可以动态的创建代理并动态的处理对所代理方法的调用。在动态代理上所做的所有调用都会被重定向到单一的调用处理器上。</p>
+<h4 id="3-1-InvocationHandler"><a href="#3-1-InvocationHandler" class="headerlink" title="3.1. InvocationHandler"></a>3.1. InvocationHandler</h4><blockquote>
+<p>InvocationHandler 是由动态代理处理器实现的接口，对代理对象的方法调用，会路由到该处理器上进行统一处理。</p>
+</blockquote>
+<p>其只有一个核心方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">* proxy : 代理对象</span><br><span class="line">* method ： 调用方法</span><br><span class="line">* args : 调用方法参数</span><br><span class="line">**/</span><br><span class="line">public Object invoke(Object proxy, Method method, Object[] args)</span><br><span class="line">        throws Throwable;</span><br></pre></td></tr></table></figure></p>
+<h4 id="3-2-Proxy"><a href="#3-2-Proxy" class="headerlink" title="3.2. Proxy"></a>3.2. Proxy</h4><blockquote>
+<p>Proxy 用于生成代理对象。</p>
+</blockquote>
+<p>其核心方法为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">* 获取代理类&lt;br /&gt;</span><br><span class="line">* loader : 类加载器</span><br><span class="line">* interfaces: 类实现的接口</span><br><span class="line">*</span><br><span class="line">*/</span><br><span class="line">Class&lt;?&gt; getProxyClass(ClassLoader loader,</span><br><span class="line">                                         Class&lt;?&gt;... interfaces);</span><br><span class="line">/*</span><br><span class="line">* 生成代理对象&lt;br /&gt;</span><br><span class="line">* loader : 类加载器</span><br><span class="line">* interfaces : 类实现的接口</span><br><span class="line">* h : 动态代理回调</span><br><span class="line">*/</span><br><span class="line">Object newProxyInstance(ClassLoader loader,</span><br><span class="line">                                          Class&lt;?&gt;[] interfaces,</span><br><span class="line">                                          InvocationHandler h);</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line">* 判断是否为代理类&lt;br /&gt;</span><br><span class="line">* </span><br><span class="line">* cl ： 待判断类</span><br><span class="line">*/</span><br><span class="line">public static boolean isProxyClass(Class&lt;?&gt; cl);</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line">* 获取代理对象的InvocationHandler &lt;br /&gt;</span><br><span class="line">*</span><br><span class="line">* proxy : 代理对象</span><br><span class="line">*/</span><br><span class="line">InvocationHandler getInvocationHandler(Object proxy);</span><br></pre></td></tr></table></figure></p>
+<h4 id="3-3-demo"><a href="#3-3-demo" class="headerlink" title="3.3. demo"></a>3.3. demo</h4><blockquote>
+<p>对于之前的性能监控，使用Java动态代理怎么实现？</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 定义代理方法回调处理器</span><br><span class="line"> */</span><br><span class="line">public class CostInvocationHandler implements InvocationHandler &#123;</span><br><span class="line">    // 目标对象</span><br><span class="line">    private final Object target;</span><br><span class="line"></span><br><span class="line">    public CostInvocationHandler(Object target) &#123;</span><br><span class="line">        this.target = target;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</span><br><span class="line">        System.out.println(&quot;call method &quot; + method + &quot; ,args &quot; + args);</span><br><span class="line">        long start = System.currentTimeMillis();</span><br><span class="line">        try &#123;</span><br><span class="line">            // 将请求转发给目标对象</span><br><span class="line">            return method.invoke(this.target, args);</span><br><span class="line">        &#125;finally &#123;</span><br><span class="line">            long end = System.currentTimeMillis();</span><br><span class="line">            System.out.println(&quot;cost &quot; + (end - start) + &quot;ms&quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public static void main(String... args)&#123;</span><br><span class="line">    Handler handler = new HandlerImpl();</span><br><span class="line"></span><br><span class="line">    CostInvocationHandler invocationHandler = new CostInvocationHandler(handler);</span><br><span class="line"></span><br><span class="line">    Class cls = Proxy.getProxyClass(DHandlerMain.class.getClassLoader(), Handler.class);</span><br><span class="line"></span><br><span class="line">    Handler proxy = (Handler) Proxy.newProxyInstance(DHandlerMain.class.getClassLoader(),</span><br><span class="line">            new Class[]&#123;Handler.class&#125;,</span><br><span class="line">            invocationHandler);</span><br><span class="line"></span><br><span class="line">    System.out.println(&quot;invoke method&quot;);</span><br><span class="line">    proxy.handle(&quot;Test&quot;);</span><br><span class="line">    System.out.println(&quot;isProxyClass: &quot; + Proxy.isProxyClass(cls));</span><br><span class="line">    System.out.println(&quot;getInvocationHandler: &quot; + (invocationHandler == Proxy.getInvocationHandler(proxy)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-基于-SPI-的-Plugin"><a href="#4-基于-SPI-的-Plugin" class="headerlink" title="4. 基于 SPI 的 Plugin"></a>4. 基于 SPI 的 Plugin</h3><blockquote>
+<p>SPI 全称为 (Service Provider Interface) ,是 JDK 内置的一种服务提供发现机制。 目前有不少框架用它来做服务的扩展发现，它是一种动态替换发现的机制。</p>
+</blockquote>
+<p><strong>具体用法</strong>是在 JAR 包的 “META-INF/services/“ 目录下建立一个文件，文件名是接口的全限定名，文件的内容可以有多行，每行都是该接口对应的具体实现类的全限定名。然后使用 <strong>ServiceLoader.load(Interface.class)</strong> 对插件进行加载。</p>
+<p>假定，现有个场景，需要对消息进行处理，但消息处理器的实现需要放开，及可以动态的对处理器进行加载，当有新消息到达时，依次调用处理器对消息进行处理，让我们结合SPI和反射构造一个简单的 Plugin 系统。</p>
+<p>首先我们需要一个插件接口和若干个实现类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 插件接口</span><br><span class="line"> */</span><br><span class="line">public interface Handler &#123;</span><br><span class="line">    void handle(String msg);</span><br><span class="line">&#125;</span><br><span class="line">/**</span><br><span class="line"> * 实现1</span><br><span class="line"> */</span><br><span class="line">public class Handler1 implements Handler&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void handle(String msg) &#123;</span><br><span class="line">        System.out.println(&quot;Handler1:&quot; + msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">/**</span><br><span class="line"> * 实现2</span><br><span class="line"> */</span><br><span class="line">public class Handler2 implements Handler&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void handle(String msg) &#123;</span><br><span class="line">        System.out.println(&quot;Handler2:&quot; + msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后，我们添加 SPI 配置，及在 META-INF/services/com.example.reflectdemo.plugin.Handler 添加配置信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">com.example.reflectdemo.plugin.Handler1</span><br><span class="line">com.example.reflectdemo.plugin.Handler2</span><br></pre></td></tr></table></figure></p>
+<p>其次，我们实现 DispatcherInvocationHandler 类继承自 InvocationHandler 接口，将方法调用分发给目标对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 分发处理器&lt;br /&gt;</span><br><span class="line"> * 将请求挨个转发给目标对象</span><br><span class="line"> */</span><br><span class="line">public class DispatcherInvocationHandler implements InvocationHandler &#123;</span><br><span class="line">    // 目标对象集合</span><br><span class="line">    private final List&lt;Object&gt; targets;</span><br><span class="line"></span><br><span class="line">    public DispatcherInvocationHandler(List&lt;Object&gt; targets) &#123;</span><br><span class="line">        this.targets = targets;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</span><br><span class="line">        for (Object target : targets)&#123;</span><br><span class="line">            // 将请求转发给目标对象</span><br><span class="line">            method.invoke(target, args);</span><br><span class="line">        &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>实现主流程，通过 SPI 加装插件，将插件作为转发对象实例化 DispatcherInvocationHandler，在通过Proxy构建动态代理对象，最后调用 handle 方法进行业务处理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String... args)&#123;</span><br><span class="line">        // 使用SPI加载插件</span><br><span class="line">        ServiceLoader&lt;Handler&gt; serviceLoader = ServiceLoader.load(Handler.class);</span><br><span class="line">        List&lt;Object&gt; handlers = new ArrayList&lt;&gt;();</span><br><span class="line">        Iterator&lt;Handler&gt; handlerIterator = serviceLoader.iterator();</span><br><span class="line">        while (handlerIterator.hasNext())&#123;</span><br><span class="line">            Handler handler = handlerIterator.next();</span><br><span class="line">            handlers.add(handler);</span><br><span class="line">        &#125;</span><br><span class="line">        // 将加载的插件组装成InvocationHandler，以进行分发处理</span><br><span class="line">        DispatcherInvocationHandler invocationHandler = new DispatcherInvocationHandler(handlers);</span><br><span class="line">        // 生成代理对象</span><br><span class="line">        Handler proxy = (Handler) Proxy.newProxyInstance(HandlerMain.class.getClassLoader(), new Class[]&#123;Handler.class&#125;, invocationHandler);</span><br><span class="line">        // 调用handle方法</span><br><span class="line">        proxy.handle(&quot;Test&quot;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Handler1:Test</span><br><span class="line">Handler2:Test</span><br></pre></td></tr></table></figure></p>
+<h3 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h3><blockquote>
+<p>Java 类型系统、反射、动态代理，作为 Java 的高级应用，大量用于各大框架中。对其的掌握有助于加深对框架的理解。</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Reflection/" rel="tag"># Reflection</a>
+          
+            <a href="/tags/反射/" rel="tag"># 反射</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/15/ddd/tactics/introduction/" rel="prev" title="战术模式简介">
+                战术模式简介 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wenxinzizhu</p>
+              <p class="site-description motion-element" itemprop="description">专注于微服务</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Java类型系统"><span class="nav-text">1. Java类型系统</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-硬编码"><span class="nav-text">1.1. 硬编码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-Reflect"><span class="nav-text">1.2. Reflect</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Class对象"><span class="nav-text">2. Class对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-Class-Loader"><span class="nav-text">2.1. Class Loader</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-Class-实例获取"><span class="nav-text">2.2. Class 实例获取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-Class-类型信息"><span class="nav-text">2.3. Class 类型信息</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-1-Class-API-基础"><span class="nav-text">2.3.1 Class API 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#2-3-1-1-AnnotatedElement"><span class="nav-text">2.3.1.1 AnnotatedElement</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-3-1-2-Member"><span class="nav-text">2.3.1.2. Member</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-3-1-3-AccessibleObject"><span class="nav-text">2.3.1.3. AccessibleObject</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-3-1-4-Executable"><span class="nav-text">2.3.1.4. Executable</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-3-1-5-方法命名规则"><span class="nav-text">2.3.1.5. 方法命名规则</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-2-类型信息"><span class="nav-text">2.3.2. 类型信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-3-对象实例化"><span class="nav-text">2.3.3. 对象实例化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-4-属性信息"><span class="nav-text">2.3.4. 属性信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-5-方法信息"><span class="nav-text">2.3.5. 方法信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-6-其他"><span class="nav-text">2.3.6. 其他</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-动态代理"><span class="nav-text">3. 动态代理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-InvocationHandler"><span class="nav-text">3.1. InvocationHandler</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-Proxy"><span class="nav-text">3.2. Proxy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-demo"><span class="nav-text">3.3. demo</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-基于-SPI-的-Plugin"><span class="nav-text">4. 基于 SPI 的 Plugin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-总结"><span class="nav-text">5. 总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wenxinzizhu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

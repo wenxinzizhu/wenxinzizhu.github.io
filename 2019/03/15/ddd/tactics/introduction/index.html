@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zn">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="领域模型,战术,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="战术模式包含若干构造块模式，以便能够构建有效的领域模型。 战术模式严重依赖于领域模型和通用语言，通过技术模式将领域模型和通用语言中的概念映射到代码实现中。随着模型的进化，代码实现也会进行重构，以更好的体现模型概念。当然，从技术重构角度也会发现一些隐含领域知识（概念），这些新的发现也会对领域模型产生影响。 战术模式和通用语言一样，都工作在特定限界上下文内，其应用边界受限界上下文的保护。 1 战术模式">
+<meta name="keywords" content="领域模型,战术">
+<meta property="og:type" content="article">
+<meta property="og:title" content="战术模式简介">
+<meta property="og:url" content="http://yoursite.com/2019/03/15/ddd/tactics/introduction/index.html">
+<meta property="og:site_name" content="极客之光">
+<meta property="og:description" content="战术模式包含若干构造块模式，以便能够构建有效的领域模型。 战术模式严重依赖于领域模型和通用语言，通过技术模式将领域模型和通用语言中的概念映射到代码实现中。随着模型的进化，代码实现也会进行重构，以更好的体现模型概念。当然，从技术重构角度也会发现一些隐含领域知识（概念），这些新的发现也会对领域模型产生影响。 战术模式和通用语言一样，都工作在特定限界上下文内，其应用边界受限界上下文的保护。 1 战术模式">
+<meta property="og:locale" content="zn">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/tactics/patterns-view.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/tactics/entity-view.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/tactics/value-object-view.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/tactics/agg-view.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/tactics/factory-view.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/tactics/repository-view.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/tactics/event-store-view.png">
+<meta property="og:updated_time" content="2019-03-15T03:23:36.554Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="战术模式简介">
+<meta name="twitter:description" content="战术模式包含若干构造块模式，以便能够构建有效的领域模型。 战术模式严重依赖于领域模型和通用语言，通过技术模式将领域模型和通用语言中的概念映射到代码实现中。随着模型的进化，代码实现也会进行重构，以更好的体现模型概念。当然，从技术重构角度也会发现一些隐含领域知识（概念），这些新的发现也会对领域模型产生影响。 战术模式和通用语言一样，都工作在特定限界上下文内，其应用边界受限界上下文的保护。 1 战术模式">
+<meta name="twitter:image" content="http://litao851025.gitee.io/books-image/ddd/tactics/patterns-view.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/15/ddd/tactics/introduction/">
+
+
+
+
+
+  <title>战术模式简介 | 极客之光</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zn">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">极客之光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">技术改变生活</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/15/ddd/tactics/introduction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wenxinzizhu">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="极客之光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">战术模式简介</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-15T21:30:00+08:00">
+                2019-03-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/领域驱动设计/" itemprop="url" rel="index">
+                    <span itemprop="name">领域驱动设计</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/领域驱动设计/战术模式/" itemprop="url" rel="index">
+                    <span itemprop="name">战术模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>战术模式包含若干构造块模式，以便能够构建有效的领域模型。</p>
+<p>战术模式严重依赖于领域模型和通用语言，通过技术模式将领域模型和通用语言中的概念映射到代码实现中。随着模型的进化，代码实现也会进行重构，以更好的体现模型概念。<br>当然，从技术重构角度也会发现一些隐含领域知识（概念），这些新的发现也会对领域模型产生影响。</p>
+<p>战术模式和通用语言一样，都工作在特定限界上下文内，其应用边界受限界上下文的保护。</p>
+<h3 id="1-战术模式"><a href="#1-战术模式" class="headerlink" title="1 战术模式"></a>1 战术模式</h3><blockquote>
+<p>战术模式的作用是管理复杂性并确保领域模型中行为的清晰明确。可以使用这些模式来捕获和传递领域中的概念、关系、规则。</p>
+</blockquote>
+<p>每个构造块模式都具有单一职责：</p>
+<ol>
+<li>代表领域中的概念。如实体、值对象、领域服务、领域事件、模块等；</li>
+<li>用于管理对象的生命周期。如聚合、工厂、仓库等；</li>
+<li>用于集成或跟踪。领域事件、事件溯源等。</li>
+</ol>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/tactics/patterns-view.png" alt="战术模式 领域模型构造块"></p>
+<h4 id="1-1-领域建模模式"><a href="#1-1-领域建模模式" class="headerlink" title="1.1 领域建模模式"></a>1.1 领域建模模式</h4><blockquote>
+<p>他们表述实现与模型间的关系，将分析模型绑定到代码实现模型。主要用于在代码中表述模型元素的模式。</p>
+</blockquote>
+<h5 id="1-1-1-实体"><a href="#1-1-1-实体" class="headerlink" title="1.1.1 实体"></a>1.1.1 实体</h5><blockquote>
+<p>实体表述的是领域中的概念，它是由身份而不是属性来定义的。</p>
+</blockquote>
+<p>实体的身份标识在生命周期中保持不变，但其属性会发生变化。实体以身份标识作为唯一凭证，沿着时间轴，记录了实体所有变更事件。</p>
+<p>实体的一个实例是产品，一旦产品被生成好，其唯一身份就不会发生变化，但是其描述信息、价格等可以被多次修改。</p>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/tactics/entity-view.png" alt="实体"></p>
+<h5 id="1-1-2-值对象"><a href="#1-1-2-值对象" class="headerlink" title="1.1.2 值对象"></a>1.1.2 值对象</h5><blockquote>
+<p>值对象代表仅通过数据区分的领域元素和概念。用作模型中元素的描述，它不具有唯一标识。</p>
+</blockquote>
+<p>值对象不需要唯一标识，是因为它总是与另一个对象相关联，是在一个特定上下文中被解析的。通常，其生命周期会依附于它的关联对象（在这里，主要是实体对象）。</p>
+<p>值对象会当做不变对象来设计，在完成创建后，其状态就不能改变了。</p>
+<p>值对象比较好的例子就是现金，你无需关系货币的身份，只关心它的价值。如果有人用一张五美元钞票交换你的五张一美元钞票，也不会改变五美元本身。</p>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/tactics/value-object-view.png" alt="值对象"></p>
+<h5 id="1-1-3-领域服务"><a href="#1-1-3-领域服务" class="headerlink" title="1.1.3 领域服务"></a>1.1.3 领域服务</h5><blockquote>
+<p>在模型中，领域服务封装了不能自然建模为值对象和实体的逻辑、流程和概念。</p>
+</blockquote>
+<p>它本身不具有身份和状态。它的职责是使用实体和值对象编排业务逻辑。</p>
+<p>领域服务的一个好例子是运输成本计算器，只要给出一组拖运货物和重量，它就能计算运输成本。</p>
+<h5 id="1-1-4-模块"><a href="#1-1-4-模块" class="headerlink" title="1.1.4 模块"></a>1.1.4 模块</h5><blockquote>
+<p>模块主要用于组织和封装相关概念（实体、值对象、领域服务、领域事件等），这样可以简化对较大模型的理解。</p>
+</blockquote>
+<p>应用模块可以在领域模型中促成低耦合和搞内聚的设计。</p>
+<p>模块作用于单个领域，用于分解模型规模。子域用于限定领域模型适用范围（有界上下文）。</p>
+<h4 id="1-2-对象生命周期模式"><a href="#1-2-对象生命周期模式" class="headerlink" title="1.2 对象生命周期模式"></a>1.2 对象生命周期模式</h4><blockquote>
+<p>相对来说，之前提到的模式重点在于表达领域概念。而对象生命周期模式，有点侧重于技术，用于表示领域对象的创建和持久化。</p>
+</blockquote>
+<h5 id="1-2-1-聚合"><a href="#1-2-1-聚合" class="headerlink" title="1.2.1 聚合"></a>1.2.1 聚合</h5><blockquote>
+<p>实体和值对象会相互协作，形成复杂的关联关系。我们需要在满足不变条件的前提下，将其拆分为一个个概念上的整体。</p>
+</blockquote>
+<p>通常，面对复杂的对象关系，在执行领域对象操作时，难以保证一致性和并发性。</p>
+<p>领域驱动设计由聚合模式来确保操作的一致性和事务的并发边界。大模型会通过不变性条件来划分，并组成概念化整体的实体和对象组，这个概念化整体便是聚合。</p>
+<p>聚合根之间的关系应该通过保持对另一个聚合根 ID 的引用，而非对对象本身的引用来实现。这一原则有助于保持聚合之间的边界并避免加载不必要的对象。</p>
+<blockquote>
+<p>不变性，是在领域模型中强制实现一致性的规则。无论何时对实体或聚合进行变更都要应用该业务规则。</p>
+</blockquote>
+<p>聚合外部的对象只能引用另一个聚合的聚合根，聚合中对象的任何变更都需要通过聚合根来完成。聚合根封装聚合数据并公开行为以对其进行修改。</p>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/tactics/agg-view.png" alt="聚合"></p>
+<h5 id="1-2-2-工厂"><a href="#1-2-2-工厂" class="headerlink" title="1.2.2 工厂"></a>1.2.2 工厂</h5><blockquote>
+<p>如果实体或值对象的创建过程非常复杂，可以将其委托给工厂。工厂会确保在领域对象使用之前就满足所有的不变条件。</p>
+</blockquote>
+<p>如果领域对象很简单并且不具有特殊的不变条件，可以使用构造函数代替工厂。当从持久化存储中重建领域对象时，也可以使用工厂。</p>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/tactics/factory-view.png" alt="工厂"></p>
+<h5 id="1-2-3-仓库"><a href="#1-2-3-仓库" class="headerlink" title="1.2.3 仓库"></a>1.2.3 仓库</h5><blockquote>
+<p>仓库主要用于持久化一个聚合。将聚合作为原子单元进行处理，因此，仓库操作的最小单元就是聚合，每个聚合会对应一个仓库。</p>
+</blockquote>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/tactics/repository-view.png" alt="仓库"></p>
+<p>仓库是用来检索和存储聚合的机制，是对基础框架的一种抽象。</p>
+<h4 id="1-3-其他模式"><a href="#1-3-其他模式" class="headerlink" title="1.3 其他模式"></a>1.3 其他模式</h4><h5 id="1-3-1-领域事件"><a href="#1-3-1-领域事件" class="headerlink" title="1.3.1 领域事件"></a>1.3.1 领域事件</h5><blockquote>
+<p>领域事件表示问题空间中发生了一些业务人员关心的事情。主要用于表示领域概念。</p>
+</blockquote>
+<p>使用领域事件主要有以下两种场景：</p>
+<ol>
+<li>记录模型的变更历史；</li>
+<li>作为跨聚合通信方式。</li>
+</ol>
+<h5 id="1-3-2-事件溯源"><a href="#1-3-2-事件溯源" class="headerlink" title="1.3.2 事件溯源"></a>1.3.2 事件溯源</h5><blockquote>
+<p>传统的仅快照式持久化的一个替代项便是事件溯源。作为实体状态存储的替代，可以存储引发该状态的系列事件。</p>
+</blockquote>
+<p>存储所有的事件会提高业务的分析能力，不仅可以得知实体当前状态，还可以得知过去任意时点的状态。</p>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/tactics/event-store-view.png" alt="事件溯源"></p>
+<h4 id="1-4-总结"><a href="#1-4-总结" class="headerlink" title="1.4 总结"></a>1.4 总结</h4><ol>
+<li>实体<ul>
+<li>由唯一标识符定义</li>
+<li>标识符在整个生命周期保存不变</li>
+<li>基于标识符进行相等性检查</li>
+<li>通过方法对属性进行更新</li>
+</ul>
+</li>
+<li>值对象<ul>
+<li>描述问题域中的概念和特征</li>
+<li>不具备身份</li>
+<li>不变对象</li>
+</ul>
+</li>
+<li>领域服务<ul>
+<li>处理无法放置在实体或值对象中的领域逻辑</li>
+<li>无唯一标识</li>
+<li>无状态服务</li>
+</ul>
+</li>
+<li>模块<ul>
+<li>分解、组织和提高领域模型的可读性</li>
+<li>命名空间，降低耦合，提供模型高内聚性</li>
+<li>定义领域对象组间的边界</li>
+<li>封装比较独立的概念，是比聚合、实体等更高层次的抽象</li>
+</ul>
+</li>
+<li>聚合<ul>
+<li>将大对象图分解成小的领域对象群，降低技术实现的复杂性</li>
+<li>表示领域概念，不仅仅是领域对象集合</li>
+<li>确定领域一致性边界，确保领域的可靠性</li>
+<li>控制并发边界</li>
+</ul>
+</li>
+<li>工厂<ul>
+<li>将对象的使用和构造分离</li>
+<li>封装复杂实体和值对象的创建逻辑</li>
+<li>保障复杂实体和值对象的业务完整性</li>
+</ul>
+</li>
+<li>仓库<ul>
+<li>是聚合根在内存中的集合接口</li>
+<li>提供聚合根的检索和持久化需求</li>
+<li>将领域层与基础实施层解耦</li>
+<li>通常不用于报告需求</li>
+</ul>
+</li>
+<li>领域事件<ul>
+<li>业务人员所关心的事件，是通用语言的一部分</li>
+<li>记录聚合根的所有变更</li>
+<li>处理跨聚合的通信需求</li>
+</ul>
+</li>
+<li>事件溯源<ul>
+<li>使用历史事件记录替换快照存储</li>
+<li>提供对历史状态的查询</li>
+</ul>
+</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/领域模型/" rel="tag"># 领域模型</a>
+          
+            <a href="/tags/战术/" rel="tag"># 战术</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/16/java/basics/reflection/" rel="next" title="Java 反射">
+                <i class="fa fa-chevron-left"></i> Java 反射
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wenxinzizhu</p>
+              <p class="site-description motion-element" itemprop="description">专注于微服务</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-战术模式"><span class="nav-text">1 战术模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-领域建模模式"><span class="nav-text">1.1 领域建模模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-1-实体"><span class="nav-text">1.1.1 实体</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-2-值对象"><span class="nav-text">1.1.2 值对象</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-3-领域服务"><span class="nav-text">1.1.3 领域服务</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-4-模块"><span class="nav-text">1.1.4 模块</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-对象生命周期模式"><span class="nav-text">1.2 对象生命周期模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-1-聚合"><span class="nav-text">1.2.1 聚合</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-2-工厂"><span class="nav-text">1.2.2 工厂</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-3-仓库"><span class="nav-text">1.2.3 仓库</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-其他模式"><span class="nav-text">1.3 其他模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-3-1-领域事件"><span class="nav-text">1.3.1 领域事件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-3-2-事件溯源"><span class="nav-text">1.3.2 事件溯源</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-总结"><span class="nav-text">1.4 总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wenxinzizhu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
