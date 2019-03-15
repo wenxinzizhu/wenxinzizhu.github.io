@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="极客之光">
 <meta property="og:description" content="项目所有演示代码见：源码 1. Java类型系统 获取Java类型系统，主要有两个方式：一种是传统的RTTI（Run-Time Type Identification），它假定我们在编译时已经知道了所有的类型信息；另一种是反射(Reflect)，它允许我们在程序运行时获取并使用类型信息。  假如有一个简单的继承体系，让我们看下在 RTTI 和 Reflect 不同情况下如何获取类型信息。 Anim">
 <meta property="og:locale" content="zn">
-<meta property="og:updated_time" content="2019-03-15T03:23:36.555Z">
+<meta property="og:updated_time" content="2019-03-15T06:25:31.099Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java 反射">
 <meta name="twitter:description" content="项目所有演示代码见：源码 1. Java类型系统 获取Java类型系统，主要有两个方式：一种是传统的RTTI（Run-Time Type Identification），它假定我们在编译时已经知道了所有的类型信息；另一种是反射(Reflect)，它允许我们在程序运行时获取并使用类型信息。  假如有一个简单的继承体系，让我们看下在 RTTI 和 Reflect 不同情况下如何获取类型信息。 Anim">
@@ -469,7 +469,33 @@
 <h6 id="2-3-1-1-AnnotatedElement"><a href="#2-3-1-1-AnnotatedElement" class="headerlink" title="2.3.1.1 AnnotatedElement"></a>2.3.1.1 AnnotatedElement</h6><blockquote>
 <p><strong>AnnotatedElement</strong> 为 Java1.5 新增接口，该接口代表程序中可以接受注解的程序元素，并提供统一的 Annotation 访问方式，赋予 API 通过反射获取 Annotation 的能力，当一个 Annotation 类型被定义为运行时后，该注解才能是运行时可见，当 class 文件被装载时被保存在 class 文件中的 Annotation 才会被虚拟机读取。</p>
 </blockquote>
-<p> <strong>AnnotatedElement接口</strong>是所有注解元素（Class、Method、Field、Package 和 Constructor）的父接口，所以程序通过反射获取了某个类的 AnnotatedElement 对象之后，程序就可以调用该对象的下列方法来访问 Annotation 信息：<br> 方法 | 含义<br>—|—<br>&lt;T extends Annotation&gt; T getAnnotation(Class&lt;T&gt; annotationClass) | 返回程序元素上存在的、指定类型的注解，如果该类型注解不存在，则返回null<br>Annotation[] getAnnotations() | 返回该程序元素上存在的所有注解<br>boolean is AnnotationPresent(Class&lt;?extends Annotation&gt; annotationClass) | 判断该程序元素上是否包含指定类型的注解，存在则返回 true，否则返回 false<br>Annotation[] getDeclaredAnnotations() | 返回直接存在于此元素上的所有注释。与此接口中的其他方法不同，该方法将忽略继承的注释。（如果没有注释直接存在于此元素上，则返回长度为零的一个数组）该方法的调用者可以随意修改返回的数组；这不会对其他调用者返回的数组产生任何影响。</p>
+<p><strong>AnnotatedElement接口</strong>是所有注解元素（Class、Method、Field、Package 和 Constructor）的父接口，所以程序通过反射获取了某个类的 AnnotatedElement 对象之后，程序就可以调用该对象的下列方法来访问 Annotation 信息：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&lt;T extends Annotation&gt; T getAnnotation(Class&lt;T&gt; annotationClass)</td>
+<td>返回程序元素上存在的、指定类型的注解，如果该类型注解不存在，则返回null</td>
+</tr>
+<tr>
+<td>Annotation[] getAnnotations()</td>
+<td>返回该程序元素上存在的所有注解</td>
+</tr>
+<tr>
+<td>boolean is AnnotationPresent(Class&lt;?extends Annotation&gt; annotationClass)</td>
+<td>判断该程序元素上是否包含指定类型的注解，存在则返回 true，否则返回 false</td>
+</tr>
+<tr>
+<td>Annotation[] getDeclaredAnnotations()</td>
+<td>返回直接存在于此元素上的所有注释。与此接口中的其他方法不同，该方法将忽略继承的注释。（如果没有注释直接存在于此元素上，则返回长度为零的一个数组）该方法的调用者可以随意修改返回的数组；这不会对其他调用者返回的数组产生任何影响。</td>
+</tr>
+</tbody>
+</table>
 <p><strong>AnnotatedElement子类</strong>涵盖所有可以出现Annotation的地方，其中包括：</p>
 <ol>
 <li>Constructor 构造函数</li>
@@ -488,7 +514,33 @@
 <h6 id="2-3-1-2-Member"><a href="#2-3-1-2-Member" class="headerlink" title="2.3.1.2. Member"></a>2.3.1.2. Member</h6><blockquote>
 <p>Member用于标记反射中简单元素。</p>
 </blockquote>
-<p>所涉及方法如下：<br>方法 | 含义<br>—|—<br>getDeclaringClass | 元素所在类<br>getName | 元素名称<br>getModifiers | 元素修饰<br>isSynthetic | 是否为 Synthetic，synthetic 是由编译器引入的字段、方法、类或其他结构，主要用于 JVM 内部使用。</p>
+<p>所涉及方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getDeclaringClass</td>
+<td>元素所在类</td>
+</tr>
+<tr>
+<td>getName</td>
+<td>元素名称</td>
+</tr>
+<tr>
+<td>getModifiers</td>
+<td>元素修饰</td>
+</tr>
+<tr>
+<td>isSynthetic</td>
+<td>是否为 Synthetic，synthetic 是由编译器引入的字段、方法、类或其他结构，主要用于 JVM 内部使用。</td>
+</tr>
+</tbody>
+</table>
 <p>其子类主要包括：</p>
 <ol>
 <li>Class 类型</li>
@@ -499,7 +551,25 @@
 <h6 id="2-3-1-3-AccessibleObject"><a href="#2-3-1-3-AccessibleObject" class="headerlink" title="2.3.1.3. AccessibleObject"></a>2.3.1.3. AccessibleObject</h6><blockquote>
 <p>AccessibleObject 可访问对象，其对元素的可见性进行统一封装。同时实现 AnnotatedElement 接口，提供对 Annotation 元素的访问。</p>
 </blockquote>
-<p>所涉及方法如下：<br>方法 | 含义<br>—|—<br>isAccessible | 是否可访问<br>setAccessible | 重新访问性</p>
+<p>所涉及方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>isAccessible</td>
+<td>是否可访问</td>
+</tr>
+<tr>
+<td>setAccessible</td>
+<td>重新访问性</td>
+</tr>
+</tbody>
+</table>
 <p>其中 AccessibleObject 所涉及的子类主要包括：</p>
 <ol>
 <li>Field 字段</li>
@@ -512,7 +582,49 @@
 <h6 id="2-3-1-4-Executable"><a href="#2-3-1-4-Executable" class="headerlink" title="2.3.1.4. Executable"></a>2.3.1.4. Executable</h6><blockquote>
 <p>Executable 表示可执行元素的一种封装，可以获取方法签名相关信息。</p>
 </blockquote>
-<p>所涉及方法如下：<br>方法 | 含义<br>—|—<br>getName | 获取名称<br>getModifiers | 获取修饰符<br>getTypeParameters | 获取类型参数(泛型)<br>getParameterTypes | 获取参数列表<br>getParameterCount | 获取参数数量<br>getGenericParameterTypes | 获取参数类型<br>getExceptionTypes | 获取异常列表<br>getGenericExceptionTypes | 获取异常列表</p>
+<p>所涉及方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getName</td>
+<td>获取名称</td>
+</tr>
+<tr>
+<td>getModifiers</td>
+<td>获取修饰符</td>
+</tr>
+<tr>
+<td>getTypeParameters</td>
+<td>获取类型参数(泛型)</td>
+</tr>
+<tr>
+<td>getParameterTypes</td>
+<td>获取参数列表</td>
+</tr>
+<tr>
+<td>getParameterCount</td>
+<td>获取参数数量</td>
+</tr>
+<tr>
+<td>getGenericParameterTypes</td>
+<td>获取参数类型</td>
+</tr>
+<tr>
+<td>getExceptionTypes</td>
+<td>获取异常列表</td>
+</tr>
+<tr>
+<td>getGenericExceptionTypes</td>
+<td>获取异常列表</td>
+</tr>
+</tbody>
+</table>
 <p>锁涉及的子类主要有：</p>
 <ol>
 <li>Constructor 构造函数</li>
@@ -527,7 +639,97 @@
 <h5 id="2-3-2-类型信息"><a href="#2-3-2-类型信息" class="headerlink" title="2.3.2. 类型信息"></a>2.3.2. 类型信息</h5><blockquote>
 <p>Class 自身信息包括类名、包名、父类以及实现的接口等。</p>
 </blockquote>
-<p>Class类实现 AnnotatedElement 接口，以提供对注解的支持。除此以外，涉及方法如下：<br>方法 | 含义<br>—|—<br>getName | 获取类名<br>getCanonicalName | 得到目标类的全名(包名+类名)<br>getSimpleName | 等同于getCanonicalName<br>getTypeParameters | 获取类型参数（泛型）<br>getSuperclass | 获取父类<br>getPackage | 获取包信息<br>getInterfaces | 获取实现接口<br>getModifiers | 获取修饰符<br>isAnonymousClass | 是否匿名类<br>isLocalClass | 是否局部类<br>isMemberClass | 是否成员类<br>isEnum | 是否枚举<br>isInterface | 是否是接口<br>isArray | 是否是数组<br>getComponentType | 获取数组元素类型<br>isPrimitive | 是否是基本类型<br>isAnnotation | 是否是注解<br>getEnumConstants | 获取枚举所有类型<br>getClasses | 获取定义在该类中的public类型<br>getDeclaredClasses | 获取定义在该类中的类型 </p>
+<p>Class类实现 AnnotatedElement 接口，以提供对注解的支持。除此以外，涉及方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getName</td>
+<td>获取类名</td>
+</tr>
+<tr>
+<td>getCanonicalName</td>
+<td>得到目标类的全名(包名+类名)</td>
+</tr>
+<tr>
+<td>getSimpleName</td>
+<td>等同于getCanonicalName</td>
+</tr>
+<tr>
+<td>getTypeParameters</td>
+<td>获取类型参数（泛型）</td>
+</tr>
+<tr>
+<td>getSuperclass</td>
+<td>获取父类</td>
+</tr>
+<tr>
+<td>getPackage</td>
+<td>获取包信息</td>
+</tr>
+<tr>
+<td>getInterfaces</td>
+<td>获取实现接口</td>
+</tr>
+<tr>
+<td>getModifiers</td>
+<td>获取修饰符</td>
+</tr>
+<tr>
+<td>isAnonymousClass</td>
+<td>是否匿名类</td>
+</tr>
+<tr>
+<td>isLocalClass</td>
+<td>是否局部类</td>
+</tr>
+<tr>
+<td>isMemberClass</td>
+<td>是否成员类</td>
+</tr>
+<tr>
+<td>isEnum</td>
+<td>是否枚举</td>
+</tr>
+<tr>
+<td>isInterface</td>
+<td>是否是接口</td>
+</tr>
+<tr>
+<td>isArray</td>
+<td>是否是数组</td>
+</tr>
+<tr>
+<td>getComponentType</td>
+<td>获取数组元素类型</td>
+</tr>
+<tr>
+<td>isPrimitive</td>
+<td>是否是基本类型</td>
+</tr>
+<tr>
+<td>isAnnotation</td>
+<td>是否是注解</td>
+</tr>
+<tr>
+<td>getEnumConstants</td>
+<td>获取枚举所有类型</td>
+</tr>
+<tr>
+<td>getClasses</td>
+<td>获取定义在该类中的public类型</td>
+</tr>
+<tr>
+<td>getDeclaredClasses</td>
+<td>获取定义在该类中的类型 </td>
+</tr>
+</tbody>
+</table>
 <p>实例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">class Base&lt;T&gt; implements Callable&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public T call() throws Exception &#123;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public final class BaseClassInfo&lt;T, R extends Runnable&gt; extends Base&lt;T&gt; implements Runnable, Serializable &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public static void main(String... args)&#123;</span><br><span class="line">        Class&lt;BaseClassInfo&gt; cls = BaseClassInfo.class;</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;getName：&quot; + cls.getName());</span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;getCanonicalName:&quot;  + cls.getCanonicalName());</span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;getSimpleName:&quot; + cls.getSimpleName());</span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;getSuperclass:&quot; + cls.getSuperclass());</span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;getPackage:&quot; + cls.getPackage());</span><br><span class="line"></span><br><span class="line">        System.out.println();</span><br><span class="line">        for (Class c : cls.getInterfaces())&#123;</span><br><span class="line">            System.out.println(&quot;interface : &quot; + c.getSimpleName());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println();</span><br><span class="line">        for (TypeVariable&lt;Class&lt;BaseClassInfo&gt;&gt; typeVariable : cls.getTypeParameters())&#123;</span><br><span class="line">            System.out.println(&quot;type var : &quot; + typeVariable.getTypeName());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;getModifiers:&quot; + Modifier.toString(cls.getModifiers()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>输出结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">getName：com.example.reflectdemo.classdetail.BaseClassInfo</span><br><span class="line"></span><br><span class="line">getCanonicalName:com.example.reflectdemo.classdetail.BaseClassInfo</span><br><span class="line"></span><br><span class="line">getSimpleName:BaseClassInfo</span><br><span class="line"></span><br><span class="line">getSuperclass:class com.example.reflectdemo.classdetail.Base</span><br><span class="line"></span><br><span class="line">getPackage:package com.example.reflectdemo.classdetail</span><br><span class="line"></span><br><span class="line">interface : Runnable</span><br><span class="line">interface : Serializable</span><br><span class="line"></span><br><span class="line">type var : T</span><br><span class="line">type var : R</span><br><span class="line"></span><br><span class="line">getModifiers:public final</span><br></pre></td></tr></table></figure></p>
 <p>Class类型判断，实例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line">public class ClassTypeTest &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String... args)&#123;</span><br><span class="line">        Runnable runnable = new Runnable() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                printClassType(getClass());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        System.out.println(&quot;匿名内部类&quot;);</span><br><span class="line">        runnable.run();</span><br><span class="line"></span><br><span class="line">        class M implements Runnable&#123;</span><br><span class="line"></span><br><span class="line">            @Override</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                printClassType(getClass());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;方法内部类&quot;);</span><br><span class="line">        new M().run();</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;内部类&quot;);</span><br><span class="line">        new ClassTypeTest().new T().run();</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;静态内部类&quot;);</span><br><span class="line">        new S().run();</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;枚举&quot;);</span><br><span class="line">        printClassType(EnumTest.class);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;接口&quot;);</span><br><span class="line">        printClassType(Runnable.class);</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;数组&quot;);</span><br><span class="line">        printClassType(int[].class);</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;int&quot;);</span><br><span class="line">        printClassType(int.class);</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;注解&quot;);</span><br><span class="line">        printClassType(AnnTest.class);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    class T implements Runnable&#123;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void run() &#123;</span><br><span class="line">            printClassType(getClass());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    static class S implements Runnable&#123;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void run() &#123;</span><br><span class="line">            printClassType(getClass());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    enum EnumTest&#123;</span><br><span class="line">        A, B, C</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @interface AnnTest&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    private static void printClassType(Class cls)&#123;</span><br><span class="line">        System.out.println(&quot;Class:&quot; + cls.getName());</span><br><span class="line">        System.out.println(&quot;isAnonymousClass:&quot; + cls.isAnonymousClass());</span><br><span class="line">        System.out.println(&quot;isLocalClass:&quot; + cls.isLocalClass());</span><br><span class="line">        System.out.println(&quot;isMemberClass:&quot; + cls.isMemberClass());</span><br><span class="line">        System.out.println(&quot;isEnum:&quot; + cls.isEnum());</span><br><span class="line">        System.out.println(&quot;isInterface:&quot; + cls.isInterface());</span><br><span class="line">        System.out.println(&quot;isArray:&quot; + cls.isArray());</span><br><span class="line">        System.out.println(&quot;isPrimitive:&quot; + cls.isPrimitive());</span><br><span class="line">        System.out.println(&quot;isAnnotation:&quot; + cls.isAnnotation());</span><br><span class="line"></span><br><span class="line">        if (cls.isEnum())&#123;</span><br><span class="line">            System.out.println(&quot;getEnumConstants:&quot;);</span><br><span class="line">            for (Object o : cls.getEnumConstants())&#123;</span><br><span class="line">                System.out.println(o);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (cls.isArray())&#123;</span><br><span class="line">            System.out.println(&quot;getComponentType:&quot; + cls.getComponentType());</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -537,26 +739,269 @@
 <h5 id="2-3-3-对象实例化"><a href="#2-3-3-对象实例化" class="headerlink" title="2.3.3. 对象实例化"></a>2.3.3. 对象实例化</h5><blockquote>
 <p>对象实例化，主要通过 Constructor 实例完成，首先通过相关方法获取 Constructor 对象，然后进行实例化操作。</p>
 </blockquote>
-<p>所涉及的方法如下：<br>方法 | 含义<br>—|—<br>newInstance | 使用默认构造函数实例化对象<br>getConstructors | 获取public构造函数<br>getConstructor(Class&lt;?&gt;… parameterTypes) | 获取特定public构造函数<br>getDeclaredConstructors | 获取所有的构造函数<br>getDeclaredConstructor | 获取特定构造函数</p>
-<p>实例化涉及的核心类为 Constructor，Constructor 继承自 Executable，拥有 AnnotatedElement、AccessibleObject、Executable 等相关功能，其核心方法如下：<br>方法 | 含义<br>—|—<br>newInstance | 调用构造函数，实例化对象</p>
+<p>所涉及的方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>newInstance</td>
+<td>使用默认构造函数实例化对象</td>
+</tr>
+<tr>
+<td>getConstructors</td>
+<td>获取public构造函数</td>
+</tr>
+<tr>
+<td>getConstructor(Class&lt;?&gt;… parameterTypes)</td>
+<td>获取特定public构造函数</td>
+</tr>
+<tr>
+<td>getDeclaredConstructors</td>
+<td>获取所有的构造函数</td>
+</tr>
+<tr>
+<td>getDeclaredConstructor</td>
+<td>获取特定构造函数</td>
+</tr>
+</tbody>
+</table>
+<p>实例化涉及的核心类为 Constructor，Constructor 继承自 Executable，拥有 AnnotatedElement、AccessibleObject、Executable 等相关功能，其核心方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>newInstance</td>
+<td>调用构造函数，实例化对象</td>
+</tr>
+</tbody>
+</table>
 <p>样例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class TestBean &#123;</span><br><span class="line">    private final Integer id;</span><br><span class="line">    private final String name;</span><br><span class="line"></span><br><span class="line">    public &lt;T, R&gt;TestBean(Integer id, String name) throws IllegalArgumentException, NotImplementedException &#123;</span><br><span class="line">        this.id = id;</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        return &quot;TestBean&#123;&quot; +</span><br><span class="line">                &quot;id=&quot; + id +</span><br><span class="line">                &quot;, name=&apos;&quot; + name + &apos;\&apos;&apos; +</span><br><span class="line">                &apos;&#125;&apos;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class ConstructorTest &#123;</span><br><span class="line">    public static void main(String... args) throws Exception&#123;</span><br><span class="line">        for (Constructor constructor : TestBean.class.getConstructors())&#123;</span><br><span class="line">            TestBean bean = (TestBean) constructor.newInstance(1, &quot;Test&quot;);</span><br><span class="line">            System.out.println(&quot;newInstance:&quot; + bean);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>输出结果为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">newInstance:TestBean&#123;id=1, name=&apos;Test&apos;&#125;</span><br></pre></td></tr></table></figure></p>
 <h5 id="2-3-4-属性信息"><a href="#2-3-4-属性信息" class="headerlink" title="2.3.4. 属性信息"></a>2.3.4. 属性信息</h5><blockquote>
 <p>对象属性是类型中最主要的信息之一，主要通过 Field 表示，首先通过相关方法获取 Field 实例，然后进行属性值操作。</p>
 </blockquote>
-<p>所涉及的方法如下：<br>方法 | 含义<br>—|—<br>getFields | 获取public字段<br>getField(String name)|获取特定public字段<br>getDeclaredFields|获取所有的的属性<br>getDeclaredField | 获取特定字段</p>
-<p>Field 继承自 AccessibleObject 实现 Member 接口，拥有 AccessibleObject、AnnotatedElement、Member 相关功能，其核心方法如下：<br>方法 | 含义<br>—|—<br>isEnumConstant | 是否枚举常量<br>getType | 获取类型<br>get | 获取属性值<br>getBoolean | 获取boolean值<br>getByte | 获取byte值<br>getChar | 获取chat值<br>getShort | 获取short值<br>getInt | 获取int值<br>getLong | 获取long值<br>getFloat | 获取float值<br>getDouble | 获取double值<br>set | 设置属性值<br>setBoolean | 设置boolean值<br>setByte | 设置byte值<br>setChar | 设置char值<br>setShort | 设置short值<br>setInt | 设置int值<br>setLong | 设置long值<br>setFloat | 设置float值<br>setDouble | 设置double值<br>实例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">public enum EnumTest &#123;</span><br><span class="line">    A</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class FieldBean &#123;</span><br><span class="line">    private EnumTest aEnum;</span><br><span class="line">    private String aString;</span><br><span class="line">    private boolean aBoolean;</span><br><span class="line">    private byte aByte;</span><br><span class="line">    private char aChar;</span><br><span class="line">    private short aShort;</span><br><span class="line">    private int anInt;</span><br><span class="line">    private long aLong;</span><br><span class="line">    private float aFloat;</span><br><span class="line">    private double aDouble;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class FieldTest &#123;</span><br><span class="line">    public static void main(String... args) throws NoSuchFieldException, IllegalAccessException &#123;</span><br><span class="line">        FieldBean fieldBean = new FieldBean();</span><br><span class="line">        Field aEnum = getByName(&quot;aEnum&quot;);</span><br><span class="line">        Field aString = getByName(&quot;aString&quot;);</span><br><span class="line">        Field aBoolean = getByName(&quot;aBoolean&quot;);</span><br><span class="line">        Field aByte = getByName(&quot;aByte&quot;);</span><br><span class="line">        Field aChar = getByName(&quot;aChar&quot;);</span><br><span class="line">        Field aShort = getByName(&quot;aShort&quot;);</span><br><span class="line">        Field anInt = getByName(&quot;anInt&quot;);</span><br><span class="line">        Field aLong = getByName(&quot;aLong&quot;);</span><br><span class="line">        Field aFloat = getByName(&quot;aFloat&quot;);</span><br><span class="line">        Field aDouble = getByName(&quot;aDouble&quot;);</span><br><span class="line"></span><br><span class="line">        aEnum.set(fieldBean, EnumTest.A);</span><br><span class="line">        System.out.println(&quot;isEnumConstant: &quot; + aEnum.isEnumConstant());</span><br><span class="line">        System.out.println(&quot;set and get enum : &quot; + aEnum.get(fieldBean));</span><br><span class="line"></span><br><span class="line">        aString.set(fieldBean, &quot;Test&quot;);</span><br><span class="line">        System.out.println(&quot;set and get String : &quot; + aString.get(fieldBean));</span><br><span class="line"></span><br><span class="line">        aBoolean.setBoolean(fieldBean, true);</span><br><span class="line">        System.out.println(&quot;set and get Boolean : &quot; + aBoolean.getBoolean(fieldBean));</span><br><span class="line"></span><br><span class="line">        aByte.setByte(fieldBean, (byte) 1);</span><br><span class="line">        System.out.println(&quot;set and get Byte : &quot; + aByte.getByte(fieldBean));</span><br><span class="line"></span><br><span class="line">        aChar.setChar(fieldBean, &apos;a&apos;);</span><br><span class="line">        System.out.println(&quot;set and get Char : &quot; + aChar.getChar(fieldBean));</span><br><span class="line"></span><br><span class="line">        aShort.setShort(fieldBean, (short) 1);</span><br><span class="line">        System.out.println(&quot;set and get Short : &quot; + aShort.getShort(fieldBean));</span><br><span class="line"></span><br><span class="line">        anInt.setInt(fieldBean, 1);</span><br><span class="line">        System.out.println(&quot;set and get Int : &quot; + anInt.getInt(fieldBean));</span><br><span class="line"></span><br><span class="line">        aLong.setLong(fieldBean, 1L);</span><br><span class="line">        System.out.println(&quot;set and get Long : &quot; + aLong.getLong(fieldBean));</span><br><span class="line"></span><br><span class="line">        aFloat.setFloat(fieldBean, 1f);</span><br><span class="line">        System.out.println(&quot;set and get Float : &quot; + aLong.getFloat(fieldBean));</span><br><span class="line"></span><br><span class="line">        aDouble.setDouble(fieldBean, 1.1);</span><br><span class="line">        System.out.println(&quot;set and get Double : &quot; + aLong.getDouble(fieldBean));</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static Field getByName(String name) throws NoSuchFieldException &#123;</span><br><span class="line">        Field field = FieldBean.class.getDeclaredField(name);</span><br><span class="line">        field.setAccessible(true);</span><br><span class="line">        return field;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>所涉及的方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getFields</td>
+<td>获取public字段</td>
+</tr>
+<tr>
+<td>getField(String name)</td>
+<td>获取特定public字段</td>
+</tr>
+<tr>
+<td>getDeclaredFields</td>
+<td>获取所有的的属性</td>
+</tr>
+<tr>
+<td>getDeclaredField</td>
+<td>获取特定字段</td>
+</tr>
+</tbody>
+</table>
+<p>Field 继承自 AccessibleObject 实现 Member 接口，拥有 AccessibleObject、AnnotatedElement、Member 相关功能，其核心方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>isEnumConstant</td>
+<td>是否枚举常量</td>
+</tr>
+<tr>
+<td>getType</td>
+<td>获取类型</td>
+</tr>
+<tr>
+<td>get</td>
+<td>获取属性值</td>
+</tr>
+<tr>
+<td>getBoolean</td>
+<td>获取boolean值</td>
+</tr>
+<tr>
+<td>getByte</td>
+<td>获取byte值</td>
+</tr>
+<tr>
+<td>getChar</td>
+<td>获取chat值</td>
+</tr>
+<tr>
+<td>getShort</td>
+<td>获取short值</td>
+</tr>
+<tr>
+<td>getInt</td>
+<td>获取int值</td>
+</tr>
+<tr>
+<td>getLong</td>
+<td>获取long值</td>
+</tr>
+<tr>
+<td>getFloat</td>
+<td>获取float值</td>
+</tr>
+<tr>
+<td>getDouble</td>
+<td>获取double值</td>
+</tr>
+<tr>
+<td>set</td>
+<td>设置属性值</td>
+</tr>
+<tr>
+<td>setBoolean</td>
+<td>设置boolean值</td>
+</tr>
+<tr>
+<td>setByte</td>
+<td>设置byte值</td>
+</tr>
+<tr>
+<td>setChar</td>
+<td>设置char值</td>
+</tr>
+<tr>
+<td>setShort</td>
+<td>设置short值</td>
+</tr>
+<tr>
+<td>setInt</td>
+<td>设置int值</td>
+</tr>
+<tr>
+<td>setLong</td>
+<td>设置long值</td>
+</tr>
+<tr>
+<td>setFloat</td>
+<td>设置float值</td>
+</tr>
+<tr>
+<td>setDouble</td>
+<td>设置double值</td>
+</tr>
+</tbody>
+</table>
+<p>实例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">public enum EnumTest &#123;</span><br><span class="line">    A</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class FieldBean &#123;</span><br><span class="line">    private EnumTest aEnum;</span><br><span class="line">    private String aString;</span><br><span class="line">    private boolean aBoolean;</span><br><span class="line">    private byte aByte;</span><br><span class="line">    private char aChar;</span><br><span class="line">    private short aShort;</span><br><span class="line">    private int anInt;</span><br><span class="line">    private long aLong;</span><br><span class="line">    private float aFloat;</span><br><span class="line">    private double aDouble;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class FieldTest &#123;</span><br><span class="line">    public static void main(String... args) throws NoSuchFieldException, IllegalAccessException &#123;</span><br><span class="line">        FieldBean fieldBean = new FieldBean();</span><br><span class="line">        Field aEnum = getByName(&quot;aEnum&quot;);</span><br><span class="line">        Field aString = getByName(&quot;aString&quot;);</span><br><span class="line">        Field aBoolean = getByName(&quot;aBoolean&quot;);</span><br><span class="line">        Field aByte = getByName(&quot;aByte&quot;);</span><br><span class="line">        Field aChar = getByName(&quot;aChar&quot;);</span><br><span class="line">        Field aShort = getByName(&quot;aShort&quot;);</span><br><span class="line">        Field anInt = getByName(&quot;anInt&quot;);</span><br><span class="line">        Field aLong = getByName(&quot;aLong&quot;);</span><br><span class="line">        Field aFloat = getByName(&quot;aFloat&quot;);</span><br><span class="line">        Field aDouble = getByName(&quot;aDouble&quot;);</span><br><span class="line"></span><br><span class="line">        aEnum.set(fieldBean, EnumTest.A);</span><br><span class="line">        System.out.println(&quot;isEnumConstant: &quot; + aEnum.isEnumConstant());</span><br><span class="line">        System.out.println(&quot;set and get enum : &quot; + aEnum.get(fieldBean));</span><br><span class="line"></span><br><span class="line">        aString.set(fieldBean, &quot;Test&quot;);</span><br><span class="line">        System.out.println(&quot;set and get String : &quot; + aString.get(fieldBean));</span><br><span class="line"></span><br><span class="line">        aBoolean.setBoolean(fieldBean, true);</span><br><span class="line">        System.out.println(&quot;set and get Boolean : &quot; + aBoolean.getBoolean(fieldBean));</span><br><span class="line"></span><br><span class="line">        aByte.setByte(fieldBean, (byte) 1);</span><br><span class="line">        System.out.println(&quot;set and get Byte : &quot; + aByte.getByte(fieldBean));</span><br><span class="line"></span><br><span class="line">        aChar.setChar(fieldBean, &apos;a&apos;);</span><br><span class="line">        System.out.println(&quot;set and get Char : &quot; + aChar.getChar(fieldBean));</span><br><span class="line"></span><br><span class="line">        aShort.setShort(fieldBean, (short) 1);</span><br><span class="line">        System.out.println(&quot;set and get Short : &quot; + aShort.getShort(fieldBean));</span><br><span class="line"></span><br><span class="line">        anInt.setInt(fieldBean, 1);</span><br><span class="line">        System.out.println(&quot;set and get Int : &quot; + anInt.getInt(fieldBean));</span><br><span class="line"></span><br><span class="line">        aLong.setLong(fieldBean, 1L);</span><br><span class="line">        System.out.println(&quot;set and get Long : &quot; + aLong.getLong(fieldBean));</span><br><span class="line"></span><br><span class="line">        aFloat.setFloat(fieldBean, 1f);</span><br><span class="line">        System.out.println(&quot;set and get Float : &quot; + aLong.getFloat(fieldBean));</span><br><span class="line"></span><br><span class="line">        aDouble.setDouble(fieldBean, 1.1);</span><br><span class="line">        System.out.println(&quot;set and get Double : &quot; + aLong.getDouble(fieldBean));</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static Field getByName(String name) throws NoSuchFieldException &#123;</span><br><span class="line">        Field field = FieldBean.class.getDeclaredField(name);</span><br><span class="line">        field.setAccessible(true);</span><br><span class="line">        return field;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h5 id="2-3-5-方法信息"><a href="#2-3-5-方法信息" class="headerlink" title="2.3.5. 方法信息"></a>2.3.5. 方法信息</h5><blockquote>
 <p>类型中的方法通过 Method 表示，首先通过相关方法获取 Method 实现，然后通过反射执行方法。</p>
 </blockquote>
-<p>所涉及的方法如下：<br>方法 | 含义<br>—|—<br>getMethods | 获取public方法<br>getMethod(String name, Class&lt;?&gt;… parameterTypes) | 获取特定public方法<br>getDeclaredMethods | 获取所有方法<br>getDeclaredMethod | 获取特定方法</p>
-<p>Method 继承自 Executable，拥有 AnnotatedElement、AccessibleObject、Executable 等相关功能，其核心方法如下：<br>方法 | 含义<br>—|—<br>getReturnType | 获取方法返回类型<br>invoke | 调用方法<br>isBridge | 是否为桥接方法。桥接方法是 JDK 1.5 引入泛型后，为了使Java的泛型方法生成的字节码和 1.5 版本前的字节码相兼容，由编译器自动生成的方法。我们可以通过Method.isBridge()方法来判断一个方法是否是桥接方法。<br>isDefault | 是否为默认方法</p>
+<p>所涉及的方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getMethods</td>
+<td>获取public方法</td>
+</tr>
+<tr>
+<td>getMethod(String name, Class&lt;?&gt;… parameterTypes)</td>
+<td>获取特定public方法</td>
+</tr>
+<tr>
+<td>getDeclaredMethods</td>
+<td>获取所有方法</td>
+</tr>
+<tr>
+<td>getDeclaredMethod</td>
+<td>获取特定方法</td>
+</tr>
+</tbody>
+</table>
+<p>Method 继承自 Executable，拥有 AnnotatedElement、AccessibleObject、Executable 等相关功能，其核心方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getReturnType</td>
+<td>获取方法返回类型</td>
+</tr>
+<tr>
+<td>invoke</td>
+<td>调用方法</td>
+</tr>
+<tr>
+<td>isBridge</td>
+<td>是否为桥接方法。桥接方法是 JDK 1.5 引入泛型后，为了使Java的泛型方法生成的字节码和 1.5 版本前的字节码相兼容，由编译器自动生成的方法。我们可以通过Method.isBridge()方法来判断一个方法是否是桥接方法。</td>
+</tr>
+<tr>
+<td>isDefault</td>
+<td>是否为默认方法</td>
+</tr>
+</tbody>
+</table>
 <p>实例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">public interface SayHi &#123;</span><br><span class="line">    String get();</span><br><span class="line"></span><br><span class="line">    default void hi()&#123;</span><br><span class="line">        System.out.println(&quot;Hi &quot; + get());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public class MethodBean implements Function&lt;String, String&gt;, SayHi &#123;</span><br><span class="line">    private final String name;</span><br><span class="line"></span><br><span class="line">    public MethodBean(String name) &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String get() &#123;</span><br><span class="line">        return &quot;Hi &quot; + name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String apply(String s) &#123;</span><br><span class="line">        return s + name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public class MethodTest &#123;</span><br><span class="line">    public static void main(String... args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException &#123;</span><br><span class="line">        Method strMethod = MethodBean.class.getDeclaredMethod(&quot;apply&quot;, String.class);</span><br><span class="line">        Method objMethod = MethodBean.class.getDeclaredMethod(&quot;apply&quot;, Object.class);</span><br><span class="line">        Method hiMethod = SayHi.class.getDeclaredMethod(&quot;hi&quot;);</span><br><span class="line"></span><br><span class="line">        MethodBean methodBean = new MethodBean(&quot;张三&quot;);</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;Return Type:&quot;);</span><br><span class="line">        System.out.println(&quot;getMethod(String):&quot; + strMethod.getReturnType());</span><br><span class="line">        System.out.println(&quot;getMethod(Object):&quot; + objMethod.getReturnType());</span><br><span class="line">        System.out.println(&quot;hi():&quot; + hiMethod.getReturnType());</span><br><span class="line"></span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;isBridge:&quot;);</span><br><span class="line">        System.out.println(&quot;getMethod(String):&quot; + strMethod.isBridge());</span><br><span class="line">        System.out.println(&quot;getMethod(Object):&quot; + objMethod.isBridge());</span><br><span class="line">        System.out.println(&quot;hi():&quot; + hiMethod.isBridge());</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;isDefault:&quot;);</span><br><span class="line">        System.out.println(&quot;getMethod(String):&quot; + strMethod.isDefault());</span><br><span class="line">        System.out.println(&quot;getMethod(Object):&quot; + objMethod.isDefault());</span><br><span class="line">        System.out.println(&quot;hi():&quot; + hiMethod.isDefault());</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(&quot;invoke:&quot;);</span><br><span class="line">        System.out.println(&quot;invoke(String):&quot; + strMethod.invoke(methodBean, &quot;Test&quot;));</span><br><span class="line">        System.out.println(&quot;invoke(Object):&quot; + objMethod.invoke(methodBean, &quot;Test&quot;));</span><br><span class="line">        System.out.println(&quot;hi():&quot; + hiMethod.invoke(methodBean));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">Return Type:</span><br><span class="line">getMethod(String):class java.lang.String</span><br><span class="line">getMethod(Object):class java.lang.Object</span><br><span class="line">hi():void</span><br><span class="line"></span><br><span class="line">isBridge:</span><br><span class="line">getMethod(String):false</span><br><span class="line">getMethod(Object):true</span><br><span class="line">hi():false</span><br><span class="line"></span><br><span class="line">isDefault:</span><br><span class="line">getMethod(String):false</span><br><span class="line">getMethod(Object):false</span><br><span class="line">hi():true</span><br><span class="line"></span><br><span class="line">invoke:</span><br><span class="line">invoke(String):Test张三</span><br><span class="line">invoke(Object):Test张三</span><br><span class="line">Hi Hi 张三</span><br><span class="line">hi():null</span><br></pre></td></tr></table></figure></p>
 <h5 id="2-3-6-其他"><a href="#2-3-6-其他" class="headerlink" title="2.3.6. 其他"></a>2.3.6. 其他</h5><blockquote>
 <p>除上述核心方法外，Class 对象提供了一些使用方法。</p>
 </blockquote>
-<p>所涉及方法如下：<br>方法 | 含义<br>—|—<br>isInstance | 判断某对象是否是该类的实例<br><strong>isAssignableFrom</strong> | 判定此 Class 对象所表示的类或接口与指定的 Class 参数所表示的类或接口是否相同，或是否是其超类或超接口。如果是则返回 true；否则返回 false。<br>getClassLoader | 获取加载当前类的ClassLoader<br>getResourceAsStream | 根据该ClassLoader加载资源<br>getResource | 根据该ClassLoader加载资源</p>
+<p>所涉及方法如下：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>isInstance</td>
+<td>判断某对象是否是该类的实例</td>
+</tr>
+<tr>
+<td><strong>isAssignableFrom</strong></td>
+<td>判定此 Class 对象所表示的类或接口与指定的 Class 参数所表示的类或接口是否相同，或是否是其超类或超接口。如果是则返回 true；否则返回 false。</td>
+</tr>
+<tr>
+<td>getClassLoader</td>
+<td>获取加载当前类的ClassLoader</td>
+</tr>
+<tr>
+<td>getResourceAsStream</td>
+<td>根据该ClassLoader加载资源</td>
+</tr>
+<tr>
+<td>getResource</td>
+<td>根据该ClassLoader加载资源</td>
+</tr>
+</tbody>
+</table>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public class Task implements Runnable&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public class OtherTest &#123;</span><br><span class="line">    public static void main(String...args)&#123;</span><br><span class="line">        Task task = new Task();</span><br><span class="line">        System.out.println(&quot;Runnable isInstance Task:&quot; + Runnable.class.isInstance(task));</span><br><span class="line">        System.out.println(&quot;Task isInstance Task:&quot; + Task.class.isInstance(task));</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;Task isAssignableFrom Task:&quot; + Task.class.isAssignableFrom(Task.class));</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;Runnable isAssignableFrom Task :&quot; + Runnable.class.isAssignableFrom(Task.class));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>输出结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Runnable isInstance Task:true</span><br><span class="line">Task isInstance Task:true</span><br><span class="line">Task isAssignableFrom Task:true</span><br><span class="line">Runnable isAssignableFrom Task :true</span><br></pre></td></tr></table></figure></p>
 <h3 id="3-动态代理"><a href="#3-动态代理" class="headerlink" title="3. 动态代理"></a>3. 动态代理</h3><blockquote>
