@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="领域模型,战术模式,值对象,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="值对象虽然经常被掩盖在实体的阴影之下，但它却是非常重要的 DDD 概念。 值对象不具有身份，它纯粹用于描述实体的特性。处理不具有身份的值对象是很容易的，尤其是不变性与可组合性是支持易用性的两个特征。 1 理解值对象 值对象用于度量和描述事物，我们可以非常容易的对值对象进行创建、测试、使用、优化和维护。  一个值对象，或者更简单的说，值，是对一个不变的概念整体建立的模型。在这个模型中，值就真的只有一">
+<meta name="keywords" content="领域模型,战术模式,值对象">
+<meta property="og:type" content="article">
+<meta property="og:title" content="战术模式--值对象">
+<meta property="og:url" content="http://yoursite.com/2019/03/20/ddd/tactics/value_object/index.html">
+<meta property="og:site_name" content="极客之光">
+<meta property="og:description" content="值对象虽然经常被掩盖在实体的阴影之下，但它却是非常重要的 DDD 概念。 值对象不具有身份，它纯粹用于描述实体的特性。处理不具有身份的值对象是很容易的，尤其是不变性与可组合性是支持易用性的两个特征。 1 理解值对象 值对象用于度量和描述事物，我们可以非常容易的对值对象进行创建、测试、使用、优化和维护。  一个值对象，或者更简单的说，值，是对一个不变的概念整体建立的模型。在这个模型中，值就真的只有一">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-20T11:30:58.751Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="战术模式--值对象">
+<meta name="twitter:description" content="值对象虽然经常被掩盖在实体的阴影之下，但它却是非常重要的 DDD 概念。 值对象不具有身份，它纯粹用于描述实体的特性。处理不具有身份的值对象是很容易的，尤其是不变性与可组合性是支持易用性的两个特征。 1 理解值对象 值对象用于度量和描述事物，我们可以非常容易的对值对象进行创建、测试、使用、优化和维护。  一个值对象，或者更简单的说，值，是对一个不变的概念整体建立的模型。在这个模型中，值就真的只有一">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/20/ddd/tactics/value_object/">
+
+
+
+
+
+  <title>战术模式--值对象 | 极客之光</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39ab17e2f77f382076758346552f26ad";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">极客之光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">技术改变生活</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/20/ddd/tactics/value_object/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wenxinzizhu">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="极客之光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">战术模式--值对象</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-20T21:30:00+08:00">
+                2019-03-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/领域驱动设计/" itemprop="url" rel="index">
+                    <span itemprop="name">领域驱动设计</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/领域驱动设计/战术模式/" itemprop="url" rel="index">
+                    <span itemprop="name">战术模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  5.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  24
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>值对象虽然经常被掩盖在实体的阴影之下，但它却是非常重要的 DDD 概念。</p>
+<p>值对象不具有身份，它纯粹用于描述实体的特性。处理不具有身份的值对象是很容易的，尤其是不变性与可组合性是支持易用性的两个特征。</p>
+<h3 id="1-理解值对象"><a href="#1-理解值对象" class="headerlink" title="1 理解值对象"></a>1 理解值对象</h3><blockquote>
+<p>值对象用于度量和描述事物，我们可以非常容易的对值对象进行创建、测试、使用、优化和维护。</p>
+</blockquote>
+<p>一个值对象，或者更简单的说，值，是对一个不变的概念整体建立的模型。在这个模型中，值就真的只有一个值。和实体不一样，他没有唯一标识，而是通过封装属性的对比来决定相等性。一个值对象不是事物，而是用来描述、量化或测量实体的。</p>
+<p>当你关系某个对象的属性时，该对象便是一个值对象。为其添加有意义的属性，并赋予相应的行为。我们需要将值对象看成不变对象，不要给他任何身份标识，还应该尽量避免像实体对象一样的复杂性。</p>
+<blockquote>
+<p>即使一个领域概念必须建模成实体，在设计时也应该更偏向于将其作为值对象的容器。</p>
+</blockquote>
+<p>当决定一个领域概念是否应该建模成值对象时，需要考虑是否拥有一些特性：</p>
+<ul>
+<li>度量或描述领域中的一件东西。</li>
+<li>可以作为不变对象。</li>
+<li>将不同的相关属性组合成一个概念整体。</li>
+<li>当度量或描述改变时，可以使用另一个值对象予以替换。</li>
+<li>可以与其他值对象进行相等性比较。</li>
+<li>不对对协作对象造成负面影响。</li>
+</ul>
+<p>在使用这个特性分析模型时，你会发现很多领域概念都应该建模成值对象，而非实体。</p>
+<p>值对象的特征汇总如下：</p>
+<ol>
+<li>度量或描述。只是度量或描述领域中某件东西的一个概念。</li>
+<li>不变性。值对象在创建后，就不会发生改变，如果需要改变的话，将创建一个新的值对象并对原有对象进行替换。</li>
+<li>概念整体性。一个值对象可以只有一个属性，也可以拥有一组相关属性。如果一组属性联合起来并不能表达一个整体上的概念，那就没有什么意义。</li>
+<li>有效性。值对象的构造函数应该用于保障概念整体性的有效性。</li>
+<li>可替换性。如果需要改变的话，我们需要将整个值对象替换成一个新的值对象实例。</li>
+<li>属性相等性。通过比较两个对象的类型和属性来决定其相等性。</li>
+<li>方法无副作用。由于不变性，值对象的方法一般为一个无副作用函数，这个函数表示对某个对象的操作，它只用于产生输出，不会修改对象状态。</li>
+</ol>
+<h3 id="2-何时使用值对象"><a href="#2-何时使用值对象" class="headerlink" title="2 何时使用值对象"></a>2 何时使用值对象</h3><blockquote>
+<p>值对象是实体的状态，它描述与实体相关的概念。</p>
+</blockquote>
+<h4 id="2-1-表示描述性的、缺失身份的概念"><a href="#2-1-表示描述性的、缺失身份的概念" class="headerlink" title="2.1 表示描述性的、缺失身份的概念"></a>2.1 表示描述性的、缺失身份的概念</h4><blockquote>
+<p>当一个概念缺乏明显的身份时，基本可以断定它大概率是一个值对象。</p>
+</blockquote>
+<p>比较典型的例子便是 Money，大多数情况下，我们只关心它所代表的实际金额，为其分配标识是一个没有意义的操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">@Setter(AccessLevel.PRIVATE)</span><br><span class="line">@Embeddable</span><br><span class="line">public class Money implements ValueObject &#123;</span><br><span class="line">    public static final String DEFAULT_FEE_TYPE = &quot;CNY&quot;;</span><br><span class="line">    @Column(name = &quot;total_fee&quot;)</span><br><span class="line">    private Long totalFee;</span><br><span class="line">    @Column(name = &quot;fee_type&quot;)</span><br><span class="line">    private String feeType;</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-2-增强确定性"><a href="#2-2-增强确定性" class="headerlink" title="2.2 增强确定性"></a>2.2 增强确定性</h4><blockquote>
+<p>领域驱动设计的一切都是为了明确传递业务规则和领域逻辑。像整数和字符串这样的技术单元并不适合这种情况。</p>
+</blockquote>
+<p>比如邮箱可以使用字符串进行描述，但会丢失很多邮箱的特性，此时，需要将其建模成值对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@Embeddable</span><br><span class="line">@Data</span><br><span class="line">@Setter(AccessLevel.PRIVATE)</span><br><span class="line">public class Email implements ValueObject &#123;</span><br><span class="line">    @Column(name = &quot;email_name&quot;)</span><br><span class="line">    private String name;</span><br><span class="line">    @Column(name = &quot;email_domain&quot;)</span><br><span class="line">    private String domain;</span><br><span class="line"></span><br><span class="line">    private Email() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private Email(String name, String domain) &#123;</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(name), &quot;name can not be null&quot;);</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(domain), &quot;domain can not be null&quot;);</span><br><span class="line">        this.setName(name);</span><br><span class="line">        this.setDomain(domain);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static Email apply(String email) &#123;</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(email), &quot;email can not be null&quot;);</span><br><span class="line">        String[] ss = email.split(&quot;@&quot;);</span><br><span class="line">        Preconditions.checkArgument(ss.length == 2, &quot;not Email&quot;);</span><br><span class="line">        return new Email(ss[0], ss[1]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        return this.getName() + &quot;@&quot; + this.getDomain();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此时，邮箱是一个明确的领域概念，相比字符串方案，其拥有验证逻辑，同时享受编译器类型校验。</p>
+<h3 id="3-实现值对象"><a href="#3-实现值对象" class="headerlink" title="3 实现值对象"></a>3 实现值对象</h3><blockquote>
+<p>值对象是不可变的、无副作用并且易于测试的。</p>
+</blockquote>
+<h4 id="3-1-欠缺身份"><a href="#3-1-欠缺身份" class="headerlink" title="3.1 欠缺身份"></a>3.1 欠缺身份</h4><blockquote>
+<p>缺失身份是值对象和实体最大的区别。</p>
+</blockquote>
+<p>由于值对象没有身份，且描述了领域中重要的概念，通常，我们会先定义实体，然后找出与实体相关的值对象。一般情况下，值对象需要实体提供上下文相关性。</p>
+<h4 id="3-2-基于属性的相等性"><a href="#3-2-基于属性的相等性" class="headerlink" title="3.2 基于属性的相等性"></a>3.2 基于属性的相等性</h4><blockquote>
+<p>如果实体具有相同的类型和标识，则会认为是相等的。相反，值对象要具有相同的值才会认为是相等的。</p>
+</blockquote>
+<p>如果两个 Money 对象表示相等的金额，他们就被认为是相等的。而不管他们是指向同一个实例还是不同的实例。</p>
+<p>在 Money 类中使用 lombok 插件自动生成 hashCode 和 equals 方法，查看 Money.class 可以看到。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">//</span><br><span class="line">// Source code recreated from a .class file by IntelliJ IDEA</span><br><span class="line">// (powered by Fernflower decompiler)</span><br><span class="line">//</span><br><span class="line">public class Mobile implements ValueObject &#123;</span><br><span class="line">    public boolean equals(final Object o) &#123;</span><br><span class="line">        if (o == this) &#123;</span><br><span class="line">            return true;</span><br><span class="line">        &#125; else if (!(o instanceof Mobile)) &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            Mobile other = (Mobile)o;</span><br><span class="line">            if (!other.canEqual(this)) &#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                Object this$dcc = this.getDcc();</span><br><span class="line">                Object other$dcc = other.getDcc();</span><br><span class="line">                if (this$dcc == null) &#123;</span><br><span class="line">                    if (other$dcc != null) &#123;</span><br><span class="line">                        return false;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; else if (!this$dcc.equals(other$dcc)) &#123;</span><br><span class="line">                    return false;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                Object this$mobile = this.getMobile();</span><br><span class="line">                Object other$mobile = other.getMobile();</span><br><span class="line">                if (this$mobile == null) &#123;</span><br><span class="line">                    if (other$mobile != null) &#123;</span><br><span class="line">                        return false;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; else if (!this$mobile.equals(other$mobile)) &#123;</span><br><span class="line">                    return false;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                return true;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    protected boolean canEqual(final Object other) &#123;</span><br><span class="line">        return other instanceof Mobile;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int hashCode() &#123;</span><br><span class="line">        int PRIME = true;</span><br><span class="line">        int result = 1;</span><br><span class="line">        Object $dcc = this.getDcc();</span><br><span class="line">        int result = result * 59 + ($dcc == null ? 43 : $dcc.hashCode());</span><br><span class="line">        Object $mobile = this.getMobile();</span><br><span class="line">        result = result * 59 + ($mobile == null ? 43 : $mobile.hashCode());</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        return &quot;Mobile(dcc=&quot; + this.getDcc() + &quot;, mobile=&quot; + this.getMobile() + &quot;)&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3-3-富含行为"><a href="#3-3-富含行为" class="headerlink" title="3.3 富含行为"></a>3.3 富含行为</h4><blockquote>
+<p>值对象应该尽可能多的暴露面向领域概念的行为。</p>
+</blockquote>
+<p>在 Money 值对象中，可以看到暴露的方法:</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>apply</td>
+<td>创建 Money</td>
+</tr>
+<tr>
+<td>add</td>
+<td>Money 相加</td>
+</tr>
+<tr>
+<td>subtract</td>
+<td>Money 相减</td>
+</tr>
+<tr>
+<td>multiply</td>
+<td>Money 相乘</td>
+</tr>
+<tr>
+<td>split</td>
+<td>Money 切分，将无法查分的误差汇总到最后的 Money 中</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">@Setter(AccessLevel.PRIVATE)</span><br><span class="line">@Embeddable</span><br><span class="line">public class Money implements ValueObject &#123;</span><br><span class="line">    public static final String DEFAULT_FEE_TYPE = &quot;CNY&quot;;</span><br><span class="line">    @Column(name = &quot;total_fee&quot;)</span><br><span class="line">    private Long totalFee;</span><br><span class="line">    @Column(name = &quot;fee_type&quot;)</span><br><span class="line">    private String feeType;</span><br><span class="line">    private static final BigDecimal NUM_100 = new BigDecimal(100);</span><br><span class="line"></span><br><span class="line">    private Money() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private Money(Long totalFee, String feeType) &#123;</span><br><span class="line">        Preconditions.checkArgument(totalFee != null);</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(feeType));</span><br><span class="line">        Preconditions.checkArgument(totalFee.longValue() &gt; 0);</span><br><span class="line">        this.totalFee = totalFee;</span><br><span class="line">        this.feeType = feeType;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static Money apply(Long totalFee)&#123;</span><br><span class="line">        return apply(totalFee, DEFAULT_FEE_TYPE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static Money apply(Long totalFee, String feeType)&#123;</span><br><span class="line">        return new Money(totalFee, feeType);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public Money add(Money money)&#123;</span><br><span class="line">        checkInput(money);</span><br><span class="line">        return Money.apply(this.getTotalFee() + money.getTotalFee(), getFeeType());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void checkInput(Money money) &#123;</span><br><span class="line">        if (money == null)&#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;input money can not be null&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        if (!this.getFeeType().equals(money.getFeeType()))&#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;must be same fee type&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Money subtract(Money money)&#123;</span><br><span class="line">        checkInput(money);</span><br><span class="line">        if (getTotalFee() &lt; money.getTotalFee())&#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;money can not be minus&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        return Money.apply(this.getTotalFee() - money.getTotalFee(), this.getFeeType());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Money multiply(int var)&#123;</span><br><span class="line">        return Money.apply(this.getTotalFee() * var, getFeeType());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public List&lt;Money&gt; split(int count)&#123;</span><br><span class="line">        if (getTotalFee() &lt; count)&#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;total fee can not lt count&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        List&lt;Money&gt; result = Lists.newArrayList();</span><br><span class="line">        Long pre = getTotalFee() / count;</span><br><span class="line">        for (int i=0; i&lt; count; i++)&#123;</span><br><span class="line">            if (i == count-1)&#123;</span><br><span class="line">                Long fee = getTotalFee() - (pre * (count - 1));</span><br><span class="line">                result.add(Money.apply(fee, getFeeType()));</span><br><span class="line">            &#125;else &#123;</span><br><span class="line">                result.add(Money.apply(pre, getFeeType()));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3-4-内聚"><a href="#3-4-内聚" class="headerlink" title="3.4 内聚"></a>3.4 内聚</h4><blockquote>
+<p>通常情况下，值对象会内聚封装度量值和度量单位。在 Money 中可以看到这一点。</p>
+</blockquote>
+<p>当然，并不局限于此，对于拥有概念整体性的对象，都具有很强的内聚性。比如，英文名称，由 firstName，lastName 组成。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">@Setter(AccessLevel.PRIVATE)</span><br><span class="line">public class EnglishName&#123;</span><br><span class="line">    private String firstName;</span><br><span class="line">    private String lastName;</span><br><span class="line"></span><br><span class="line">    private EnglishName(String firstName, String lastName)&#123;</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(firstName));</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(lastName));</span><br><span class="line">        setFirstName(firstName);</span><br><span class="line">        setLastName(lastName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static EnglishName apply(String firstName, String lastName)&#123;</span><br><span class="line">        return new EnglishName(firstName, lastName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3-5-不变性"><a href="#3-5-不变性" class="headerlink" title="3.5 不变性"></a>3.5 不变性</h4><blockquote>
+<p>一旦创建完成后，值对象就永远不能改变。</p>
+</blockquote>
+<p>如果需要改变值对象，应该创建新的值对象，并由新的值对象替换旧值对象。<br>比如，Money 的 subtract 方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public Money subtract(Money money)&#123;</span><br><span class="line">    checkInput(money);</span><br><span class="line">    if (getTotalFee() &lt; money.getTotalFee())&#123;</span><br><span class="line">        throw new IllegalArgumentException(&quot;money can not be minus&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    return Money.apply(this.getTotalFee() - money.getTotalFee(), this.getFeeType());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>只会创建新的 Money 对象，不会对原有对象进行修改。</p>
+<blockquote>
+<p>在技术实现上，对于一个不可变对象，需要将所有字段设置为 final，并通过构造函数为其赋值。但，有时为了迎合一些框架需求，需求进行部分妥协，及将 setter 方法设置为 private，从而对外隐藏修改方法。</p>
+</blockquote>
+<h4 id="3-6-可组合性"><a href="#3-6-可组合性" class="headerlink" title="3.6 可组合性"></a>3.6 可组合性</h4><blockquote>
+<p>对于用于度量的值对象，通常会有数值，此时，可以将其组合起来以创建新的值。</p>
+</blockquote>
+<p>比如 Money 的 add 方法，Money 加上 Money 会得到一个新的 Money。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public Money add(Money money)&#123;</span><br><span class="line">    checkInput(money);</span><br><span class="line">    return Money.apply(this.getTotalFee() + money.getTotalFee(), getFeeType());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3-7-自验证性"><a href="#3-7-自验证性" class="headerlink" title="3.7 自验证性"></a>3.7 自验证性</h4><blockquote>
+<p>值对象作为一个概念整体，决不应该变成无效状态，它自身就应该负责对其进行验证。</p>
+</blockquote>
+<p>通常情况下，在创建一个值对象实例时，如果参数与业务规则不一致，则构造函数应该抛出异常。</p>
+<p>还是看我们的 Money 类，需要进行如下检验：</p>
+<ol>
+<li>单位不能为 null；</li>
+<li>金额不能为 null；</li>
+<li>金额不能为负值。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">private Money(Long totalFee, String feeType) &#123;</span><br><span class="line">    Preconditions.checkArgument(totalFee != null);</span><br><span class="line">    Preconditions.checkArgument(StringUtils.isNotEmpty(feeType));</span><br><span class="line">    Preconditions.checkArgument(totalFee.longValue() &gt; 0);</span><br><span class="line">    this.totalFee = totalFee;</span><br><span class="line">    this.feeType = feeType;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然，如果值对象的构建过程过于复杂，可以使用 Factory 模式进行构建。此时，应该在 Factory 中对值对象的有效性进行验证。</p>
+<h4 id="3-8-可测试性"><a href="#3-8-可测试性" class="headerlink" title="3.8 可测试性"></a>3.8 可测试性</h4><blockquote>
+<p>不变性、内聚性和可组合性使值对象变的可测试。</p>
+</blockquote>
+<p>还是看我们的 Money 对象的测试类。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">public class MoneyTest &#123;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void add() &#123;</span><br><span class="line">        Money m1 = Money.apply(100L);</span><br><span class="line">        Money m2 = Money.apply(200L);</span><br><span class="line">        Money money = m1.add(m2);</span><br><span class="line">        Assert.assertEquals(300L, money.getTotalFee().longValue());</span><br><span class="line">        Assert.assertEquals(m1.getFeeType(), money.getFeeType());</span><br><span class="line">        Assert.assertEquals(m2.getFeeType(), money.getFeeType());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void subtract() &#123;</span><br><span class="line">        Money m1 = Money.apply(300L);</span><br><span class="line">        Money m2 = Money.apply(200L);</span><br><span class="line">        Money money = m1.subtract(m2);</span><br><span class="line">        Assert.assertEquals(100L, money.getTotalFee().longValue());</span><br><span class="line">        Assert.assertEquals(m1.getFeeType(), money.getFeeType());</span><br><span class="line">        Assert.assertEquals(m2.getFeeType(), money.getFeeType());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void multiply() &#123;</span><br><span class="line">        Money m1 = Money.apply(100L);</span><br><span class="line">        Money money = m1.multiply(3);</span><br><span class="line">        Assert.assertEquals(300L, money.getTotalFee().longValue());</span><br><span class="line">        Assert.assertEquals(m1.getFeeType(), money.getFeeType());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void split() &#123;</span><br><span class="line">        Money m1 = Money.apply(100L);</span><br><span class="line">        List&lt;Money&gt; monies = m1.split(33);</span><br><span class="line">        Assert.assertEquals(33, monies.size());</span><br><span class="line">        monies.forEach(m -&gt; Assert.assertEquals(m1.getFeeType(), m.getFeeType()));</span><br><span class="line">        long total = monies.stream()</span><br><span class="line">                .mapToLong(m-&gt;m.getTotalFee())</span><br><span class="line">                .sum();</span><br><span class="line">        Assert.assertEquals(100L, total);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="4-值对象建模模式"><a href="#4-值对象建模模式" class="headerlink" title="4 值对象建模模式"></a>4 值对象建模模式</h3><blockquote>
+<p>通过一些常用的值对象建模模式，可以提高值对象的处理体验。</p>
+</blockquote>
+<h4 id="4-1-静态工厂方法"><a href="#4-1-静态工厂方法" class="headerlink" title="4.1 静态工厂方法"></a>4.1 静态工厂方法</h4><blockquote>
+<p>静态工厂方法是更简单、更具有表达性的一种技巧。</p>
+</blockquote>
+<p>比如 java 中的 Instant 的静态工厂方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public static Instant now() &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line">public static Instant ofEpochSecond(long epochSecond) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line">public static Instant ofEpochMilli(long epochMilli)&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过方法签名就能很清楚的了解其含义。</p>
+<h4 id="4-2-微类型"><a href="#4-2-微类型" class="headerlink" title="4.2 微类型"></a>4.2 微类型</h4><blockquote>
+<p>通过使用更具体的领域模型类型封装技术类型，使其更具表达能力。</p>
+</blockquote>
+<p>典型的就是 Mobile 封装，其本质是一个 String。通过 Mobile 封装，使其具有字符串无法表达的含义。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">@Setter(AccessLevel.PRIVATE)</span><br><span class="line">@Data</span><br><span class="line">@Embeddable</span><br><span class="line">public class Mobile implements ValueObject &#123;</span><br><span class="line">    public static final String DEFAULT_DCC = &quot;0086&quot;;</span><br><span class="line">    @Column(name = &quot;dcc&quot;)</span><br><span class="line">    private String dcc;</span><br><span class="line">    @Column(name = &quot;mobile&quot;)</span><br><span class="line">    private String mobile;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    private Mobile() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private Mobile(String dcc, String mobile)&#123;</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(dcc));</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(mobile));</span><br><span class="line">        setDcc(dcc);</span><br><span class="line">        setMobile(mobile);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static Mobile apply(String mobile)&#123;</span><br><span class="line">        return apply(DEFAULT_DCC, mobile);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static Mobile apply(String dcc, String mobile)&#123;</span><br><span class="line">        return new Mobile(dcc, mobile);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="4-3-避免集合"><a href="#4-3-避免集合" class="headerlink" title="4.3 避免集合"></a>4.3 避免集合</h4><blockquote>
+<p>通常情况下，需要尽量避免使用值对象集合。这种表达方式无法正确的表达领域概念。</p>
+</blockquote>
+<p>使用值对象集合通常意味着需要使用某种形式来取出特定项，这就相当于为值对象添加了身份。<br>比如 List<email> 第一个代表是主邮箱，第二个表示是副邮箱，最佳的表达方式是直接用属性进行表式，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">@Setter(AccessLevel.PRIVATE)</span><br><span class="line">public class Person&#123;</span><br><span class="line">    private Email primary;</span><br><span class="line">    private Email second;</span><br><span class="line"></span><br><span class="line">    public void updateEmail(Email primary, Email second)&#123;</span><br><span class="line">        Preconditions.checkArgument(primary != null);</span><br><span class="line">        Preconditions.checkArgument(second != null);</span><br><span class="line"></span><br><span class="line">        setPrimary(primary);</span><br><span class="line">        setSecond(second);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></email></p>
+<h3 id="5-持久化"><a href="#5-持久化" class="headerlink" title="5. 持久化"></a>5. 持久化</h3><blockquote>
+<p>处理值对象最难的点就在他们的持久化。一般情况下，不会直接对其进行持久化，值对象会作为实体的属性，一并进行持久化处理。</p>
+</blockquote>
+<blockquote>
+<p>持久化过程即将对象序列化成文本格式或二进制格式，然后保存到计算机磁盘中。</p>
+</blockquote>
+<p>在面向文档数据存储时，问题会少很多。我们可以在同一个文档中存储实体和值对象；然而，使用 SQL 数据库就麻烦的多，这将导致很多变化。</p>
+<h4 id="5-1-NoSQL"><a href="#5-1-NoSQL" class="headerlink" title="5.1 NoSQL"></a>5.1 NoSQL</h4><blockquote>
+<p>许多 NoSQL 数据库都使用了数据反规范化，为我们提供了很大便利。</p>
+</blockquote>
+<p>在 NoSQL 中，整个实体都可以作为一个文档来建模。在 SQL 中的表连接、规范化数据和 ORM 延迟加载等相关问题都不存在了。在值对象上下文中，这就意味着他们会与实体一起存储。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">@Setter(AccessLevel.PRIVATE)</span><br><span class="line">@Document</span><br><span class="line">public class PersonAsMongo &#123;</span><br><span class="line">    private Email primary;</span><br><span class="line">    private Email second;</span><br><span class="line"></span><br><span class="line">    public void updateEmail(Email primary, Email second)&#123;</span><br><span class="line">        Preconditions.checkArgument(primary != null);</span><br><span class="line">        Preconditions.checkArgument(second != null);</span><br><span class="line"></span><br><span class="line">        setPrimary(primary);</span><br><span class="line">        setSecond(second);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>面向文档的 NoSQL 数据库会将文档持久化为 JSON，上例中 Person 的 primary 和 second 会作为 JSON 文档的属性进行存储。</p>
+<h4 id="5-2-SQL"><a href="#5-2-SQL" class="headerlink" title="5.2 SQL"></a>5.2 SQL</h4><blockquote>
+<p>在 SQL 数据库中存储值对象，可以遵循标准的 SQL 约定，也可以使用范模式。</p>
+</blockquote>
+<p>多数情况下，持久化值对象时，我们都是通过一种非范式的方式完成，即所有的属性和实体都保存在相同的数据库表中。有时，值对象需要以实体的身份进行持久化。比如聚合中维护一个值对象集合时。</p>
+<h5 id="5-2-1-多列存储单个值对象"><a href="#5-2-1-多列存储单个值对象" class="headerlink" title="5.2.1 多列存储单个值对象"></a>5.2.1 多列存储单个值对象</h5><blockquote>
+<p>基本思路就是将值对象与其所在的实体对象保存在同一张表中，值对象的每个属性保存为一列。</p>
+</blockquote>
+<p>这种方式，是最常见的值对象序列化方式，也是冲突最小的方式，可以在查询中使用连接语句进行查询。</p>
+<p>Jpa 提供 @Embeddable 和 @Embedded 两个注解，以支持这种方式。</p>
+<p>首先，在值对象上添加 @Embeddable 注解，以标注其为可嵌入对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@Embeddable</span><br><span class="line">@Data</span><br><span class="line">@Setter(AccessLevel.PRIVATE)</span><br><span class="line">public class Email implements ValueObject &#123;</span><br><span class="line">    @Column(name = &quot;email_name&quot;)</span><br><span class="line">    private String name;</span><br><span class="line">    @Column(name = &quot;email_domain&quot;)</span><br><span class="line">    private String domain;</span><br><span class="line"></span><br><span class="line">    private Email() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private Email(String name, String domain) &#123;</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(name), &quot;name can not be null&quot;);</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(domain), &quot;domain can not be null&quot;);</span><br><span class="line">        this.setName(name);</span><br><span class="line">        this.setDomain(domain);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static Email apply(String email) &#123;</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(email), &quot;email can not be null&quot;);</span><br><span class="line">        String[] ss = email.split(&quot;@&quot;);</span><br><span class="line">        Preconditions.checkArgument(ss.length == 2, &quot;not Email&quot;);</span><br><span class="line">        return new Email(ss[0], ss[1]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        return this.getName() + &quot;@&quot; + this.getDomain();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后，在实体对于属性上添加 @Embedded 注解，标注该属性将展开存储。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">@Entity</span><br><span class="line">public class Person1 &#123;</span><br><span class="line">    @Embedded</span><br><span class="line">    private Email primary;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="5-2-2-单列存储单个值对象"><a href="#5-2-2-单列存储单个值对象" class="headerlink" title="5.2.2 单列存储单个值对象"></a>5.2.2 单列存储单个值对象</h5><blockquote>
+<p>值对象的所有属性保存为一列。当不希望在查询中使用额外语句来连接他们时，这是一个很好的选择。</p>
+</blockquote>
+<p>一般情况下，会涉及以下几个操作：</p>
+<ol>
+<li>创建持久化格式。</li>
+<li>在保存时进行数据转换。</li>
+<li>在加载时解析值。</li>
+</ol>
+<p>如，对于 Email 值对象，我们采用 JSON 作为持久化格式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public class EmailSerializer &#123;</span><br><span class="line">    public static Email toEmail(String json)&#123;</span><br><span class="line">        if (StringUtils.isEmpty(json))&#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        return JSON.parseObject(json, Email.class);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static String toJson(Email email)&#123;</span><br><span class="line">        if (email == null)&#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        return JSON.toJSONString(email);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>JPA 中提供了 Converter 扩展，以完成值对象到数据、数据到值对象的转化：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class EmailConverter implements AttributeConverter&lt;Email, String&gt; &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public String convertToDatabaseColumn(Email attribute) &#123;</span><br><span class="line">        return EmailSerializer.toJson(attribute);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Email convertToEntityAttribute(String dbData) &#123;</span><br><span class="line">        return EmailSerializer.toEmail(dbData);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Converter 完成后，需要将其配置在对应的属性上:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">@Setter(AccessLevel.PRIVATE)</span><br><span class="line">public class PersonAsJpa &#123;</span><br><span class="line">    @Convert(converter = EmailConverter.class)</span><br><span class="line">    private Email primary;</span><br><span class="line">    @Convert(converter = EmailConverter.class)</span><br><span class="line">    private Email second;</span><br><span class="line"></span><br><span class="line">    public void updateEmail(Email primary, Email second)&#123;</span><br><span class="line">        Preconditions.checkArgument(primary != null);</span><br><span class="line">        Preconditions.checkArgument(second != null);</span><br><span class="line"></span><br><span class="line">        setPrimary(primary);</span><br><span class="line">        setSecond(second);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>此时，就完成了单个值对象的持久化。</p>
+<h5 id="5-2-3-多个值对象序列化到单个列中"><a href="#5-2-3-多个值对象序列化到单个列中" class="headerlink" title="5.2.3 多个值对象序列化到单个列中"></a>5.2.3 多个值对象序列化到单个列中</h5><blockquote>
+<p>这种应用是前种方案的扩展。将整个集合序列化成某种形式的文本，然后将该文本保存到单个数据库列中。</p>
+</blockquote>
+<p>需要考虑的问题：</p>
+<ol>
+<li>列宽。数据库列的长度不好确定。</li>
+<li>不方便查询。由于值对象集合被序列化到扁平化文本中，值对象的属性不能使用 SQL 进行查询。</li>
+<li>需要自定义类型。持久化框架对该类型的映射没有提供支撑，需要对其进行扩展。</li>
+</ol>
+<p>如，对于 List<email> 选择 JSON 作为持久化格式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public class EmailListSerializer &#123;</span><br><span class="line">    public static List&lt;Email&gt; toEmailList(String json)&#123;</span><br><span class="line">        if (StringUtils.isEmpty(json))&#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        return JSON.parseArray(json, Email.class);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static String toJson(List&lt;Email&gt; email)&#123;</span><br><span class="line">        if (email == null)&#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        return JSON.toJSONString(email);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></email></p>
+<p>扩展 JPA 的 Converter：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class EmailListConverter implements AttributeConverter&lt;List&lt;Email&gt;, String&gt; &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String convertToDatabaseColumn(List&lt;Email&gt; attribute) &#123;</span><br><span class="line">        return EmailListSerializer.toJson(attribute);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public List&lt;Email&gt; convertToEntityAttribute(String dbData) &#123;</span><br><span class="line">        return EmailListSerializer.toEmailList(dbData);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>属性配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">@Setter(AccessLevel.PRIVATE)</span><br><span class="line">public class PersonEmailListAsJpa &#123;</span><br><span class="line">    @Convert(converter = EmailListConverter.class)</span><br><span class="line">    private List&lt;Email&gt; emails;</span><br><span class="line">            </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="5-2-4-使用数据库实体保存多个值对象"><a href="#5-2-4-使用数据库实体保存多个值对象" class="headerlink" title="5.2.4 使用数据库实体保存多个值对象"></a>5.2.4 使用数据库实体保存多个值对象</h5><blockquote>
+<p>我们应该首先考虑将领域概念建模成值对象，而不是实体。</p>
+</blockquote>
+<p>我们可以使用委派主键的方式，使用两层的层超类型。在上层隐藏委派主键。<br>这样我们可以自由的将其映射成数据库实体，同时在领域模型中将其建模成值对象。</p>
+<p>首先，定义 IdentitiedObject 用以隐藏数据库 ID。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@MappedSuperclass</span><br><span class="line">public class IdentitiedObject &#123;</span><br><span class="line">    @Setter(AccessLevel.PRIVATE)</span><br><span class="line">    @Getter(AccessLevel.PRIVATE)</span><br><span class="line">    @Id</span><br><span class="line">    @GeneratedValue(strategy = GenerationType.IDENTITY)</span><br><span class="line">    private Long id;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后，从 IdentitiedObject 派生出 IdentitiedEmail 类，用以完成值对象建模。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">@Setter(AccessLevel.PRIVATE)</span><br><span class="line">@Entity</span><br><span class="line">public class IdentitiedEmail extends IdentitiedObject</span><br><span class="line">    implements ValueObject &#123;</span><br><span class="line">    @Column(name = &quot;email_name&quot;)</span><br><span class="line">    private String name;</span><br><span class="line">    @Column(name = &quot;email_domain&quot;)</span><br><span class="line">    private String domain;</span><br><span class="line"></span><br><span class="line">    private IdentitiedEmail() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private IdentitiedEmail(String name, String domain) &#123;</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(name), &quot;name can not be null&quot;);</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(domain), &quot;domain can not be null&quot;);</span><br><span class="line">        this.setName(name);</span><br><span class="line">        this.setDomain(domain);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static IdentitiedEmail apply(String email) &#123;</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(email), &quot;email can not be null&quot;);</span><br><span class="line">        String[] ss = email.split(&quot;@&quot;);</span><br><span class="line">        Preconditions.checkArgument(ss.length == 2, &quot;not Email&quot;);</span><br><span class="line">        return new IdentitiedEmail(ss[0], ss[1]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        return this.getName() + &quot;@&quot; + this.getDomain();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>此时，就可以使用 JPA 的 @OneToMany 特性存储多个值：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">@Entity</span><br><span class="line">public class PersonOneToMany &#123;</span><br><span class="line">    @OneToMany</span><br><span class="line">    private List&lt;IdentitiedEmail&gt; emails = Lists.newArrayList();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="5-2-5-ORM-与-枚举状态对象"><a href="#5-2-5-ORM-与-枚举状态对象" class="headerlink" title="5.2.5 ORM 与 枚举状态对象"></a>5.2.5 ORM 与 枚举状态对象</h5><p>大多持久化框架都提供了对枚举类型的支持。要么使用枚举值得 String，要么使用枚举值得 Index，其实都不是最佳方案，对以后得重构不太友好，建议使用自定义 code 进行持久化处理。</p>
+<p>定义枚举：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public enum PersonStatus implements CodeBasedEnum&lt;PersonStatus&gt; &#123;</span><br><span class="line">    ENABLE(1),</span><br><span class="line">    DISABLE(0);</span><br><span class="line">    private final int code;</span><br><span class="line"></span><br><span class="line">    PersonStatus(int code) &#123;</span><br><span class="line">        this.code = code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public int getCode() &#123;</span><br><span class="line">        return this.code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static PersonStatus parseByCode(Integer code)&#123;</span><br><span class="line">        for (PersonStatus status : values())&#123;</span><br><span class="line">            if (code.intValue() == status.getCode())&#123;</span><br><span class="line">                return status;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>扩展枚举 Converter：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class PersonStatusConverter implements AttributeConverter&lt;PersonStatus, Integer&gt; &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public Integer convertToDatabaseColumn(PersonStatus attribute) &#123;</span><br><span class="line">        return attribute != null ? attribute.getCode() : null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public PersonStatus convertToEntityAttribute(Integer dbData) &#123;</span><br><span class="line">        return dbData == null ? null : PersonStatus.parseByCode(dbData);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>配置属性：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">@Setter(AccessLevel.PRIVATE)</span><br><span class="line">public class Person&#123;</span><br><span class="line">    @Embedded</span><br><span class="line">    private Email primary;</span><br><span class="line">    @Embedded</span><br><span class="line">    private Email second;</span><br><span class="line"></span><br><span class="line">    @Convert(converter = PersonStatusConverter.class)</span><br><span class="line">    private PersonStatus status;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public void updateEmail(Email primary, Email second)&#123;</span><br><span class="line">        Preconditions.checkArgument(primary != null);</span><br><span class="line">        Preconditions.checkArgument(second != null);</span><br><span class="line"></span><br><span class="line">        setPrimary(primary);</span><br><span class="line">        setSecond(second);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>此时，通过枚举对象中的 code 进行持久化。</p>
+<h5 id="5-2-6-阻抗"><a href="#5-2-6-阻抗" class="headerlink" title="5.2.6 阻抗"></a>5.2.6 阻抗</h5><blockquote>
+<p>在使用 DB 进行值对象持久化时，经常遇到阻抗。</p>
+</blockquote>
+<p>当面临阻抗时，我们应该从领域模型角度，而不是持久化角度去思考问题。</p>
+<ul>
+<li>根据领域模型来来设计数据模型，而不是通过数据模型来设计领域模型。</li>
+<li>报表和商业智能应该由专门的数据模型进行处理，而不是生产环境的数据模型。</li>
+</ul>
+<h3 id="6-值对象其他用途"><a href="#6-值对象其他用途" class="headerlink" title="6 值对象其他用途"></a>6 值对象其他用途</h3><h4 id="6-1-用值对象表示标准类型"><a href="#6-1-用值对象表示标准类型" class="headerlink" title="6.1 用值对象表示标准类型"></a>6.1 用值对象表示标准类型</h4><blockquote>
+<p>标准类型是用于表示事物类型的描述性对象。</p>
+</blockquote>
+<p>Java 的枚举时实现标准类型的一种简单方法。枚举提供了一组有限数量的值对象，它是非常轻量的，并且无副作用。</p>
+<p>一个共享的不变值对象，可以从持久化存储中获取，此时可以使用标准类型的领域服务和工厂来获取值对象。我们应该为每组标准类型创建一个领域服务或工厂。<br>如果打算使用常规值对象来表示标准类型，可以使用领域服务或工厂来静态的创建值对象实例。</p>
+<h4 id="6-2-最小集成"><a href="#6-2-最小集成" class="headerlink" title="6.2 最小集成"></a>6.2 最小集成</h4><blockquote>
+<p>当模型概念从上游上下文流入下游上下文中，尽量使用值对象来表示这些概念。在有可能的情况下，使用值对象完成上下文之间的集成。</p>
+</blockquote>
+<h3 id="7-小结"><a href="#7-小结" class="headerlink" title="7 小结"></a>7 小结</h3><ul>
+<li>值对象是 DDD 建模结构体，它用于表示像度量这样的描述概念。</li>
+<li>值对象没有身份，比实体要简单得多。</li>
+<li>建议将数字和字符串封装成值对象，以更好的表示领域概念。</li>
+<li>值对象是不可变的，他们的值在创建后，就不在发生变化。</li>
+<li>值对象是内聚的，将多个特征封装成一个完整的概念。</li>
+<li>可以通过组合值对象来创建新的值对象，而不改变原始值。</li>
+<li>值对象是自验证的，它不应该处于无效状态。</li>
+<li>可以使用静态工厂、微类型等模式提高值对象的易用性。</li>
+<li>对于 NoSQL 的存储，直接使用反规范持久化值对象，面向文档数据库是首选。</li>
+<li>对于 SQL 存储，相对要麻烦下，存在大量的阻抗。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/qrcode.jpg" alt="wenxinzizhu wechat" style="width: 200px; max-width: 100%;">
+    <div>扫一扫，关注微信公众号，获取最新动态</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/领域模型/" rel="tag"># 领域模型</a>
+          
+            <a href="/tags/战术模式/" rel="tag"># 战术模式</a>
+          
+            <a href="/tags/值对象/" rel="tag"># 值对象</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/15/ddd/tactics/introduction/" rel="next" title="领域驱动设计--战术模式简介">
+                <i class="fa fa-chevron-left"></i> 领域驱动设计--战术模式简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wenxinzizhu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wenxinzizhu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-理解值对象"><span class="nav-text">1 理解值对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-何时使用值对象"><span class="nav-text">2 何时使用值对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-表示描述性的、缺失身份的概念"><span class="nav-text">2.1 表示描述性的、缺失身份的概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-增强确定性"><span class="nav-text">2.2 增强确定性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-实现值对象"><span class="nav-text">3 实现值对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-欠缺身份"><span class="nav-text">3.1 欠缺身份</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-基于属性的相等性"><span class="nav-text">3.2 基于属性的相等性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-富含行为"><span class="nav-text">3.3 富含行为</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-内聚"><span class="nav-text">3.4 内聚</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-不变性"><span class="nav-text">3.5 不变性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-6-可组合性"><span class="nav-text">3.6 可组合性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-7-自验证性"><span class="nav-text">3.7 自验证性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-8-可测试性"><span class="nav-text">3.8 可测试性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-值对象建模模式"><span class="nav-text">4 值对象建模模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-静态工厂方法"><span class="nav-text">4.1 静态工厂方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-微类型"><span class="nav-text">4.2 微类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-避免集合"><span class="nav-text">4.3 避免集合</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-持久化"><span class="nav-text">5. 持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-NoSQL"><span class="nav-text">5.1 NoSQL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-SQL"><span class="nav-text">5.2 SQL</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#5-2-1-多列存储单个值对象"><span class="nav-text">5.2.1 多列存储单个值对象</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-2-2-单列存储单个值对象"><span class="nav-text">5.2.2 单列存储单个值对象</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-2-3-多个值对象序列化到单个列中"><span class="nav-text">5.2.3 多个值对象序列化到单个列中</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-2-4-使用数据库实体保存多个值对象"><span class="nav-text">5.2.4 使用数据库实体保存多个值对象</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-2-5-ORM-与-枚举状态对象"><span class="nav-text">5.2.5 ORM 与 枚举状态对象</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-2-6-阻抗"><span class="nav-text">5.2.6 阻抗</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-值对象其他用途"><span class="nav-text">6 值对象其他用途</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-用值对象表示标准类型"><span class="nav-text">6.1 用值对象表示标准类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-最小集成"><span class="nav-text">6.2 最小集成</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-小结"><span class="nav-text">7 小结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wenxinzizhu</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">15.6k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
