@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="领域模型,战术模式,实体,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在问题空间中存在很多具有固有身份的概念，通常情况下，这些概念将建模为实体。 实体是具有唯一标识的概念，找到领域中的实体并对其进行建模是非常重要的环节。如果理解一个概念是一个实体，就应该追问领域专家相关的细节，比如概念生命周期、核心数据、具体操作、不变规则等；从技术上来说，我们可以应用实体相关模式和实践。 1 理解实体 一个实体是一个唯一的东西，并且可以在相当长的一段时间内持续变化。  实体是一个具">
+<meta name="keywords" content="领域模型,战术模式,实体">
+<meta property="og:type" content="article">
+<meta property="og:title" content="战术模式--实体">
+<meta property="og:url" content="http://www.geekhalo.com/2019/04/01/ddd/tactics/entity/index.html">
+<meta property="og:site_name" content="极客之光">
+<meta property="og:description" content="在问题空间中存在很多具有固有身份的概念，通常情况下，这些概念将建模为实体。 实体是具有唯一标识的概念，找到领域中的实体并对其进行建模是非常重要的环节。如果理解一个概念是一个实体，就应该追问领域专家相关的细节，比如概念生命周期、核心数据、具体操作、不变规则等；从技术上来说，我们可以应用实体相关模式和实践。 1 理解实体 一个实体是一个唯一的东西，并且可以在相当长的一段时间内持续变化。  实体是一个具">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/entity/entity_1.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/entity/entity_2.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/entity/entity_3.png">
+<meta property="og:updated_time" content="2019-04-01T07:16:55.053Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="战术模式--实体">
+<meta name="twitter:description" content="在问题空间中存在很多具有固有身份的概念，通常情况下，这些概念将建模为实体。 实体是具有唯一标识的概念，找到领域中的实体并对其进行建模是非常重要的环节。如果理解一个概念是一个实体，就应该追问领域专家相关的细节，比如概念生命周期、核心数据、具体操作、不变规则等；从技术上来说，我们可以应用实体相关模式和实践。 1 理解实体 一个实体是一个唯一的东西，并且可以在相当长的一段时间内持续变化。  实体是一个具">
+<meta name="twitter:image" content="http://litao851025.gitee.io/books-image/ddd/entity/entity_1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.geekhalo.com/2019/04/01/ddd/tactics/entity/">
+
+
+
+
+
+  <title>战术模式--实体 | 极客之光</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39ab17e2f77f382076758346552f26ad";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">极客之光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">技术改变生活</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.geekhalo.com/2019/04/01/ddd/tactics/entity/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wenxinzizhu">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="极客之光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">战术模式--实体</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-01T21:30:00+08:00">
+                2019-04-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/领域驱动设计/" itemprop="url" rel="index">
+                    <span itemprop="name">领域驱动设计</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/领域驱动设计/战术模式/" itemprop="url" rel="index">
+                    <span itemprop="name">战术模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  10.5k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  44
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在问题空间中存在很多具有固有身份的概念，通常情况下，这些概念将建模为实体。</p>
+<p>实体是具有唯一标识的概念，找到领域中的实体并对其进行建模是非常重要的环节。如果理解一个概念是一个实体，就应该追问领域专家相关的细节，比如概念生命周期、核心数据、具体操作、不变规则等；从技术上来说，我们可以应用实体相关模式和实践。</p>
+<h3 id="1-理解实体"><a href="#1-理解实体" class="headerlink" title="1 理解实体"></a>1 理解实体</h3><blockquote>
+<p>一个实体是一个唯一的东西，并且可以在相当长的一段时间内持续变化。</p>
+</blockquote>
+<p>实体是一个具有身份和连贯性的概念。</p>
+<ul>
+<li><strong>身份</strong> 是一个重要的领域概念，应该显示建模以提高其在领域中的表达性。</li>
+<li><strong>连贯性</strong> 指通过唯一身份来让某个概念，在生命周期的各阶段被发现、被更新甚至被删除。</li>
+</ul>
+<p>一个实体就是一个独立的事物。每个实体都拥有一个 <strong>唯一标识符</strong>  （也就是身份），并通过 <strong>标识</strong>  与和 <strong>类型</strong> 对实体进行区分开。通常情况下，实体是可变的，也就是说，他的状态随着时间发生变化。</p>
+<p><strong>唯一身份标识</strong> 和 <strong>可变性特征</strong> 将实体对象和值对象区分开来。</p>
+<blockquote>
+<p>由于从数据建模出发，通常情况下，CRUD 系统不能创建出好的业务模型。在使用 DDD 的情况下，我们会将数据模型转化成实体模型。</p>
+</blockquote>
+<p>从根本上说，实体主要与身份有关，它关注“谁”而非 “什么”。</p>
+<h3 id="2-实现实体"><a href="#2-实现实体" class="headerlink" title="2 实现实体"></a>2 实现实体</h3><blockquote>
+<p>大多数实体都有类似的特征，因此存在一些设计和实现上的技巧，其中包括唯一标识、属性、行为、验证等。</p>
+</blockquote>
+<p>在实体设计早期，我们刻意将关注点放在能体现实体 <strong>唯一性属性</strong> 和 <strong>行为</strong> 上，同时还将关注如何对实体进行查询。</p>
+<h4 id="2-1-唯一标识"><a href="#2-1-唯一标识" class="headerlink" title="2.1 唯一标识"></a>2.1 唯一标识</h4><blockquote>
+<p>有时，实体具有明确的自然标识，可以通过对概念的建模来实现；有时，可能没有已存的自然标识，将由应用程序生成并分配一个合理的标识，并将其用于数据存储。</p>
+</blockquote>
+<ul>
+<li><strong>值对象</strong> 作为实体的唯一标识，能够更好的表达领域概念。</li>
+<li><strong>标识具有稳定性</strong> 在为实体分配标识后，我们绝对不允许对其进行修改。如果键改变了，那么系统中所有引用该键的地方都需要同步更新，通常情况下，这是不可能做到的。不然，将导致严重的业务问题。</li>
+</ul>
+<h5 id="2-1-1-自然键作为唯一标识"><a href="#2-1-1-自然键作为唯一标识" class="headerlink" title="2.1.1 自然键作为唯一标识"></a>2.1.1 自然键作为唯一标识</h5><blockquote>
+<p>在考虑实体身份时，首先考虑该实体所在问题空间是否已经存在唯一标识符，这些标识符被称为自然键。</p>
+</blockquote>
+<p>通常情况下，以下几类信息可以作为自然键使用：</p>
+<ul>
+<li>身份证号</li>
+<li>国家编号</li>
+<li>税务编号</li>
+<li>书籍 ISBN</li>
+<li>…</li>
+</ul>
+<p>在使用时，我们通常使用值对象模式对自然键进行建模，然后为实体添加一个构造函数，并在构造函数中完成唯一标识的分配。</p>
+<p>首先，需要对书籍 <strong>ISBN</strong> 值对象建模：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Value</span><br><span class="line">public class ISBN &#123;</span><br><span class="line">    private String value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后，对 <strong>Book</strong> 实体建模：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">public class Book &#123;</span><br><span class="line">    private ISBN id;</span><br><span class="line"></span><br><span class="line">    public Book(ISBN isbn)&#123;</span><br><span class="line">        this.setId(isbn);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public ISBN getId()&#123;</span><br><span class="line">        return this.id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void setId(ISBN id)&#123;</span><br><span class="line">        Preconditions.checkArgument(id != null);</span><br><span class="line">        this.id = id;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>Book</strong> 在构造函数中完成 id 的赋值，之后便不会修改，以保护实体标识的稳定性。</p>
+<blockquote>
+<p>自然键，在实际研发中，很少使用。特别是在需要用户手工输入的情况下，难免会造成输入错误。对标识的修改会导致引用失效，因此，我们很少使用用户提供的唯一标识。通常情况下，会将用户输入作为实体属性，这些属性可以用于对象匹配，但是我们并不将这样的属性作为唯一身份标识。</p>
+</blockquote>
+<h5 id="2-1-2-应用程序生成唯一标识"><a href="#2-1-2-应用程序生成唯一标识" class="headerlink" title="2.1.2 应用程序生成唯一标识"></a>2.1.2 应用程序生成唯一标识</h5><blockquote>
+<p>当问题域中没有唯一标识时，我们需要决定标识生成策略并生成它。</p>
+</blockquote>
+<p>最常见的生成方式包括自增数值、全局唯一标识符（UUID、GUID等）以及字符串等。</p>
+<h6 id="自增数值"><a href="#自增数值" class="headerlink" title="自增数值"></a><strong>自增数值</strong></h6><blockquote>
+<p>数字通常具有最小的空间占用，非常利于持久化，但需要维护分配 ID 的全局计数器。</p>
+</blockquote>
+<p>我们可以使用全局的静态变量作为全局计数器，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public final class NumberGenerator &#123;</span><br><span class="line">    private static final AtomicLong ATOMIC_LONG = new AtomicLong(1);</span><br><span class="line"></span><br><span class="line">    public static Long nextNumber()&#123;</span><br><span class="line">        return ATOMIC_LONG.getAndIncrement();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>但是，但应用崩溃或重启时，静态变量就会丢失它的值，这意味着会生成重复的 ID，从而导致业务问题。为了纠正这个问题，我们需要利用全局持久化资源构建计数器。</p>
+<p>我们可以使用 Redis 或 DB 构建自己的全局计数器。</p>
+<p>基于 Redis inc 指令的全局计数器：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">public class RedisBasedNumberGenerator &#123;</span><br><span class="line">    private static final String NUMBER_GENERATOR_KEY = &quot;number-generator&quot;;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private RedisTemplate&lt;String, Long&gt; redisTemplate;</span><br><span class="line"></span><br><span class="line">    public Long nextNumber()&#123;</span><br><span class="line">        return this.redisTemplate.boundValueOps(NUMBER_GENERATOR_KEY)</span><br><span class="line">                .increment();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>基于 DB 乐观锁的全局计数器：<br>首先，定义用于生成 Number 的表结构：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">create table tb_number_gen</span><br><span class="line">(</span><br><span class="line"> 	id bigint auto_increment primary key,</span><br><span class="line"> 	`version` bigint not null,</span><br><span class="line"> 	type varchar(16) not null,</span><br><span class="line"> 	current_number bigint not null</span><br><span class="line"> );</span><br><span class="line">create unique index &apos;unq_type&apos; on tb_number_gen (&apos;type&apos;);</span><br></pre></td></tr></table></figure></p>
+<p>然后，使用乐观锁完成 Number 生成逻辑：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">public class DBBasedNumberGenerator &#123;</span><br><span class="line">    private static final String NUMBER_KEY = &quot;common&quot;;</span><br><span class="line">    private JdbcTemplate jdbcTemplate;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    public void setDataSource(DataSource dataSource)&#123;</span><br><span class="line">        this.jdbcTemplate = new JdbcTemplate(dataSource);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Long nextNumber()&#123;</span><br><span class="line">        do &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                Long number = nextNumber(NUMBER_KEY);</span><br><span class="line">                if (number != null)&#123;</span><br><span class="line">                    return number;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;catch (Exception e)&#123;</span><br><span class="line">                // 乐观锁更新失败，进行重试</span><br><span class="line">//                LOGGER.error(&quot;opt lock failure to generate number, retry ...&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;while (true);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 表结构：</span><br><span class="line">     * create table tb_number_gen</span><br><span class="line">     * (</span><br><span class="line">     * 	id bigint auto_increment primary key,</span><br><span class="line">     * 	`version` bigint not null,</span><br><span class="line">     * 	type varchar(16) not null,</span><br><span class="line">     * 	current_number bigint not null</span><br><span class="line">     * );</span><br><span class="line">     * add unique index &apos;unq_type&apos; on tb_number_gen (&apos;type&apos;);</span><br><span class="line">     *</span><br><span class="line">     * @param type</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    private Long nextNumber(String type)&#123;</span><br><span class="line">        NumberGen numberGen = jdbcTemplate.queryForObject(</span><br><span class="line">                &quot;select id, type, version, current_number as currentNumber &quot; +</span><br><span class="line">                        &quot;from tb_number_gen &quot; +</span><br><span class="line">                        &quot;where type = &apos;&quot; + type +&quot;&apos;&quot;,</span><br><span class="line">                NumberGen.class);</span><br><span class="line"></span><br><span class="line">        if (numberGen == null)&#123;</span><br><span class="line">            // 不存在时，创建新记录</span><br><span class="line">            int result = jdbcTemplate.update(&quot;insert into tb_number_gen (type, version, current_number) value (&apos;&quot; + type +&quot; &apos;, &apos;0&apos;, &apos;1&apos;)&quot;);</span><br><span class="line">            if (result &gt; 0)&#123;</span><br><span class="line">                return 1L;</span><br><span class="line">            &#125;else &#123;</span><br><span class="line">                return null;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            // 存在时，使用乐观锁 version 更新记录</span><br><span class="line">            int result = jdbcTemplate.update(&quot;update tb_number_gen &quot; +</span><br><span class="line">                    &quot;set version = version + 1,&quot; +</span><br><span class="line">                    &quot;current_number = current_number + 1 &quot; +</span><br><span class="line">                    &quot;where &quot; +</span><br><span class="line">                    &quot;id = &quot; + numberGen.getId() + &quot; &quot; +</span><br><span class="line">                    &quot; and &quot; +</span><br><span class="line">                    &quot;version = &quot; + numberGen.getVersion()</span><br><span class="line">            );</span><br><span class="line">            // 更新成功，说明从读取到更新这段时间，数据没有发生变化，numberGen 有效，结果为 number + 1</span><br><span class="line">            if (result &gt; 0)&#123;</span><br><span class="line">                return numberGen.getCurrentNumber() + 1;</span><br><span class="line">            &#125;else &#123;</span><br><span class="line">                // 更新失败，说明从读取到更新这段时间，数据发生变化，numberGen 无效，获取 number 失败</span><br><span class="line">                return null;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Data</span><br><span class="line">    class NumberGen&#123;</span><br><span class="line">        private Long id;</span><br><span class="line">        private String type;</span><br><span class="line">        private int version;</span><br><span class="line">        private Long currentNumber;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h6 id="全局唯一标识符"><a href="#全局唯一标识符" class="headerlink" title="全局唯一标识符"></a><strong>全局唯一标识符</strong></h6><blockquote>
+<p>GUID 生成非常方便，并且自身就保障是唯一的，不过在持久化时会占用更多的存储空间。这些额外的空间相对来说微不足道，因此对大多数应用来说，GUID 是默认方法。</p>
+</blockquote>
+<p>有很多算法可以生成全局唯一的标识，如 UUID、GUID 等。</p>
+<p>生成策略，需要参考很多因子，以产生唯一标识：</p>
+<ol>
+<li>计算节点当前时间，以毫秒记；</li>
+<li>计算节点的 IP 地址；</li>
+<li>虚拟机中工厂对象实例的对象标识；</li>
+<li>虚拟机中由同一个随机数生成器生成的随机数</li>
+</ol>
+<p>但，我们没有必要自己写算法构建唯一标识。Java 中的 UUID 是一种快速生成唯一标识的方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">public class UUIDBasedNumberGenerator &#123;</span><br><span class="line"></span><br><span class="line">    public String nextId()&#123;</span><br><span class="line">        return UUID.randomUUID().toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果对性能有很高要求的场景，可以将 UUID 实例缓存起来，通过后台线程不断的向缓存中添加新的 UUID 实例。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">public class UUIDBasedPoolNumberGenerator &#123;</span><br><span class="line">    private static final Logger LOGGER = LoggerFactory.getLogger(UUIDBasedPoolNumberGenerator.class);</span><br><span class="line"></span><br><span class="line">    private final BlockingQueue&lt;String&gt; idQueue = new LinkedBlockingQueue&lt;&gt;(100);</span><br><span class="line">    private Thread createThread;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 直接从队列中获取已经生成的 ID</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    public String nextId()&#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            return idQueue.take();</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            LOGGER.error(&quot;failed to take id&quot;);</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 创建后台线程，生成 ID 并放入到队列中</span><br><span class="line">     */</span><br><span class="line">    @PostConstruct</span><br><span class="line">    public void init()&#123;</span><br><span class="line">        this.createThread = new Thread(new CreateTask());</span><br><span class="line">        this.createThread.start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 销毁线程</span><br><span class="line">     */</span><br><span class="line">    @PreDestroy</span><br><span class="line">    public void destroy()&#123;</span><br><span class="line">        this.createThread.interrupt();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 不停的向队列中放入 UUID</span><br><span class="line">     */</span><br><span class="line">    class CreateTask implements Runnable&#123;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void run() &#123;</span><br><span class="line">            while (!Thread.currentThread().isInterrupted())&#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    idQueue.put(UUID.randomUUID().toString());</span><br><span class="line">                &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                    LOGGER.error(&quot;failed to create uuid&quot;);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>当在浏览器中创建一个实体并提交回多个后端 API 时，GUID 就会非常有用。如果没有 ID 后端服务将无法对相同实体进行识别。这时，最好使用 JavaScript 在客户端创建一个 GUID 来解决。</p>
+</blockquote>
+<blockquote>
+<p>在浏览器中生成 GUID，可以有效控制提交数据的幂等性。</p>
+</blockquote>
+<h6 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a><strong>字符串</strong></h6><blockquote>
+<p>字符串常用于自定义 ID 格式，比如基于时间戳、多特征组合等。</p>
+</blockquote>
+<p>如下例订单唯一标识：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class OrderIdUtils &#123;</span><br><span class="line"></span><br><span class="line">    public static String createOrderId(String day, String owner, Long number)&#123;</span><br><span class="line">        return String.format(&quot;%s-%s-%s&quot;, day, owner, number);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>一个订单 ID 由日期、所有者和序号三者组成。</p>
+<p>对于标识，使用 String 来维护并不是很好的方法，无法对其生成策略、具体格式进行有效限制。使用一个值对象会更加合适。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@Value</span><br><span class="line">public class OrderId &#123;</span><br><span class="line">    private final String day;</span><br><span class="line">    private final String owner;</span><br><span class="line">    private final Long number;</span><br><span class="line"></span><br><span class="line">    public OrderId(String day, String owner, Long number) &#123;</span><br><span class="line">        this.day = day;</span><br><span class="line">        this.owner = owner;</span><br><span class="line">        this.number = number;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getValue()&#123;</span><br><span class="line">        return String.format(&quot;%s-%s-%s&quot;, getDay(), getOwner(), getNumber());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String toString()&#123;</span><br><span class="line">        return getValue();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>相比之下，OrderId 比 String 拥有更强的表达力。</p>
+<h5 id="2-1-3-持久化存储生成唯一标识"><a href="#2-1-3-持久化存储生成唯一标识" class="headerlink" title="2.1.3 持久化存储生成唯一标识"></a>2.1.3 持久化存储生成唯一标识</h5><blockquote>
+<p>将唯一标识的生成委派给持久化机制是最简单的方案。我们从数据库获取的序列总是递增，结果总是唯一的。</p>
+</blockquote>
+<p>大多数数据库（如 MySQL）都原生支持 ID 的生成。我们把新建实体传递到数据访问框架，在事务成功完成后，实体便有了 ID 标识。</p>
+<p>一个使用 JPA 持久化的实例如下：<br>首先，定义 Entity 实体：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">@Entity</span><br><span class="line">public class Person &#123;</span><br><span class="line">    @Id</span><br><span class="line">    @GeneratedValue(strategy = GenerationType.IDENTITY)</span><br><span class="line">    private Long id;</span><br><span class="line"></span><br><span class="line">    private String name;</span><br><span class="line"></span><br><span class="line">    private Date birthAt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>实体类上添加 @Entity 注解标记为实体；@Id 标记该属性为标识；@GeneratedValue(strategy = GenerationType.IDENTITY) 说明使用数据库自增主键生成方式。<br>然后，定义 PersonRepository ：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public interface PersonRepository extends JpaRepository&lt;Person, Long&gt; &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>PersonRepository 继承于 JpaRepository，具体的实现类会在运行时由 Spring Data Jpa 自动创建，我们只需直接使用即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@Service</span><br><span class="line">public class PersonApplication &#123;</span><br><span class="line">    @Autowired</span><br><span class="line">    private PersonRepository personRepository;</span><br><span class="line"></span><br><span class="line">    public Long save(Person person)&#123;</span><br><span class="line">        this.personRepository.save(person);</span><br><span class="line">        return person.getId();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在成功调用 save(person) 后，JPA 框架负责将数据库生成的 ID 绑定到 Person 的 id 属性上，person.getId() 方法便能获取 id 信息。</p>
+<blockquote>
+<p>性能可能是这种方法的一个缺点。</p>
+</blockquote>
+<h5 id="2-1-4-使用另一个限界上下文提供的唯一标识"><a href="#2-1-4-使用另一个限界上下文提供的唯一标识" class="headerlink" title="2.1.4 使用另一个限界上下文提供的唯一标识"></a>2.1.4 使用另一个限界上下文提供的唯一标识</h5><blockquote>
+<p>通过集成上下文，可以从另一个限界上下文中获取唯一标识。但一般不会直接使用其他限界上下文的标识，而是需要将其翻译成本地限界上下文的概念。</p>
+</blockquote>
+<p>这也是比较常见的一种策略。例如，在用户成功注册后，系统自动为其生成唯一名片，此时，名片唯一标识便可以直接使用用户 ID。</p>
+<p>当用户注册成功后，User 限界上下文将发布 UserRegisteredEvent 事件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@Value</span><br><span class="line">public class UserRegisteredEvent &#123;</span><br><span class="line">    private final UserId userId;</span><br><span class="line">    private final String userName;</span><br><span class="line">    private final Date birthAt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Card 限界上下文，从 MQ 中获取 UserRegisteredEvent 事件，并将 UserId 翻译成本地的 CardId，然后基于 CardId 进行业务处理。具体如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">public class UserEventHandler &#123;</span><br><span class="line"></span><br><span class="line">    @EventListener</span><br><span class="line">    public void handle(UserRegisteredEvent event)&#123;</span><br><span class="line">        UserId userId = event.getUserId();</span><br><span class="line">        CardId cardId = new CardId(userId.getValue());</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="2-1-5-唯一标识生成时间"><a href="#2-1-5-唯一标识生成时间" class="headerlink" title="2.1.5 唯一标识生成时间"></a>2.1.5 唯一标识生成时间</h5><blockquote>
+<p>实体唯一标识的生成既可以发生在对象创建的时候，也可以发生在持久化对象的时候。</p>
+</blockquote>
+<p>标识生成时间：</p>
+<ul>
+<li><strong>及早标识</strong> 生成和赋值发生在持久化实体之前。</li>
+<li><strong>延迟标识</strong> 生成和赋值发生在持久化实体的时候。</li>
+</ul>
+<p>在某些情况下，将标识生成延迟到实例持久化会有些问题：</p>
+<ol>
+<li>事件创建时，需要知道持久化实体的 ID。</li>
+<li>如果将实体放入 Set 中，会因为没有 ID，从而导致逻辑错误。</li>
+</ol>
+<blockquote>
+<p>相比之下，及早生成实体标识是比较推荐的做法。</p>
+</blockquote>
+<h5 id="2-1-6-委派标识"><a href="#2-1-6-委派标识" class="headerlink" title="2.1.6 委派标识"></a>2.1.6 委派标识</h5><blockquote>
+<p>有些 ORM 框架，需要通过自己的方式来处理对象标识。</p>
+</blockquote>
+<p>为了解决这个问题，我们需要使用两种标识，一种为领域使用，一种为 ORM 使用。这个在 ORM 使用的标识，我们称为委派标识。</p>
+<p>委派标识和领域中的实体标识没有任何关系，委派标识只是为了迎合 ORM 而创建的。<br>对于外界来说，我们最好将委派标识隐藏起来，因为委派标识并不是领域模型的一部分，将委派标识暴露给外界可能造成持久化漏洞。</p>
+<p>首先，我们需要定义一个公共父类 IdentitiedObject，用于对委派标识进行集中管理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@MappedSuperclass</span><br><span class="line">public class IdentitiedObject &#123;</span><br><span class="line">    @Setter(AccessLevel.PRIVATE)</span><br><span class="line">    @Getter(AccessLevel.PRIVATE)</span><br><span class="line">    @Id</span><br><span class="line">    @GeneratedValue(strategy = GenerationType.IDENTITY)</span><br><span class="line">    private Long _id;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>委派标识的 setter 和 getter 都是 private 级别，禁止程序对其进行修改（JPA 框架通过反射对其进行访问）。然后，定义 IdentitiedPerson 实体类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">@Entity</span><br><span class="line">public class IdentitiedPerson extends IdentitiedObject&#123;</span><br><span class="line">    @Setter(AccessLevel.PRIVATE)</span><br><span class="line">    private PersonId id;</span><br><span class="line">    private String name;</span><br><span class="line">    private Date birthAt;</span><br><span class="line"></span><br><span class="line">    private IdentitiedPerson()&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public IdentitiedPerson(PersonId id)&#123;</span><br><span class="line">        setId(id);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>IdentitiedPerson 实体以 PersonId 作为自己的业务标识，并且只能通过构造函数对其进行赋值。这样在隐藏委派标识的同时，完成了业务建模。</p>
+<blockquote>
+<p>领域标识不需要作为数据库的主键，但大多数情况下，需要设置为唯一键。</p>
+</blockquote>
+<h5 id="2-1-7-本地标识和全局标识"><a href="#2-1-7-本地标识和全局标识" class="headerlink" title="2.1.7 本地标识和全局标识"></a>2.1.7 本地标识和全局标识</h5><blockquote>
+<p>在聚合边界内，我们可以将缩短后的标识作为实体的本地标识。而作为聚合根的实体需要全局的唯一标识。</p>
+</blockquote>
+<p>聚合内部实体，只能通过聚合根进行间接访问。因此，只需保障在聚合内部具有唯一性即可。<br>例如，聚合根 Order 拥有一个 OrderItem 的集合，对于 OrderItem 的访问必须通过 Order 聚合根，因此，OrderItem 只需保障局部唯一即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">@Value</span><br><span class="line">public class OrderItemId &#123;</span><br><span class="line">    private Integer value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Data</span><br><span class="line">@Entity</span><br><span class="line">public class OrderItem extends IdentitiedObject&#123;</span><br><span class="line">    @Setter(AccessLevel.PRIVATE)</span><br><span class="line">    private OrderItemId id;</span><br><span class="line">    private String productName;</span><br><span class="line">    private Integer price;</span><br><span class="line">    private Integer count;</span><br><span class="line"></span><br><span class="line">    private OrderItem()&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public OrderItem(OrderItemId id, String productName, Integer price, Integer count)&#123;</span><br><span class="line">        setId(id);</span><br><span class="line">        setProductName(productName);</span><br><span class="line">        setPrice(price);</span><br><span class="line">        setCount(count);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>OrderItemId 为 Integer 类型，由 Order 完成其分配。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">@Entity</span><br><span class="line">public class Order extends IdentitiedObject&#123;</span><br><span class="line">    @Setter(AccessLevel.PRIVATE)</span><br><span class="line">    private OrderId id;</span><br><span class="line"></span><br><span class="line">    @OneToMany</span><br><span class="line">    private List&lt;OrderItem&gt; items = Lists.newArrayList();</span><br><span class="line"></span><br><span class="line">    public void addItem(String productName, Integer price, Integer count)&#123;</span><br><span class="line">        OrderItemId itemId = createItemId();</span><br><span class="line">        OrderItem item = new OrderItem(itemId, productName, price, count);</span><br><span class="line">        this.items.add(item);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private OrderItemId createItemId() &#123;</span><br><span class="line">        Integer maxId = items.stream()</span><br><span class="line">                .mapToInt(item-&gt;item.getId().getValue())</span><br><span class="line">                .max()</span><br><span class="line">                .orElse(0);</span><br><span class="line">        return new OrderItemId(maxId + 1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>createItemId 方法获取现有 OrderItem 集合中最大的 id，并通过自增的方式，生成新的 id，从而保证在 Order 范围内的唯一性。相反，聚合根 Order 需要进行全局访问，因此，OrderId 需要全局唯一。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@Value</span><br><span class="line">public class OrderId &#123;</span><br><span class="line">    private final String day;</span><br><span class="line">    private final String owner;</span><br><span class="line">    private final Long number;</span><br><span class="line"></span><br><span class="line">    public OrderId(String day, String owner, Long number) &#123;</span><br><span class="line">        this.day = day;</span><br><span class="line">        this.owner = owner;</span><br><span class="line">        this.number = number;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getValue()&#123;</span><br><span class="line">        return String.format(&quot;%s-%s-%s&quot;, getDay(), getOwner(), getNumber());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String toString()&#123;</span><br><span class="line">        return getValue();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-2-实体行为"><a href="#2-2-实体行为" class="headerlink" title="2.2 实体行为"></a>2.2 实体行为</h4><blockquote>
+<p>实体专注于身份和连续性，如果将过多的职责添加到实体上，容易使实体变的臃肿。通常需要将相关行为委托给值对象和领域服务。</p>
+</blockquote>
+<h5 id="2-2-1-将行为推入值对象"><a href="#2-2-1-将行为推入值对象" class="headerlink" title="2.2.1 将行为推入值对象"></a>2.2.1 将行为推入值对象</h5><blockquote>
+<p>值对象可合并、可比较和自验证，并方便测试。这些特征使其非常适用于承接实体的行为。</p>
+</blockquote>
+<p>在一个分期付款的场景中，我们需要将总金额按照分期次数进行拆分，如果发生不能整除的情况，将剩下的金额合并到最后一笔中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Entity</span><br><span class="line">@Data</span><br><span class="line">public class Loan &#123;</span><br><span class="line">    private Money total;</span><br><span class="line"></span><br><span class="line">    public List&lt;Money&gt; split(int size)&#123;</span><br><span class="line">        return this.total.split(size);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中，核心的查分逻辑在值对象 Money 中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">public class Money implements ValueObject &#123;</span><br><span class="line">    public static final String DEFAULT_FEE_TYPE = &quot;CNY&quot;;</span><br><span class="line">    @Column(name = &quot;total_fee&quot;)</span><br><span class="line">    private Long totalFee;</span><br><span class="line">    @Column(name = &quot;fee_type&quot;)</span><br><span class="line">    private String feeType;</span><br><span class="line">    private static final BigDecimal NUM_100 = new BigDecimal(100);</span><br><span class="line"></span><br><span class="line">    private Money() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private Money(Long totalFee, String feeType) &#123;</span><br><span class="line">        Preconditions.checkArgument(totalFee != null);</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(feeType));</span><br><span class="line">        Preconditions.checkArgument(totalFee.longValue() &gt; 0);</span><br><span class="line">        this.totalFee = totalFee;</span><br><span class="line">        this.feeType = feeType;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static Money apply(Long totalFee)&#123;</span><br><span class="line">        return apply(totalFee, DEFAULT_FEE_TYPE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static Money apply(Long totalFee, String feeType)&#123;</span><br><span class="line">        return new Money(totalFee, feeType);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    private void checkInput(Money money) &#123;</span><br><span class="line">        if (money == null)&#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;input money can not be null&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        if (!this.getFeeType().equals(money.getFeeType()))&#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;must be same fee type&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public List&lt;Money&gt; split(int count)&#123;</span><br><span class="line">        if (getTotalFee() &lt; count)&#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;total fee can not lt count&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        List&lt;Money&gt; result = Lists.newArrayList();</span><br><span class="line">        Long pre = getTotalFee() / count;</span><br><span class="line">        for (int i=0; i&lt; count; i++)&#123;</span><br><span class="line">            if (i == count-1)&#123;</span><br><span class="line">                Long fee = getTotalFee() - (pre * (count - 1));</span><br><span class="line">                result.add(Money.apply(fee, getFeeType()));</span><br><span class="line">            &#125;else &#123;</span><br><span class="line">                result.add(Money.apply(pre, getFeeType()));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可见，通过将功能推到值对象，不仅避免了实体 Loan 的臃肿，而且通过值对象 Money 的封装，大大增加了重用性。</p>
+<h5 id="2-2-2-将行为推入领域服务"><a href="#2-2-2-将行为推入领域服务" class="headerlink" title="2.2.2 将行为推入领域服务"></a>2.2.2 将行为推入领域服务</h5><blockquote>
+<p>领域服务没有标识、没有状态，对逻辑进行封装。非常适合承接实体的行为。</p>
+</blockquote>
+<p>我们看一个秘密加密需求：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@Entity</span><br><span class="line">@Data</span><br><span class="line">public class User &#123;</span><br><span class="line">    private String password;</span><br><span class="line"></span><br><span class="line">    public boolean checkPassword(PasswordEncoder encoder, String pwd)&#123;</span><br><span class="line">        return encoder.matches(pwd, password);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void changePassword(PasswordEncoder encoder, String pwd)&#123;</span><br><span class="line">        setPassword(encoder.encode(pwd));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中 PasswordEncoder 为领域服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public interface PasswordEncoder &#123;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 秘密编码</span><br><span class="line">	 */</span><br><span class="line">	String encode(CharSequence rawPassword);</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 验证密码有效性</span><br><span class="line">	 * @return true if the raw password, after encoding, matches the encoded password from</span><br><span class="line">	 * storage</span><br><span class="line">	 */</span><br><span class="line">	boolean matches(CharSequence rawPassword, String encodedPassword);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过将密码加密和验证逻辑推到领域服务，不仅降低了实体 User 的臃肿，还可以使用策略模式对加密算法进行灵活替换。</p>
+<h5 id="2-2-3-重视行为命名"><a href="#2-2-3-重视行为命名" class="headerlink" title="2.2.3 重视行为命名"></a>2.2.3 重视行为命名</h5><blockquote>
+<p>实体是业务操作的承载者，行为命名代表着很强的领域概念，需要使用通用语言中的动词，应极力避免 setter 方式的命名规则。</p>
+</blockquote>
+<p>假设，一个新闻存在 <strong>上线</strong> 和 <strong>下线</strong> 两个状态。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public enum NewsStatus &#123;</span><br><span class="line">    ONLINE, // 上线</span><br><span class="line">    OFFLINE; // 下线</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>假如直接使用 setter 方法，上线和下线两个业务概念很难表达出来，从而导致概念的丢失。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@Entity</span><br><span class="line">@Data</span><br><span class="line">public class News &#123;</span><br><span class="line">    @Setter(AccessLevel.PRIVATE)</span><br><span class="line">    private NewsStatus status;</span><br><span class="line">    /**</span><br><span class="line">     * 直接的 setter 无法表达业务含义</span><br><span class="line">     * @param status</span><br><span class="line">     */</span><br><span class="line">    public void setStatus(NewsStatus status)&#123;</span><br><span class="line">        this.status = status;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>setStatus</strong> 体现的是数据操作，而非业务概念。此时，我们需要使用具有业务含义的方法命名替代 setter 方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@Entity</span><br><span class="line">@Data</span><br><span class="line">public class News &#123;</span><br><span class="line">    @Setter(AccessLevel.PRIVATE)</span><br><span class="line">    private NewsStatus status;</span><br><span class="line"></span><br><span class="line">    public void online()&#123;</span><br><span class="line">        setStatus(NewsStatus.ONLINE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void offline()&#123;</span><br><span class="line">        setStatus(NewsStatus.OFFLINE);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>与 setStatus 不同，<strong>online</strong> 和 <strong>offline</strong> 具有明确的业务含义。</p>
+<h5 id="2-2-4-发布领域事件"><a href="#2-2-4-发布领域事件" class="headerlink" title="2.2.4 发布领域事件"></a>2.2.4 发布领域事件</h5><blockquote>
+<p>在实体行为成功执行之后，常常需要将变更通知给其他模块或系统，以触发后续流程。因此，需要向外发布领域事件。</p>
+</blockquote>
+<p>发布领域事件，最大的问题是，在实体中如何获取发布事件接口 <strong>DomainEventPublisher</strong> 。常见的有以下几种模式：</p>
+<ul>
+<li>作为业务方法的参数进行传递。</li>
+<li>通过 ThreadLocal 与线程绑定。</li>
+<li>将事件暂存在实体中，在持久化完成后，获取并发布。</li>
+</ul>
+<p>首先，我们需要定义事件相关接口。</p>
+<p><strong>DomainEvent</strong>：定义领域事件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public interface DomainEvent&lt;ID, E extends Entity&lt;ID&gt;&gt; &#123;</span><br><span class="line">    E getSource();</span><br><span class="line"></span><br><span class="line">    default String getType() &#123;</span><br><span class="line">        return this.getClass().getSimpleName();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>DomainEventPublisher</strong>：用于发布领域事件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public interface DomainEventPublisher &#123;</span><br><span class="line">    &lt;ID, EVENT extends DomainEvent&gt; void publish(EVENT event);</span><br><span class="line"></span><br><span class="line">    default &lt;ID, EVENT extends DomainEvent&gt; void publishAll(List&lt;EVENT&gt; events) &#123;</span><br><span class="line">        events.forEach(this::publish);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>DomainEventSubscriber</strong>: 事件订阅器，用于筛选待处理事件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface DomainEventSubscriber&lt;E extends DomainEvent&gt; &#123;</span><br><span class="line">    boolean accept(E e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>DomainEventHandler</strong>: 用于处理领域事件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface DomainEventHandler&lt;E extends DomainEvent&gt; &#123;</span><br><span class="line">    void handle(E event);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>DomainEventHandlerRegistry</strong> : 对 DomainEventSubscriber 和 DomainEventHandler 注册。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public interface DomainEventHandlerRegistry &#123;</span><br><span class="line">    default &lt;E extends DomainEvent&gt;void register(DomainEventSubscriber&lt;E&gt; subscriber, DomainEventHandler&lt;E&gt; handler)&#123;</span><br><span class="line">        register(subscriber, new DomainEventExecutor.SyncExecutor(), handler);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    default &lt;E extends DomainEvent&gt;void register(Class&lt;E&gt; eventCls, DomainEventHandler&lt;E&gt; handler)&#123;</span><br><span class="line">        register(event -&gt; event.getClass() == eventCls, new DomainEventExecutor.SyncExecutor(), handler);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    default &lt;E extends DomainEvent&gt;void register(Class&lt;E&gt; eventCls, DomainEventExecutor executor, DomainEventHandler&lt;E&gt; handler)&#123;</span><br><span class="line">        register(event -&gt; event.getClass() == eventCls, executor, handler);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &lt;E extends DomainEvent&gt;void register(DomainEventSubscriber&lt;E&gt; subscriber, DomainEventExecutor executor, DomainEventHandler&lt;E&gt; handler);</span><br><span class="line"></span><br><span class="line">    &lt;E extends DomainEvent&gt; void unregister(DomainEventSubscriber&lt;E&gt; subscriber);</span><br><span class="line"></span><br><span class="line">    &lt;E extends DomainEvent&gt; void unregisterAll(DomainEventHandler&lt;E&gt; handler);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>DomainEventBus</strong>: 继承自 DomainEventPublisher 和 DomainEventHandlerRegistry， 提供事件发布和订阅功能。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public interface DomainEventBus extends DomainEventPublisher, DomainEventHandlerRegistry&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>DomainEventExecutor</strong>: 事件执行器，指定事件执行策略。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public interface DomainEventExecutor &#123;</span><br><span class="line">    Logger LOGGER = LoggerFactory.getLogger(DomainEventExecutor.class);</span><br><span class="line"></span><br><span class="line">    default &lt;E extends DomainEvent&gt;  void submit(DomainEventHandler&lt;E&gt; handler, E event)&#123;</span><br><span class="line">        submit(new Task&lt;&gt;(handler, event));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &lt;E extends DomainEvent&gt; void submit(Task&lt;E&gt; task);</span><br><span class="line"></span><br><span class="line">    @Value</span><br><span class="line">    class Task&lt;E extends DomainEvent&gt; implements Runnable&#123;</span><br><span class="line">        private final DomainEventHandler&lt;E&gt; handler;</span><br><span class="line">        private final E event;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void run() &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                this.handler.handle(this.event);</span><br><span class="line">            &#125;catch (Exception e)&#123;</span><br><span class="line">                LOGGER.error(&quot;failed to handle event &#123;&#125; use &#123;&#125;&quot;, this.event, this.handler, e);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class SyncExecutor implements DomainEventExecutor&#123;</span><br><span class="line">        @Override</span><br><span class="line">        public &lt;E extends DomainEvent&gt; void submit(Task&lt;E&gt; task) &#123;</span><br><span class="line">            task.run();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>作为业务方法的参数进行传递</strong> 是最简单的策略，具体如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class Account extends JpaAggregate &#123;</span><br><span class="line"></span><br><span class="line">    public void enable(DomainEventPublisher publisher)&#123;</span><br><span class="line">        AccountEnabledEvent event = new AccountEnabledEvent(this);</span><br><span class="line">        publisher.publish(event);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>这种实现方案虽然简单，但是很琐碎，每次都需要传递 DomainEventPublisher 参数，无形中提高了调用方的复杂性。</p>
+</blockquote>
+<p><strong>通过 ThreadLocal 与线程绑定</strong> 将 EventPublisher 绑定到线程上下文中，在使用时，直接通过静态方法获取并进行事件发布。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class Account extends JpaAggregate &#123;</span><br><span class="line">    public void enable()&#123;</span><br><span class="line">        AccountEnabledEvent event = new AccountEnabledEvent(this);</span><br><span class="line">        DomainEventPublisherHolder.getPubliser().publish(event);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>DomainEventPublisherHolder</strong> 实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class DomainEventPublisherHolder &#123;</span><br><span class="line">    private static final ThreadLocal&lt;DomainEventBus&gt; THREAD_LOCAL = new ThreadLocal&lt;DomainEventBus&gt;()&#123;</span><br><span class="line">        @Override</span><br><span class="line">        protected DomainEventBus initialValue() &#123;</span><br><span class="line">            return new DefaultDomainEventBus();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    public static DomainEventPublisher getPubliser()&#123;</span><br><span class="line">        return THREAD_LOCAL.get();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static DomainEventHandlerRegistry getHandlerRegistry()&#123;</span><br><span class="line">        return THREAD_LOCAL.get();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>将事件暂存在实体</strong> 是比较推荐的方法，具有很大的灵活性。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class Account extends JpaAggregate &#123;</span><br><span class="line">    public void enable()&#123;</span><br><span class="line">        AccountEnabledEvent event = new AccountEnabledEvent(this);</span><br><span class="line">        registerEvent(event);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>registerEvent 方法在 <strong>AbstractAggregate</strong> 类中，将 Event 暂存到 events 中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">@MappedSuperclass</span><br><span class="line">public abstract class AbstractAggregate&lt;ID&gt; extends AbstractEntity&lt;ID&gt; implements Aggregate&lt;ID&gt; &#123;</span><br><span class="line">    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAggregate.class);</span><br><span class="line"></span><br><span class="line">    @JsonIgnore</span><br><span class="line">    @QueryTransient</span><br><span class="line">    @Transient</span><br><span class="line">    @org.springframework.data.annotation.Transient</span><br><span class="line">    private final transient List&lt;DomainEventItem&gt; events = Lists.newArrayList();</span><br><span class="line"></span><br><span class="line">    protected void registerEvent(DomainEvent event) &#123;</span><br><span class="line">        events.add(new DomainEventItem(event));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    protected void registerEvent(Supplier&lt;DomainEvent&gt; eventSupplier) &#123;</span><br><span class="line">        this.events.add(new DomainEventItem(eventSupplier));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    @JsonIgnore</span><br><span class="line">    public List&lt;DomainEvent&gt; getEvents() &#123;</span><br><span class="line">        return Collections.unmodifiableList(events.stream()</span><br><span class="line">                .map(eventSupplier -&gt; eventSupplier.getEvent())</span><br><span class="line">                .collect(Collectors.toList()));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void cleanEvents() &#123;</span><br><span class="line">        events.clear();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    private class DomainEventItem &#123;</span><br><span class="line">        DomainEventItem(DomainEvent event) &#123;</span><br><span class="line">            Preconditions.checkArgument(event != null);</span><br><span class="line">            this.domainEvent = event;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        DomainEventItem(Supplier&lt;DomainEvent&gt; supplier) &#123;</span><br><span class="line">            Preconditions.checkArgument(supplier != null);</span><br><span class="line">            this.domainEventSupplier = supplier;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        private DomainEvent domainEvent;</span><br><span class="line">        private Supplier&lt;DomainEvent&gt; domainEventSupplier;</span><br><span class="line"></span><br><span class="line">        public DomainEvent getEvent() &#123;</span><br><span class="line">            if (domainEvent != null) &#123;</span><br><span class="line">                return domainEvent;</span><br><span class="line">            &#125;</span><br><span class="line">            DomainEvent event = this.domainEventSupplier != null ? this.domainEventSupplier.get() : null;</span><br><span class="line">            domainEvent = event;</span><br><span class="line">            return domainEvent;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>完成暂存后，在成功持久化后，进行事件发布。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 持久化实体</span><br><span class="line">this.aggregateRepository.save(a);</span><br><span class="line">if (this.eventPublisher != null)&#123;</span><br><span class="line">    // 对实体中保存的事件进行发布</span><br><span class="line">    this.eventPublisher.publishAll(a.getEvents());</span><br><span class="line">    // 清理事件</span><br><span class="line">    a.cleanEvents();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="2-2-5-变化跟踪"><a href="#2-2-5-变化跟踪" class="headerlink" title="2.2.5 变化跟踪"></a>2.2.5 变化跟踪</h5><blockquote>
+<p>跟踪变化最实用的方法是领域事件和事件存储。当命令操作执行完成后，系统发出领域事件。事件的订阅者可以接收发生在模型上的事件，在接收事件后，订阅方将事件保存在事件存储中。</p>
+</blockquote>
+<p>变化跟踪，通常与事件存储一并使用，稍后详解。</p>
+<h4 id="2-3-实体验证"><a href="#2-3-实体验证" class="headerlink" title="2.3 实体验证"></a>2.3 实体验证</h4><blockquote>
+<p>除了身份标识外，使用实体的一个重要需求是保证他们是自验证，并总是有效的。尽管实体具有生命周期，其状态不断变化，我们需要保证在整个变化过程中，实体总是有效的。</p>
+</blockquote>
+<p>验证的主要目的在于检查实体的正确性，检查对象可以是某个属性，也可以是整个对象，甚至是多个对象的组合。</p>
+<p>即便领域对象的各个属性都是合法的，也不能表示该对象作为一个整体是合法的；同样，单个对象合法也并不能保证对象组合是合法的。</p>
+<h5 id="2-3-1-属性合法性验证"><a href="#2-3-1-属性合法性验证" class="headerlink" title="2.3.1 属性合法性验证"></a>2.3.1 属性合法性验证</h5><blockquote>
+<p>可以使用自封装来验证属性。</p>
+</blockquote>
+<p>自封装性要求无论以哪种方式访问数据，即使从对象内部访问数据，都必须通过 getter 和 setter 方法。<br>一般情况下，我们可以在 setter 方法中，对属性进行合法性验证，比如是否为空、字符长度是否符合要求、邮箱格式是否正确等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">@Entity</span><br><span class="line">public class Person extends JpaAggregate &#123;</span><br><span class="line">    private String name;</span><br><span class="line">    private Date birthDay;</span><br><span class="line"></span><br><span class="line">    public Person()&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Person(String name, Date birthDay) &#123;</span><br><span class="line">        setName(name);</span><br><span class="line">        setBirthDay(birthDay);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getName() &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setName(String name) &#123;</span><br><span class="line">        // 对输入参数进行验证</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(name));</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Date getBirthDay() &#123;</span><br><span class="line">        return birthDay;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setBirthDay(Date birthDay) &#123;</span><br><span class="line">        // 对输入参数进行验证</span><br><span class="line">        Preconditions.checkArgument(birthDay != null);</span><br><span class="line">        this.birthDay = birthDay;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在构造函数中，我也仍需调用 setter 方法完成属性赋值。</p>
+</blockquote>
+<h5 id="2-3-2-验证整个对象"><a href="#2-3-2-验证整个对象" class="headerlink" title="2.3.2 验证整个对象"></a>2.3.2 验证整个对象</h5><blockquote>
+<p>要验证整个实体，我们需要访问整个对象的状态—-所有对象属性。</p>
+</blockquote>
+<p>验证整个对象，主要用于保证实体满足不变性条件。不变条件来源于明确的业务规则，往往需要获取对象的整个状态以完成验证。</p>
+<ul>
+<li><strong>延迟验证</strong> 就是一种到最后一刻才进行验证的方法。</li>
+<li>验证过程应该收集所有的验证结果，而不是在一开始遇到非法状态就抛出异常。</li>
+<li>当发现非法状态时，验证类将通知客户方或记录下验证结果以便稍后使用。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@Entity</span><br><span class="line">public class Person extends JpaAggregate &#123;</span><br><span class="line">    private String name;</span><br><span class="line">    private Date birthDay;</span><br><span class="line">    @Override</span><br><span class="line">    public void validate(ValidationHandler handler)&#123;</span><br><span class="line">        if (StringUtils.isEmpty(getName()))&#123;</span><br><span class="line">            handler.handleError(&quot;Name can not be empty&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        if (getBirthDay() == null)&#123;</span><br><span class="line">            handler.handleError(&quot;BirthDay can not be null&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中 ValidationHandler 用于收集所有的验证信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface ValidationHandler &#123;</span><br><span class="line">    void handleError(String msg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>有时候，验证逻辑比领域对象本身的变化还快，将验证逻辑嵌入在领域对象中会使领域对象承担太多的职责。此时，我们可以创建一个单独的组件来完成模型验证。在 Java 中设计单独的验证类时，我们可以将该类放在和实体同样的包中，将属性的 getter 方法生命为包级别，这样验证类便能访问这些属性了。</p>
+<p>假如，我们不想将验证逻辑全部放在 Person 实体中。可以新建 <strong>PersonValidator</strong>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public class PersonValidator implements Validator &#123;</span><br><span class="line">    private final Person person;</span><br><span class="line"></span><br><span class="line">    public PersonValidator(Person person) &#123;</span><br><span class="line">        this.person = person;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void validate(ValidationHandler handler) &#123;</span><br><span class="line">        if (StringUtils.isEmpty(this.person.getName()))&#123;</span><br><span class="line">            handler.handleError(&quot;Name can not be empty&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        if (this.person.getBirthDay() == null)&#123;</span><br><span class="line">            handler.handleError(&quot;BirthDay can not be null&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后，在 Person 中调用 PersonValidator：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@Entity</span><br><span class="line">public class Person extends JpaAggregate &#123;</span><br><span class="line">    private String name;</span><br><span class="line">    private Date birthDay;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void validate(ValidationHandler handler)&#123;</span><br><span class="line">        new PersonValidator(this).validate(handler);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样将最大限度的避免 Person 的臃肿。</p>
+<h5 id="2-3-3-验证对象组合"><a href="#2-3-3-验证对象组合" class="headerlink" title="2.3.3 验证对象组合"></a>2.3.3 验证对象组合</h5><blockquote>
+<p>相比之下，验证对象组合会复杂很多，也比较少见。最常用的方式是把这种验证过程创建成一个领域服务。</p>
+</blockquote>
+<p>领域服务，我们稍后详解。</p>
+<h4 id="2-4-关注行为，而非数据"><a href="#2-4-关注行为，而非数据" class="headerlink" title="2.4 关注行为，而非数据"></a>2.4 关注行为，而非数据</h4><blockquote>
+<p>实体应该面向行为，这意味着实体应该公开领域行为，而不是公开状态。</p>
+</blockquote>
+<p>专注于实体行为非常重要，它使得领域模型更具表现力。通过对象的封装特性，其状态只能被封装它的实例进行操作，这意味着任何修改状态的行为都属于实体。</p>
+<p>专注于实体行为，需要谨慎公开 setter 和 getter 方法。特别是 setter 方法，一旦公开将使状态更改直接暴露给用户，从而绕过领域概念直接对状态进行更新。</p>
+<p>典型的还是 News 上下线案例。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">@Entity</span><br><span class="line">@Data</span><br><span class="line">public class News &#123;</span><br><span class="line">    @Setter(AccessLevel.PRIVATE)</span><br><span class="line">    private NewsStatus status;</span><br><span class="line"></span><br><span class="line">    public void online()&#123;</span><br><span class="line">        setStatus(NewsStatus.ONLINE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void offline()&#123;</span><br><span class="line">        setStatus(NewsStatus.OFFLINE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 直接的 setter 无法表达业务含义</span><br><span class="line">     * @param status</span><br><span class="line">     */</span><br><span class="line">    private void setStatus(NewsStatus status)&#123;</span><br><span class="line">        this.status = status;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="2-5-实体创建"><a href="#2-5-实体创建" class="headerlink" title="2.5 实体创建"></a>2.5 实体创建</h4><blockquote>
+<p>当我们新建一个实体时，希望通过构造函数来初始化足够多的状态。这样，一方面有助于表明该实体的身份，另一方面可以帮助客户端更容易的查找该实体。</p>
+</blockquote>
+<h5 id="2-5-1-构造函数"><a href="#2-5-1-构造函数" class="headerlink" title="2.5.1 构造函数"></a>2.5.1 构造函数</h5><blockquote>
+<p>如果实体的不变条件要求该实体所包含的对象不能为 null，或者由其他状态计算所得，那么这些状态需要作为参数传递给构造函数。构造函数对实体变量赋值时，它把操作委派给实例变量的 setter 方法，这样便保证了实体变量的自封装性。</p>
+</blockquote>
+<p>见 Person 实例，将无参构造函数设为 private，以服务于框架；通过 public 暴露所有参数的构造函数，并调用 setter 方法对实体有效性进行验证。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">@Entity</span><br><span class="line">public class Person extends JpaAggregate &#123;</span><br><span class="line">    private String name;</span><br><span class="line">    private Date birthDay;</span><br><span class="line"></span><br><span class="line">    private Person()&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Person(String name, Date birthDay) &#123;</span><br><span class="line">        setName(name);</span><br><span class="line">        setBirthDay(birthDay);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getName() &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setName(String name) &#123;</span><br><span class="line">        // 对输入参数进行验证</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(name));</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Date getBirthDay() &#123;</span><br><span class="line">        return birthDay;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setBirthDay(Date birthDay) &#123;</span><br><span class="line">        // 对输入参数进行验证</span><br><span class="line">        Preconditions.checkArgument(birthDay != null);</span><br><span class="line">        this.birthDay = birthDay;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="2-5-2-静态方法"><a href="#2-5-2-静态方法" class="headerlink" title="2.5.2 静态方法"></a>2.5.2 静态方法</h5><blockquote>
+<p>对于使用一个实体承载多个类型的场景，我们可以使用实体上的静态方法，对不同类型进行不同构建。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">@Setter(AccessLevel.PRIVATE)</span><br><span class="line">@Entity</span><br><span class="line">public class BaseUser extends JpaAggregate &#123;</span><br><span class="line">    private UserType type;</span><br><span class="line">    private String name;</span><br><span class="line"></span><br><span class="line">    private BaseUser()&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static BaseUser createTeacher(String name)&#123;</span><br><span class="line">        BaseUser baseUser = new BaseUser();</span><br><span class="line">        baseUser.setType(UserType.TEACHER);</span><br><span class="line">        baseUser.setName(name);</span><br><span class="line">        return baseUser;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static BaseUser createStudent(String name)&#123;</span><br><span class="line">        BaseUser baseUser = new BaseUser();</span><br><span class="line">        baseUser.setType(UserType.STUDENT);</span><br><span class="line">        baseUser.setName(name);</span><br><span class="line">        return baseUser;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>相对，构造函数，静态方法 <strong>createTeacher</strong> 和 <strong>createStudent</strong> 具有更多的业务含义。</p>
+<h5 id="2-5-3-工厂"><a href="#2-5-3-工厂" class="headerlink" title="2.5.3 工厂"></a>2.5.3 工厂</h5><blockquote>
+<p>对于那些非常复杂的创建实体的情况，我们可以使用工厂模式。</p>
+</blockquote>
+<p>这个不仅限于实体，对于复杂的实体、值对象、聚合都可应用工厂。并且，此处所说的工厂，也不仅限于工厂模式，也可以使用 Builder 模式。总之，就是将复杂对象的创建与对象本身功能进行分离，从而完成对象的瘦身。</p>
+<h4 id="2-6-分布式设计"><a href="#2-6-分布式设计" class="headerlink" title="2.6 分布式设计"></a>2.6 分布式设计</h4><blockquote>
+<p>分布式系已经成为新的标准，我们需要在新标准下，思考对领域设计的影响。</p>
+</blockquote>
+<h5 id="2-6-1-不要分布单个实体"><a href="#2-6-1-不要分布单个实体" class="headerlink" title="2.6.1 不要分布单个实体"></a>2.6.1 不要分布单个实体</h5><blockquote>
+<p>强烈建议不要分布单个实体。在本质上，这意味着一个实体应该被限制成单个有界上下文内部的单个领域模型中的单个类（或一组类）。</p>
+</blockquote>
+<p>假如，我们将单实体的不同部分分布在一个分布式系统之上。为了实现实体的一致性，可能需要全局事务保障，大大增加了系统的复杂度。要加载这个实体的话，查询多个不同系统也是一种必然。分布式系统中的网络开销将会放大，从而导致严重的性能问题。</p>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/entity/entity_1.png" alt="单实体分布式部署"></p>
+<blockquote>
+<p>上图，将 OrderItem 和 ProductInfo 与 Order 进行分布式部署，在获取 Oder 时会导致大量的 RPC 调用，降低系统性能。</p>
+</blockquote>
+<p>正确的部分方案为：</p>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/entity/entity_2.png" alt="image"></p>
+<h5 id="2-6-2-可以分布多个实体"><a href="#2-6-2-可以分布多个实体" class="headerlink" title="2.6.2 可以分布多个实体"></a>2.6.2 可以分布多个实体</h5><blockquote>
+<p>对于多个实体间，进行分布式部署，可以将压力进行分散，大大增加系统性能。</p>
+</blockquote>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/entity/entity_3.png" alt="分布多个实体"></p>
+<p>这种部署方式是推荐方式。</p>
+<h3 id="3-实体建模模式"><a href="#3-实体建模模式" class="headerlink" title="3 实体建模模式"></a>3 实体建模模式</h3><blockquote>
+<p>建模模式有利于提升实体的表达性和可维护性。</p>
+</blockquote>
+<h4 id="3-1-妥善处理唯一标识"><a href="#3-1-妥善处理唯一标识" class="headerlink" title="3.1 妥善处理唯一标识"></a>3.1 妥善处理唯一标识</h4><blockquote>
+<p>唯一标识是实体的身份，在完成分配后，绝对不允许修改。</p>
+</blockquote>
+<p>对于程序生成：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">public class Book &#123;</span><br><span class="line">    private ISBN id;</span><br><span class="line"></span><br><span class="line">    private Book()&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Book(ISBN isbn)&#123;</span><br><span class="line">        this.setId(isbn);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public ISBN getId()&#123;</span><br><span class="line">        return this.id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void setId(ISBN id)&#123;</span><br><span class="line">        Preconditions.checkArgument(id != null);</span><br><span class="line">        this.id = id;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>由构造函数传入 id，并将 setter 方法设置为私有，以避免被改变。</p>
+<p>对于持久化生成：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">@MappedSuperclass</span><br><span class="line">public abstract class JpaAggregate extends AbstractAggregate&lt;Long&gt; &#123;</span><br><span class="line"></span><br><span class="line">    @Id</span><br><span class="line">    @GeneratedValue(strategy = GenerationType.IDENTITY)</span><br><span class="line">    @Setter(AccessLevel.PRIVATE)</span><br><span class="line">    @Column(name = &quot;id&quot;)</span><br><span class="line">    private Long id;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Long getId() &#123;</span><br><span class="line">        return id;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用 private 属性和 setter 方法，避免被修改。同时提供 public 的 getter 方法，用于获取生成的 id。</p>
+<h4 id="3-2-使用-Specification-进行规格建模"><a href="#3-2-使用-Specification-进行规格建模" class="headerlink" title="3.2 使用 Specification 进行规格建模"></a>3.2 使用 Specification 进行规格建模</h4><p>Specification 也称规格模式，主要针对领域模型中的描述规格进行建模。</p>
+<blockquote>
+<p>规范模式是一种软件设计模式，可用于封装定义所需对象状态的业务规则。这是一种非常强大的方法，可以减少耦合并提高可扩展性，以选择与特定条件匹配的对象子集。这些规格可以使用逻辑运算符组合，从而形成复合规范。</p>
+</blockquote>
+<p>规格 Specification 模式是将一段领域知识封装到一个单元中，称为规格。然后，在不同的场景中重用。主要有三种这样的场景：</p>
+<ul>
+<li><strong>数据检索</strong> 是从存储中获取数据，查找与规范匹配的记录。</li>
+<li><strong>内存中验证</strong> 是指检查某个对象是否符合规格描述。</li>
+<li><strong>创建新对象</strong>的场景非常罕见，我们暂且忽略。</li>
+</ul>
+<p>这很有用，因为它允许你避免域知识重复。当向用户显示数据时，相同的规格类可用于验证传入数据和从数据库中过滤数据。</p>
+<p>在了解完 Specification 的特征 后，我们需要一个框架，它提供了 Specification 相关 API，既能从存储中检索数据，也能对内存对象进行验证。</p>
+<p>在这，我们使用 Querydsl 进行构建。</p>
+<p>一个 News 实体，存在两种状态，一个是用户自己设置的 NewsStatus，用于标记当前是上线还是下线状态；一个是管理员设置的 NewsAuditStatus，用于标记当前是审核通过还是审核拒绝状态。只有在用户设置为上线同时管理员审核通过，该 News 才可显示。</p>
+<p>首先，我们先定义规则。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">public class NewsPredicates &#123;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 获取可显示规则</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    public static PredicateWrapper&lt;News&gt; display()&#123;</span><br><span class="line">        return new Display();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 可显示规则</span><br><span class="line">     */</span><br><span class="line">    static class Display extends AbstractPredicateWrapper&lt;News&gt;&#123;</span><br><span class="line"></span><br><span class="line">        protected Display() &#123;</span><br><span class="line">            super(QNews.news);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public Predicate getPredicate() &#123;</span><br><span class="line">            Predicate online = QNews.news.status.eq(NewsStatus.ONLINE);</span><br><span class="line">            Predicate passed = QNews.news.auditStatus.eq(NewsAuditStatus.PAASED);</span><br><span class="line"></span><br><span class="line">            return new BooleanBuilder()</span><br><span class="line">                    .and(online)</span><br><span class="line">                    .and(passed);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>该规则可以应用于内存对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@Entity</span><br><span class="line">@Data</span><br><span class="line">@QueryEntity</span><br><span class="line">public class News &#123;</span><br><span class="line">    @Setter(AccessLevel.PRIVATE)</span><br><span class="line">    private NewsAuditStatus auditStatus;</span><br><span class="line"></span><br><span class="line">    @Setter(AccessLevel.PRIVATE)</span><br><span class="line">    private NewsStatus status;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 判断是否是可显示的</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    public boolean isDisplay()&#123;</span><br><span class="line">        return NewsPredicates.display().accept(this);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>同时，该规则也可以用于数据检索。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public interface NewsRepository extends Repository&lt;News, Long&gt;, QuerydslPredicateExecutor&lt;News&gt; &#123;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 查找可显示的信息</span><br><span class="line">     * @param pageable</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    default Page&lt;News&gt; getDispaly(Pageable pageable)&#123;</span><br><span class="line">        return findAll(NewsPredicates.display().getPredicate(), pageable);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可显示规则全部封装于 NewsPredicates 中，如果规则发生变化，只需对 NewsPredicates 进行调整即可。</p>
+<h4 id="3-3-使用-Enum-简化状态模式"><a href="#3-3-使用-Enum-简化状态模式" class="headerlink" title="3.3 使用 Enum 简化状态模式"></a>3.3 使用 Enum 简化状态模式</h4><blockquote>
+<p>实体拥有自己的生命周期，往往会涉及状态管理。对状态建模是实体建模的重要部分。</p>
+</blockquote>
+<p>管理实体状态，状态设计模式具有很大的诱惑。</p>
+<p>比如一个简单的审核流程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">已提交--通过--&gt;审核通过</span><br><span class="line">已提交--修改--&gt;已提交</span><br><span class="line">已提交--拒绝--&gt;审核拒绝</span><br><span class="line">审核拒绝--修改--&gt;已提交</span><br></pre></td></tr></table></figure>
+<p>使用状态模式如下：</p>
+<p>首先，定义状态接口。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public interface AuditStatus &#123;</span><br><span class="line">    AuditStatus pass();</span><br><span class="line">    AuditStatus reject();</span><br><span class="line">    AuditStatus edit();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>该接口中包含所有操作。然后，定义异常类。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public class StatusNotSupportedException extends RuntimeException&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在当前状态不允许执行某些操作时，直接抛出异常，以中断流程。然后，定义各个状态类，如下：</p>
+<p><strong>SubmittedStatus</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class SubmittedStatus implements AuditStatus&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public AuditStatus pass() &#123;</span><br><span class="line">        return new PassedStatus();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public AuditStatus reject() &#123;</span><br><span class="line">        return new RejectedStatus();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public AuditStatus edit() &#123;</span><br><span class="line">        return new SubmittedStatus();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>PassedStatus</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class PassedStatus implements AuditStatus&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public AuditStatus pass() &#123;</span><br><span class="line">        throw new StatusNotSupportedException();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public AuditStatus reject() &#123;</span><br><span class="line">        throw new StatusNotSupportedException();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public AuditStatus edit() &#123;</span><br><span class="line">        throw new StatusNotSupportedException();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>RejectedStatus</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class RejectedStatus implements AuditStatus&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public AuditStatus pass() &#123;</span><br><span class="line">        throw new StatusNotSupportedException();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public AuditStatus reject() &#123;</span><br><span class="line">        throw new StatusNotSupportedException();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public AuditStatus edit() &#123;</span><br><span class="line">        return new SubmittedStatus();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>但，状态模式导致大量的模板代码，对于简单业务场景显得有些冗余。同时太多的状态类为持久化造成了不少麻烦。此时，我们可以使用 Enum 对其进行简化。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">public enum AuditStatusEnum &#123;</span><br><span class="line">    SUBMITED()&#123;</span><br><span class="line">        @Override</span><br><span class="line">        public AuditStatusEnum pass() &#123;</span><br><span class="line">            return PASSED;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public AuditStatusEnum reject() &#123;</span><br><span class="line">            return REJECTED;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public AuditStatusEnum edit() &#123;</span><br><span class="line">            return SUBMITED;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    PASSED()&#123;</span><br><span class="line"></span><br><span class="line">    &#125;,</span><br><span class="line">    REJECTED()&#123;</span><br><span class="line">        @Override</span><br><span class="line">        public AuditStatusEnum edit() &#123;</span><br><span class="line">            return SUBMITED;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    public AuditStatusEnum pass()&#123;</span><br><span class="line">        throw new StatusNotSupportedException();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public AuditStatusEnum reject()&#123;</span><br><span class="line">        throw new StatusNotSupportedException();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public AuditStatusEnum edit()&#123;</span><br><span class="line">        throw new StatusNotSupportedException();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AuditStatusEnum 与 之前的状态模式功能完全一致，但代码要紧凑的多。</p>
+<blockquote>
+<p>另外，使用显示建模也是一种解决方案。这种方式会为每个状态创建一个类，通过类型检测机制严格控制能操作的方法，但对于存储有些不大友好，在实际开发中，使用的不多。</p>
+</blockquote>
+<h4 id="3-4-使用业务方法和-DTO-替换-setter"><a href="#3-4-使用业务方法和-DTO-替换-setter" class="headerlink" title="3.4 使用业务方法和 DTO 替换 setter"></a>3.4 使用业务方法和 DTO 替换 setter</h4><blockquote>
+<p>之前提过，实体不应该绕过业务方法，直接使用 setter 对状态进行修改。</p>
+</blockquote>
+<p>如果业务方法拥有过长的参数列表，在使用上也会导致一定的混淆。最常见策略是，使用 DTO 对业务所需数据进行传递，并在业务方法中调用 getter 方法获取对于数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">@Entity</span><br><span class="line">@Data</span><br><span class="line">public class User &#123;</span><br><span class="line">    private String name;</span><br><span class="line">    private String nickName;</span><br><span class="line">    private Email email;</span><br><span class="line">    private Mobile mobile;</span><br><span class="line">    private Date birthDay;</span><br><span class="line"></span><br><span class="line">    private String password;</span><br><span class="line"></span><br><span class="line">    public boolean checkPassword(PasswordEncoder encoder, String pwd)&#123;</span><br><span class="line">        return encoder.matches(pwd, password);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void changePassword(PasswordEncoder encoder, String pwd)&#123;</span><br><span class="line">        setPassword(encoder.encode(pwd));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void update(String name, String nickName, Email email, Mobile mobile, Date birthDay)&#123;</span><br><span class="line">        setName(name);</span><br><span class="line">        setNickName(nickName);</span><br><span class="line">        setEmail(email);</span><br><span class="line">        setMobile(mobile);</span><br><span class="line">        setBirthDay(birthDay);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void update(UserDto userDto)&#123;</span><br><span class="line">        setName(userDto.getName());</span><br><span class="line">        setNickName(userDto.getNickName());</span><br><span class="line">        setEmail(userDto.getEmail());</span><br><span class="line">        setMobile(userDto.getMobile());</span><br><span class="line">        setBirthDay(userDto.getBirthDay());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3-5-使用备忘录或-DTO-处理数据显示"><a href="#3-5-使用备忘录或-DTO-处理数据显示" class="headerlink" title="3.5 使用备忘录或 DTO 处理数据显示"></a>3.5 使用备忘录或 DTO 处理数据显示</h4><blockquote>
+<p>实体存储的数据，往往需要读取出来，在 UI 中显示，或被其他系统使用。</p>
+</blockquote>
+<p>实体作为领域概念，不允许脱离领域层，而在 UI 中直接使用。此时，我们需要使用备忘录或 DTO 模式，将实体与数据解耦。</p>
+<h4 id="3-6-避免副作用方法"><a href="#3-6-避免副作用方法" class="headerlink" title="3.6 避免副作用方法"></a>3.6 避免副作用方法</h4><blockquote>
+<p>方法的副作用，是指一个方法的执行，如果在返回一个值之外还导致某些“状态”发生变化，则称该方法产生了副作用。</p>
+</blockquote>
+<p>根据副作用概念，我们可以提取出两类方法：</p>
+<ul>
+<li><strong>Query 方法</strong> 有返回值，但不改变内部状态。</li>
+<li><strong>Command 方法</strong> 没有返回值，但会改变内部状态。</li>
+</ul>
+<p>在实际开发中，需要对两者进行严格区分。</p>
+<blockquote>
+<p>在 Application 中，Command 方法需要开启写事务；Query 方法只需开启读事务即可。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">@Service</span><br><span class="line">public class NewsApplication extends AbstractApplication &#123;</span><br><span class="line">    @Autowired</span><br><span class="line">    private NewsRepository repository;</span><br><span class="line"></span><br><span class="line">    @Transactional(readOnly = false)</span><br><span class="line">    public Long createNews(String title, String content)&#123;</span><br><span class="line">        return creatorFor(this.repository)</span><br><span class="line">                .instance(()-&gt; News.create(title, content))</span><br><span class="line">                .call()</span><br><span class="line">                .getId();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Transactional(readOnly = false)</span><br><span class="line">    public void online(Long id)&#123;</span><br><span class="line">        updaterFor(this.repository)</span><br><span class="line">                .id(id)</span><br><span class="line">                .update(News::online)</span><br><span class="line">                .call();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Transactional(readOnly = false)</span><br><span class="line">    public void offline(Long id)&#123;</span><br><span class="line">        updaterFor(this.repository)</span><br><span class="line">                .id(id)</span><br><span class="line">                .update(News::offline)</span><br><span class="line">                .call();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Transactional(readOnly = false)</span><br><span class="line">    public void reject(Long id)&#123;</span><br><span class="line">        updaterFor(this.repository)</span><br><span class="line">                .id(id)</span><br><span class="line">                .update(News::reject)</span><br><span class="line">                .call();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Transactional(readOnly = false)</span><br><span class="line">    public void pass(Long id)&#123;</span><br><span class="line">        updaterFor(this.repository)</span><br><span class="line">                .id(id)</span><br><span class="line">                .update(News::pass)</span><br><span class="line">                .call();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Transactional(readOnly = true)</span><br><span class="line">    public Optional&lt;News&gt; getById(Long id)&#123;</span><br><span class="line">        return this.repository.getById(id);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Transactional(readOnly = true)</span><br><span class="line">    public Page&lt;News&gt; getDisplay(Pageable pageable)&#123;</span><br><span class="line">        return this.repository.getDispaly(pageable);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其中，有一个比较特殊的方法，创建方法，由于采用的是数据库生成主键策略，需要将生成的主键返回。</p>
+</blockquote>
+<h4 id="3-7-使用乐观锁进行并发控制"><a href="#3-7-使用乐观锁进行并发控制" class="headerlink" title="3.7 使用乐观锁进行并发控制"></a>3.7 使用乐观锁进行并发控制</h4><blockquote>
+<p>实体主要职责是维护业务不变性，当多个用户同时修改一个实体时，会将事情复杂化，从而导致业务规则的破坏。</p>
+</blockquote>
+<p>对此，需要在实体上使用乐观锁进行并发控制，保障只有一个用户更新成功，从而保护业务不变性。</p>
+<p>Jpa 框架自身便提供了对乐观锁的支持，只需添加 @Version 字段即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@Getter(AccessLevel.PUBLIC)</span><br><span class="line">@MappedSuperclass</span><br><span class="line">public abstract class AbstractEntity&lt;ID&gt; implements Entity&lt;ID&gt; &#123;</span><br><span class="line">    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEntity.class);</span><br><span class="line"></span><br><span class="line">    @Version</span><br><span class="line">    @Setter(AccessLevel.PRIVATE)</span><br><span class="line">    @Column(name = &quot;version&quot;, nullable = false)</span><br><span class="line">    private int version;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-总结"><a href="#4-总结" class="headerlink" title="4 总结"></a>4 总结</h3><ul>
+<li>实体是问题域中具有唯一身份的领域概念。</li>
+<li>与值对象不同，实体的相等性严格基于唯一标识。</li>
+<li>实体具有明确的生命周期。</li>
+<li>在实体生命周期中，需要严格遵从业务不变性条件。</li>
+<li>应该将实体定位为值对象的容器，把行为推到值对象和领域服务中，从而避免实体的臃肿。</li>
+<li>实体可以提供属性、对象、对象组等多种验证规则，从而保护业务。</li>
+<li>实体的唯一标识，可以来自领域概念、程序生成、存储生成等。</li>
+<li>规格模式是处理实体规则描述的一大利器。</li>
+<li>乐观锁的使用，将大大减少并发导致的业务错误。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/qrcode.jpg" alt="wenxinzizhu wechat" style="width: 200px; max-width: 100%;">
+    <div>扫一扫，关注微信公众号，获取最新动态</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/领域模型/" rel="tag"># 领域模型</a>
+          
+            <a href="/tags/战术模式/" rel="tag"># 战术模式</a>
+          
+            <a href="/tags/实体/" rel="tag"># 实体</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/20/ddd/tactics/value_object/" rel="next" title="战术模式--值对象">
+                <i class="fa fa-chevron-left"></i> 战术模式--值对象
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wenxinzizhu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wenxinzizhu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-理解实体"><span class="nav-text">1 理解实体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-实现实体"><span class="nav-text">2 实现实体</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-唯一标识"><span class="nav-text">2.1 唯一标识</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-1-自然键作为唯一标识"><span class="nav-text">2.1.1 自然键作为唯一标识</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-2-应用程序生成唯一标识"><span class="nav-text">2.1.2 应用程序生成唯一标识</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#自增数值"><span class="nav-text">自增数值</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#全局唯一标识符"><span class="nav-text">全局唯一标识符</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#字符串"><span class="nav-text">字符串</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-3-持久化存储生成唯一标识"><span class="nav-text">2.1.3 持久化存储生成唯一标识</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-4-使用另一个限界上下文提供的唯一标识"><span class="nav-text">2.1.4 使用另一个限界上下文提供的唯一标识</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-5-唯一标识生成时间"><span class="nav-text">2.1.5 唯一标识生成时间</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-6-委派标识"><span class="nav-text">2.1.6 委派标识</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-7-本地标识和全局标识"><span class="nav-text">2.1.7 本地标识和全局标识</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-实体行为"><span class="nav-text">2.2 实体行为</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-1-将行为推入值对象"><span class="nav-text">2.2.1 将行为推入值对象</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-2-将行为推入领域服务"><span class="nav-text">2.2.2 将行为推入领域服务</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-3-重视行为命名"><span class="nav-text">2.2.3 重视行为命名</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-4-发布领域事件"><span class="nav-text">2.2.4 发布领域事件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-5-变化跟踪"><span class="nav-text">2.2.5 变化跟踪</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-实体验证"><span class="nav-text">2.3 实体验证</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-1-属性合法性验证"><span class="nav-text">2.3.1 属性合法性验证</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-2-验证整个对象"><span class="nav-text">2.3.2 验证整个对象</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-3-验证对象组合"><span class="nav-text">2.3.3 验证对象组合</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-关注行为，而非数据"><span class="nav-text">2.4 关注行为，而非数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-实体创建"><span class="nav-text">2.5 实体创建</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-5-1-构造函数"><span class="nav-text">2.5.1 构造函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-5-2-静态方法"><span class="nav-text">2.5.2 静态方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-5-3-工厂"><span class="nav-text">2.5.3 工厂</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-分布式设计"><span class="nav-text">2.6 分布式设计</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-6-1-不要分布单个实体"><span class="nav-text">2.6.1 不要分布单个实体</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-6-2-可以分布多个实体"><span class="nav-text">2.6.2 可以分布多个实体</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-实体建模模式"><span class="nav-text">3 实体建模模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-妥善处理唯一标识"><span class="nav-text">3.1 妥善处理唯一标识</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-使用-Specification-进行规格建模"><span class="nav-text">3.2 使用 Specification 进行规格建模</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-使用-Enum-简化状态模式"><span class="nav-text">3.3 使用 Enum 简化状态模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-使用业务方法和-DTO-替换-setter"><span class="nav-text">3.4 使用业务方法和 DTO 替换 setter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-使用备忘录或-DTO-处理数据显示"><span class="nav-text">3.5 使用备忘录或 DTO 处理数据显示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-6-避免副作用方法"><span class="nav-text">3.6 避免副作用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-7-使用乐观锁进行并发控制"><span class="nav-text">3.7 使用乐观锁进行并发控制</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-总结"><span class="nav-text">4 总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wenxinzizhu</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">26.1k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
