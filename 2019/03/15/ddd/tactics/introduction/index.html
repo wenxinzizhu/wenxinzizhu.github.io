@@ -88,13 +88,11 @@
 <meta property="og:description" content="战术模式包含若干构造块模式，以便能够构建有效的领域模型。 战术模式严重依赖于领域模型和通用语言，通过技术模式将领域模型和通用语言中的概念映射到代码实现中。随着模型的进化，代码实现也会进行重构，以更好的体现模型概念。当然，从技术重构角度也会发现一些隐含领域知识（概念），这些新的发现也会对领域模型产生影响。 战术模式和通用语言一样，都工作在特定限界上下文内，其应用边界受限界上下文的保护。 1 战术模式">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/tactics/patterns-view.png">
-<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/tactics/entity-view.png">
-<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/tactics/value-object-view.png">
 <meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/tactics/agg-view.png">
 <meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/tactics/factory-view.png">
 <meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/tactics/repository-view.png">
 <meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/tactics/event-store-view.png">
-<meta property="og:updated_time" content="2019-03-20T11:31:10.215Z">
+<meta property="og:updated_time" content="2019-04-02T08:06:00.683Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="领域驱动设计--战术模式简介">
 <meta name="twitter:description" content="战术模式包含若干构造块模式，以便能够构建有效的领域模型。 战术模式严重依赖于领域模型和通用语言，通过技术模式将领域模型和通用语言中的概念映射到代码实现中。随着模型的进化，代码实现也会进行重构，以更好的体现模型概念。当然，从技术重构角度也会发现一些隐含领域知识（概念），这些新的发现也会对领域模型产生影响。 战术模式和通用语言一样，都工作在特定限界上下文内，其应用边界受限界上下文的保护。 1 战术模式">
@@ -428,14 +426,12 @@
 </blockquote>
 <p>实体的身份标识在生命周期中保持不变，但其属性会发生变化。实体以身份标识作为唯一凭证，沿着时间轴，记录了实体所有变更事件。</p>
 <p>实体的一个实例是产品，一旦产品被生成好，其唯一身份就不会发生变化，但是其描述信息、价格等可以被多次修改。</p>
-<p><img src="http://litao851025.gitee.io/books-image/ddd/tactics/entity-view.png" alt="实体"></p>
 <h5 id="1-1-2-值对象"><a href="#1-1-2-值对象" class="headerlink" title="1.1.2 值对象"></a>1.1.2 值对象</h5><blockquote>
 <p>值对象代表仅通过数据区分的领域元素和概念。用作模型中元素的描述，它不具有唯一标识。</p>
 </blockquote>
 <p>值对象不需要唯一标识，是因为它总是与另一个对象相关联，是在一个特定上下文中被解析的。通常，其生命周期会依附于它的关联对象（在这里，主要是实体对象）。</p>
 <p>值对象会当做不变对象来设计，在完成创建后，其状态就不能改变了。</p>
 <p>值对象比较好的例子就是现金，你无需关系货币的身份，只关心它的价值。如果有人用一张五美元钞票交换你的五张一美元钞票，也不会改变五美元本身。</p>
-<p><img src="http://litao851025.gitee.io/books-image/ddd/tactics/value-object-view.png" alt="值对象"></p>
 <h5 id="1-1-3-领域服务"><a href="#1-1-3-领域服务" class="headerlink" title="1.1.3 领域服务"></a>1.1.3 领域服务</h5><blockquote>
 <p>在模型中，领域服务封装了不能自然建模为值对象和实体的逻辑、流程和概念。</p>
 </blockquote>
