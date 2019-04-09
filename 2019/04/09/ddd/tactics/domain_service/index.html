@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="领域模型,战术模式,领域服务,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在建模时，有时会遇到一些业务逻辑的概念，它放在实体或值对象中都不太合适。这就是可能需要创建领域服务的一个信号。 1 理解领域服务 从概念上说，领域服务代表领域概念，它们是存在于问题域中的行为，它们产生于与领域专家的对话中，并且是领域模型的一部分。  模型中的领域服务表示一个无状态的操作，他用于实现特定于某个领域的任务。当领域中某个操作过程或转化过程不是实体或值对象的职责时，我们便应该将该操作放在一">
+<meta name="keywords" content="领域模型,战术模式,领域服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="战术模式--领域服务">
+<meta property="og:url" content="http://www.geekhalo.com/2019/04/09/ddd/tactics/domain_service/index.html">
+<meta property="og:site_name" content="极客之光">
+<meta property="og:description" content="在建模时，有时会遇到一些业务逻辑的概念，它放在实体或值对象中都不太合适。这就是可能需要创建领域服务的一个信号。 1 理解领域服务 从概念上说，领域服务代表领域概念，它们是存在于问题域中的行为，它们产生于与领域专家的对话中，并且是领域模型的一部分。  模型中的领域服务表示一个无状态的操作，他用于实现特定于某个领域的任务。当领域中某个操作过程或转化过程不是实体或值对象的职责时，我们便应该将该操作放在一">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-04-09T05:50:47.408Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="战术模式--领域服务">
+<meta name="twitter:description" content="在建模时，有时会遇到一些业务逻辑的概念，它放在实体或值对象中都不太合适。这就是可能需要创建领域服务的一个信号。 1 理解领域服务 从概念上说，领域服务代表领域概念，它们是存在于问题域中的行为，它们产生于与领域专家的对话中，并且是领域模型的一部分。  模型中的领域服务表示一个无状态的操作，他用于实现特定于某个领域的任务。当领域中某个操作过程或转化过程不是实体或值对象的职责时，我们便应该将该操作放在一">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.geekhalo.com/2019/04/09/ddd/tactics/domain_service/">
+
+
+
+
+
+  <title>战术模式--领域服务 | 极客之光</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39ab17e2f77f382076758346552f26ad";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">极客之光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">技术改变生活</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.geekhalo.com/2019/04/09/ddd/tactics/domain_service/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wenxinzizhu">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="极客之光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">战术模式--领域服务</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-09T21:30:00+08:00">
+                2019-04-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/领域驱动设计/" itemprop="url" rel="index">
+                    <span itemprop="name">领域驱动设计</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/领域驱动设计/战术模式/" itemprop="url" rel="index">
+                    <span itemprop="name">战术模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  4.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  20
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在建模时，有时会遇到一些业务逻辑的概念，它放在实体或值对象中都不太合适。这就是可能需要创建领域服务的一个信号。</p>
+<h3 id="1-理解领域服务"><a href="#1-理解领域服务" class="headerlink" title="1 理解领域服务"></a>1 理解领域服务</h3><blockquote>
+<p>从概念上说，领域服务代表领域概念，它们是存在于问题域中的行为，它们产生于与领域专家的对话中，并且是领域模型的一部分。</p>
+</blockquote>
+<p>模型中的领域服务表示一个无状态的操作，他用于实现特定于某个领域的任务。<br>当领域中某个操作过程或转化过程不是实体或值对象的职责时，我们便应该将该操作放在一个单独的元素中，即领域服务。同时务必保持该领域服务与通用语言是一致的，并且保证它是无状态的。</p>
+<p>领域服务有几个重要的特征：</p>
+<ul>
+<li>它代表领域概念。</li>
+<li>它与通用语言保存一致，其中包括命名和内部逻辑。</li>
+<li>它无状态。</li>
+<li>领域服务与聚合在同一包中。</li>
+</ul>
+<h4 id="1-1-何时使用领域服务"><a href="#1-1-何时使用领域服务" class="headerlink" title="1.1 何时使用领域服务"></a>1.1 何时使用领域服务</h4><blockquote>
+<p>如果某操作不适合放在聚合和值对象上时，最好的方式便是将其建模成领域服务。</p>
+</blockquote>
+<p>一般情况下，我们使用领域服务来组织实体、值对象并封装业务概念。领域服务适用场景如下：</p>
+<ul>
+<li>执行一个显著的业务操作过程。</li>
+<li>对领域对象进行转换。</li>
+<li>以多个领域对象作为输入，进行计算，产生一个值对象。</li>
+</ul>
+<h4 id="1-2-避免贫血领域模型"><a href="#1-2-避免贫血领域模型" class="headerlink" title="1.2 避免贫血领域模型"></a>1.2 避免贫血领域模型</h4><blockquote>
+<p>当你认同并非所有的领域行为都需要封装在实体或值对象中，并明确领域服务是有用的建模手段后，就需要当心了。不要将过多的行为放到领域服务中，这样将导致贫血领域模型。</p>
+</blockquote>
+<p>如果将过多的逻辑推入领域服务中，将导致不准确、难理解、贫血并且低概念的领域模型。显然，这样会抵消 DDD 的很多好处。</p>
+<p>领域服务是排在值对象、实体模式之后的一个选项。有时，不得已为之是个比较好的方案。</p>
+<h4 id="1-3-与应用服务的对比"><a href="#1-3-与应用服务的对比" class="headerlink" title="1.3 与应用服务的对比"></a>1.3 与应用服务的对比</h4><blockquote>
+<p>应用服务，并不会处理业务逻辑，它是领域模型直接客户，进而是领域服务的客户方。</p>
+</blockquote>
+<p>领域服务代表了存在于问题域内部的概念，他们的接口存在于领域模型中。相反，应用服务不表示领域概念，不包含业务规则，通常，他们不存在于领域模型中。</p>
+<p>应用服务存在于服务层，处理像事务、订阅、存储等基础设施问题，以执行完整的业务用例。</p>
+<blockquote>
+<p>应用服务从用户用例出发，是领域的直接用户，与领域关系密切，会有专门章节进行详解。</p>
+</blockquote>
+<h4 id="1-4-与基础设施服务的对比"><a href="#1-4-与基础设施服务的对比" class="headerlink" title="1.4 与基础设施服务的对比"></a>1.4 与基础设施服务的对比</h4><blockquote>
+<p>基础设施服务，从技术角度出发，为解决通用问题而进行的抽象。</p>
+</blockquote>
+<p>比较典型的如，邮件发送服务、短信发送服务、定时服务等。</p>
+<h3 id="2-实现领域服务"><a href="#2-实现领域服务" class="headerlink" title="2. 实现领域服务"></a>2. 实现领域服务</h3><h4 id="2-1-封装业务概念"><a href="#2-1-封装业务概念" class="headerlink" title="2.1 封装业务概念"></a>2.1 封装业务概念</h4><blockquote>
+<p>领域服务的执行一般会涉及实体或值对象，在其基础之上将行为封装成业务概念。</p>
+</blockquote>
+<p>比较常见的就是银行转账，首先银行转账具有明显的领域概念，其次，由于同时涉及两个账号，该行为放在账号聚合中不太合适。因此，可以将其建模成领域服务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class Account extends JpaAggregate &#123;</span><br><span class="line">    private Long totalAmount;</span><br><span class="line"></span><br><span class="line">    public void checkBalance(Long amount) &#123;</span><br><span class="line">        if (amount &gt; this.totalAmount)&#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;余额不足&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public void reduce(Long amount) &#123;</span><br><span class="line">        this.totalAmount = this.totalAmount - amount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void increase(Long amount) &#123;</span><br><span class="line">        this.totalAmount = this.totalAmount + amount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Account</strong> 提供余额检测、扣除和添加等基本功能。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class TransferService implements DomainService &#123;</span><br><span class="line"></span><br><span class="line">    public void transfer(Account from, Account to, Long amount)&#123;</span><br><span class="line">        from.checkBalance(amount);</span><br><span class="line">        from.reduce(amount);</span><br><span class="line">        to.increase(amount);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>TransferService</strong> 按照业务规则，指定转账流程。</p>
+<p><strong>TransferService</strong> 明确定义了一个存在于通用语言的一个领域概念。领域服务存在于领域模型中，包含重要的业务规则。</p>
+<h4 id="2-2-业务计算"><a href="#2-2-业务计算" class="headerlink" title="2.2 业务计算"></a>2.2 业务计算</h4><blockquote>
+<p>业务计算，主要以实体或值对象作为输入，通过计算，返回一个实体或值对象。</p>
+</blockquote>
+<p>常见场景如计算一个订单应用特定优惠策略后的应付金额。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class OrderItem &#123;</span><br><span class="line">    private Long price;</span><br><span class="line">    private Integer count;</span><br><span class="line"></span><br><span class="line">    public Long getTotalPrice()&#123;</span><br><span class="line">        return price * count;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>OrderItem</strong> 中包括产品单价和产品数量，<strong>getTotalPrice</strong> 通过计算获取总价。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public class Order &#123;</span><br><span class="line">    private List&lt;OrderItem&gt; items = Lists.newArrayList();</span><br><span class="line"></span><br><span class="line">    public Long getTotalPrice()&#123;</span><br><span class="line">        return this.items.stream()</span><br><span class="line">                .mapToLong(orderItem -&gt; orderItem.getTotalPrice())</span><br><span class="line">                .sum();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Order</strong> 由多个 <strong>OrderItem</strong> 组成，<strong>getTotalPrice</strong> 遍历所有的 OrderItem，计算订单总价。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public class OrderAmountCalculator &#123;</span><br><span class="line">    public Long calculate(Order order, PreferentialStrategy preferentialStrategy)&#123;</span><br><span class="line">        return preferentialStrategy.calculate(order.getTotalPrice());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>OrderAmountCalculator</strong> 以实体 <strong>Order</strong> 和领域服务 <strong>PreferentialStrategy</strong> 为输入，在订单总价基础上计算折扣价格，返回打折之后的价格。</p>
+<h4 id="2-3-规则切换"><a href="#2-3-规则切换" class="headerlink" title="2.3 规则切换"></a>2.3 规则切换</h4><blockquote>
+<p>根据业务流程，动态对规则进行切换。</p>
+</blockquote>
+<p>还是以订单的优化策略为例。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface PreferentialStrategy &#123;</span><br><span class="line">    Long calculate(Long amount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>PreferentialStrategy</strong> 为策略接口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public class FullReductionPreferentialStrategy implements PreferentialStrategy&#123;</span><br><span class="line">    private final Long fullAmount;</span><br><span class="line">    private final Long reduceAmount;</span><br><span class="line"></span><br><span class="line">    public FullReductionPreferentialStrategy(Long fullAmount, Long reduceAmount) &#123;</span><br><span class="line">        this.fullAmount = fullAmount;</span><br><span class="line">        this.reduceAmount = reduceAmount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Long calculate(Long amount) &#123;</span><br><span class="line">        if (amount &gt; fullAmount)&#123;</span><br><span class="line">            return amount - reduceAmount;</span><br><span class="line">        &#125;</span><br><span class="line">        return amount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>FullReductionPreferentialStrategy</strong> 为满减策略，当订单总金额超过特定值时，直接进行减免。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class FixedDiscountPreferentialStrategy implements PreferentialStrategy&#123;</span><br><span class="line">    private final Double descount;</span><br><span class="line"></span><br><span class="line">    public FixedDiscountPreferentialStrategy(Double descount) &#123;</span><br><span class="line">        this.descount = descount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Long calculate(Long amount) &#123;</span><br><span class="line">        return Math.round(amount * descount);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>FixedDiscountPreferentialStrategy</strong> 为固定折扣策略，在订单总金额基础上进行固定折扣。</p>
+<h4 id="2-4-基础设施（第三方接口）隔离"><a href="#2-4-基础设施（第三方接口）隔离" class="headerlink" title="2.4 基础设施（第三方接口）隔离"></a>2.4 基础设施（第三方接口）隔离</h4><blockquote>
+<p>领域概念本身属于领域模型，但具体实现依赖于基础设施。</p>
+</blockquote>
+<p>此时，我们需要将领域概念建模成领域服务，并将其置于模型层。将依赖于基础设施的具体实现类，放置于基础设施层。</p>
+<p>比较典型的例子便是密码加密，加密服务应该位于领域中，但具体的实现依赖基础设施，应该放在基础设施层。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public interface PasswordEncoder &#123;</span><br><span class="line">	String encode(CharSequence rawPassword);</span><br><span class="line">	boolean matches(CharSequence rawPassword, String encodedPassword);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>PasswordEncoder</strong> 提供密码加密和密码验证功能。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">public class BCryptPasswordEncoder implements PasswordEncoder &#123;</span><br><span class="line">	private Pattern BCRYPT_PATTERN = Pattern</span><br><span class="line">			.compile(&quot;\\A\\$2a?\\$\\d\\d\\$[./0-9A-Za-z]&#123;53&#125;&quot;);</span><br><span class="line">	private final Log logger = LogFactory.getLog(getClass());</span><br><span class="line"></span><br><span class="line">	private final int strength;</span><br><span class="line"></span><br><span class="line">	private final SecureRandom random;</span><br><span class="line"></span><br><span class="line">	public BCryptPasswordEncoder() &#123;</span><br><span class="line">		this(-1);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	public BCryptPasswordEncoder(int strength) &#123;</span><br><span class="line">		this(strength, null);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public BCryptPasswordEncoder(int strength, SecureRandom random) &#123;</span><br><span class="line">		if (strength != -1 &amp;&amp; (strength &lt; BCrypt.MIN_LOG_ROUNDS || strength &gt; BCrypt.MAX_LOG_ROUNDS)) &#123;</span><br><span class="line">			throw new IllegalArgumentException(&quot;Bad strength&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">		this.strength = strength;</span><br><span class="line">		this.random = random;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String encode(CharSequence rawPassword) &#123;</span><br><span class="line">		String salt;</span><br><span class="line">		if (strength &gt; 0) &#123;</span><br><span class="line">			if (random != null) &#123;</span><br><span class="line">				salt = BCrypt.gensalt(strength, random);</span><br><span class="line">			&#125;</span><br><span class="line">			else &#123;</span><br><span class="line">				salt = BCrypt.gensalt(strength);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		else &#123;</span><br><span class="line">			salt = BCrypt.gensalt();</span><br><span class="line">		&#125;</span><br><span class="line">		return BCrypt.hashpw(rawPassword.toString(), salt);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public boolean matches(CharSequence rawPassword, String encodedPassword) &#123;</span><br><span class="line">		if (encodedPassword == null || encodedPassword.length() == 0) &#123;</span><br><span class="line">			logger.warn(&quot;Empty encoded password&quot;);</span><br><span class="line">			return false;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		if (!BCRYPT_PATTERN.matcher(encodedPassword).matches()) &#123;</span><br><span class="line">			logger.warn(&quot;Encoded password does not look like BCrypt&quot;);</span><br><span class="line">			return false;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		return BCrypt.checkpw(rawPassword.toString(), encodedPassword);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>BCryptPasswordEncoder</strong> 提供基于 <strong>BCrypt</strong> 的实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><span class="line">public class SCryptPasswordEncoder implements PasswordEncoder &#123;</span><br><span class="line"></span><br><span class="line">	private final Log logger = LogFactory.getLog(getClass());</span><br><span class="line"></span><br><span class="line">	private final int cpuCost;</span><br><span class="line"></span><br><span class="line">	private final int memoryCost;</span><br><span class="line"></span><br><span class="line">	private final int parallelization;</span><br><span class="line"></span><br><span class="line">	private final int keyLength;</span><br><span class="line"></span><br><span class="line">	private final BytesKeyGenerator saltGenerator;</span><br><span class="line"></span><br><span class="line">	public SCryptPasswordEncoder() &#123;</span><br><span class="line">		this(16384, 8, 1, 32, 64);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public SCryptPasswordEncoder(int cpuCost, int memoryCost, int parallelization, int keyLength, int saltLength) &#123;</span><br><span class="line">		if (cpuCost &lt;= 1) &#123;</span><br><span class="line">			throw new IllegalArgumentException(&quot;Cpu cost parameter must be &gt; 1.&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">		if (memoryCost == 1 &amp;&amp; cpuCost &gt; 65536) &#123;</span><br><span class="line">			throw new IllegalArgumentException(&quot;Cpu cost parameter must be &gt; 1 and &lt; 65536.&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">		if (memoryCost &lt; 1) &#123;</span><br><span class="line">			throw new IllegalArgumentException(&quot;Memory cost must be &gt;= 1.&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">		int maxParallel = Integer.MAX_VALUE / (128 * memoryCost * 8);</span><br><span class="line">		if (parallelization &lt; 1 || parallelization &gt; maxParallel) &#123;</span><br><span class="line">			throw new IllegalArgumentException(&quot;Parallelisation parameter p must be &gt;= 1 and &lt;= &quot; + maxParallel</span><br><span class="line">					+ &quot; (based on block size r of &quot; + memoryCost + &quot;)&quot;);</span><br><span class="line">		&#125;</span><br><span class="line">		if (keyLength &lt; 1 || keyLength &gt; Integer.MAX_VALUE) &#123;</span><br><span class="line">			throw new IllegalArgumentException(&quot;Key length must be &gt;= 1 and &lt;= &quot; + Integer.MAX_VALUE);</span><br><span class="line">		&#125;</span><br><span class="line">		if (saltLength &lt; 1 || saltLength &gt; Integer.MAX_VALUE) &#123;</span><br><span class="line">			throw new IllegalArgumentException(&quot;Salt length must be &gt;= 1 and &lt;= &quot; + Integer.MAX_VALUE);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		this.cpuCost = cpuCost;</span><br><span class="line">		this.memoryCost = memoryCost;</span><br><span class="line">		this.parallelization = parallelization;</span><br><span class="line">		this.keyLength = keyLength;</span><br><span class="line">		this.saltGenerator = KeyGenerators.secureRandom(saltLength);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String encode(CharSequence rawPassword) &#123;</span><br><span class="line">		return digest(rawPassword, saltGenerator.generateKey());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public boolean matches(CharSequence rawPassword, String encodedPassword) &#123;</span><br><span class="line">		if (encodedPassword == null || encodedPassword.length() &lt; keyLength) &#123;</span><br><span class="line">			logger.warn(&quot;Empty encoded password&quot;);</span><br><span class="line">			return false;</span><br><span class="line">		&#125;</span><br><span class="line">		return decodeAndCheckMatches(rawPassword, encodedPassword);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private boolean decodeAndCheckMatches(CharSequence rawPassword, String encodedPassword) &#123;</span><br><span class="line">		String[] parts = encodedPassword.split(&quot;\\$&quot;);</span><br><span class="line"></span><br><span class="line">		if (parts.length != 4) &#123;</span><br><span class="line">			return false;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		long params = Long.parseLong(parts[1], 16);</span><br><span class="line">		byte[] salt = decodePart(parts[2]);</span><br><span class="line">		byte[] derived = decodePart(parts[3]);</span><br><span class="line"></span><br><span class="line">		int cpuCost = (int) Math.pow(2, params &gt;&gt; 16 &amp; 0xffff);</span><br><span class="line">		int memoryCost = (int) params &gt;&gt; 8 &amp; 0xff;</span><br><span class="line">		int parallelization = (int) params &amp; 0xff;</span><br><span class="line"></span><br><span class="line">		byte[] generated = SCrypt.generate(Utf8.encode(rawPassword), salt, cpuCost, memoryCost, parallelization,</span><br><span class="line">				keyLength);</span><br><span class="line"></span><br><span class="line">		if (derived.length != generated.length) &#123;</span><br><span class="line">			return false;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		int result = 0;</span><br><span class="line">		for (int i = 0; i &lt; derived.length; i++) &#123;</span><br><span class="line">			result |= derived[i] ^ generated[i];</span><br><span class="line">		&#125;</span><br><span class="line">		return result == 0;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private String digest(CharSequence rawPassword, byte[] salt) &#123;</span><br><span class="line">		byte[] derived = SCrypt.generate(Utf8.encode(rawPassword), salt, cpuCost, memoryCost, parallelization, keyLength);</span><br><span class="line"></span><br><span class="line">		String params = Long</span><br><span class="line">				.toString(((int) (Math.log(cpuCost) / Math.log(2)) &lt;&lt; 16L) | memoryCost &lt;&lt; 8 | parallelization, 16);</span><br><span class="line"></span><br><span class="line">		StringBuilder sb = new StringBuilder((salt.length + derived.length) * 2);</span><br><span class="line">		sb.append(&quot;$&quot;).append(params).append(&apos;$&apos;);</span><br><span class="line">		sb.append(encodePart(salt)).append(&apos;$&apos;);</span><br><span class="line">		sb.append(encodePart(derived));</span><br><span class="line"></span><br><span class="line">		return sb.toString();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private byte[] decodePart(String part) &#123;</span><br><span class="line">		return Base64.getDecoder().decode(Utf8.encode(part));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private String encodePart(byte[] part) &#123;</span><br><span class="line">		return Utf8.decode(Base64.getEncoder().encode(part));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>SCryptPasswordEncoder</strong> 提供基于 <strong>SCrypt</strong> 的实现。</p>
+<h4 id="2-5-模型概念转化"><a href="#2-5-模型概念转化" class="headerlink" title="2.5 模型概念转化"></a>2.5 模型概念转化</h4><blockquote>
+<p>在限界上下文集成时，经常需要对上游限界上下文中的概念进行转换，以避免概念的混淆。</p>
+</blockquote>
+<p>例如，在用户成功激活后，自动为其创建名片。</p>
+<p>在用户激活后，会从 <strong>User</strong> 限界上下文中发出 <strong>UserActivatedEvent</strong> 事件，<strong>Card</strong> 上下文监听事件，并将用户上下文内的概念转为为名片上下文中的概念。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@Value</span><br><span class="line">public class UserActivatedEvent extends AbstractDomainEvent &#123;</span><br><span class="line">    private final String name;</span><br><span class="line">    private final Long userId;</span><br><span class="line"></span><br><span class="line">    public UserActivatedEvent(String name, Long userId) &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">        this.userId = userId;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>UserActivatedEvent</strong> 是用户上下文，在用户激活后向外发布的领域事件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@Service</span><br><span class="line">public class UserEventHandlers &#123;</span><br><span class="line"></span><br><span class="line">    @EventListener</span><br><span class="line">    public void handle(UserActivatedEvent event)&#123;</span><br><span class="line">        Card card = new Card();</span><br><span class="line">        card.setUserId(event.getUserId());</span><br><span class="line">        card.setName(event.getName());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>UserEventHandlers</strong> 在收到 <strong>UserActivatedEvent</strong> 事件后，将来自用户上下文中的概念转化为自己上下文中的概念 <strong>Card</strong>。</p>
+<h4 id="2-6-在服务层中使用领域服务"><a href="#2-6-在服务层中使用领域服务" class="headerlink" title="2.6 在服务层中使用领域服务"></a>2.6 在服务层中使用领域服务</h4><blockquote>
+<p>领域服务可以在应用服务中使用，已完成特定的业务规则。</p>
+</blockquote>
+<p>最常用的场景为，应用服务从存储库中获取相关实体并将它们传递到领域服务中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class OrderApplication &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private OrderRepository orderRepository;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private OrderAmountCalculator orderAmountCalculator;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private Map&lt;String, PreferentialStrategy&gt; strategyMap;</span><br><span class="line"></span><br><span class="line">    public Long calculateOrderTotalPrice(Long orderId, String strategyName)&#123;</span><br><span class="line">        Order order = this.orderRepository.getById(orderId).orElseThrow(()-&gt;new AggregateNotFountException(String.valueOf(orderId)));</span><br><span class="line">        PreferentialStrategy strategy = this.strategyMap.get(strategyName);</span><br><span class="line">        Preconditions.checkArgument(strategy != null);</span><br><span class="line"></span><br><span class="line">        return this.orderAmountCalculator.calculate(order, strategy);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>OrderApplication</strong> 首先通过 <strong>OrderRepository</strong> 获取 Order 信息，然后获取对应的 <strong>PreferentialStrategy</strong>，最后调用 <strong>OrderAmountCalculator</strong> 完成金额计算。</p>
+<p>在服务层使用，领域服务和其他领域对象可以根据需求很容易的拼接在一起。</p>
+<p>当然，我们也可以将领域服务作为业务方法的参数进行传递。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public class UserApplication extends AbstractApplication &#123;</span><br><span class="line">    @Autowired</span><br><span class="line">    private PasswordEncoder passwordEncoder;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private UserRepository userRepository;</span><br><span class="line"></span><br><span class="line">    public void updatePassword(Long userId, String password)&#123;</span><br><span class="line">        updaterFor(this.userRepository)</span><br><span class="line">        .id(userId)</span><br><span class="line">        .update(user -&gt; user.updatePassword(password, this.passwordEncoder))</span><br><span class="line">        .call();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public boolean checkPassword(Long userId, String password)&#123;</span><br><span class="line">        return this.userRepository.getById(userId)</span><br><span class="line">                .orElseThrow(()-&gt; new AggregateNotFountException(String.valueOf(userId)))</span><br><span class="line">                .checkPassword(password, this.passwordEncoder);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>UserApplication</strong> 中的 <strong>updatePassword</strong> 和 <strong>checkPassword</strong> 在流程中都需要使用领域服务 <strong>PasswordEncoder</strong>，我们可以通过参数将 UserApplication 所保存的 PasswordEncoder 传入到业务方法中。</p>
+<h4 id="2-7-在领域层中使用领域服务"><a href="#2-7-在领域层中使用领域服务" class="headerlink" title="2.7 在领域层中使用领域服务"></a>2.7 在领域层中使用领域服务</h4><blockquote>
+<p>由于实体和领域服务拥有不同的生命周期，在实体依赖领域服务时，会变的非常棘手。</p>
+</blockquote>
+<p>有时，一个实体需要领域服务来执行操作，以避免在应用服务中的拼接。此时，我们需要解决的核心问题是，在实体中如何获取服务的引用。通常情况下，有以下几种方式。</p>
+<h5 id="2-7-1-手工链接"><a href="#2-7-1-手工链接" class="headerlink" title="2.7.1 手工链接"></a>2.7.1 <strong>手工链接</strong></h5><blockquote>
+<p>如果一个实体依赖领域服务，同时我们自己在管理对象的构建，那么最简单的方式便是将相关服务通过构造函数传递进去。</p>
+</blockquote>
+<p>还是以 PasswordEncoder 为例。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">public class User extends JpaAggregate &#123;</span><br><span class="line">    private final PasswordEncoder passwordEncoder;</span><br><span class="line">    private String password;</span><br><span class="line"></span><br><span class="line">    public User(PasswordEncoder passwordEncoder) &#123;</span><br><span class="line">        this.passwordEncoder = passwordEncoder;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void updatePassword(String pwd)&#123;</span><br><span class="line">        setPassword(passwordEncoder.encode(pwd));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public boolean checkPassword(String pwd)&#123;</span><br><span class="line">        return passwordEncoder.matches(pwd, getPassword());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果，我们完全手工维护 User 的创建，可以在构造函数中传入领域服务。</p>
+<p>当然，如果实体是通过 ORM 框架获取的，通过构造函数传递将变得比较棘手，我们可以为其添加一个 init 方法，来完成服务的注入。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">public class User extends JpaAggregate &#123;</span><br><span class="line">    private PasswordEncoder passwordEncoder;</span><br><span class="line">    private String password;</span><br><span class="line"></span><br><span class="line">    public void init(PasswordEncoder passwordEncoder)&#123;</span><br><span class="line">        this.setPasswordEncoder(passwordEncoder);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public User(PasswordEncoder passwordEncoder) &#123;</span><br><span class="line">        this.passwordEncoder = passwordEncoder;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void updatePassword(String pwd)&#123;</span><br><span class="line">        setPassword(passwordEncoder.encode(pwd));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public boolean checkPassword(String pwd)&#123;</span><br><span class="line">        return passwordEncoder.matches(pwd, getPassword());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过 ORM 框架获取 User 后，调用 init 方法设置 PasswordEncoder。</p>
+<h5 id="2-7-2-依赖注入"><a href="#2-7-2-依赖注入" class="headerlink" title="2.7.2 依赖注入"></a>2.7.2 <strong>依赖注入</strong></h5><blockquote>
+<p>如果在使用 Spring 等 IOC 框架，我们可以在从 ORM 框架中获取实体后，使用依赖注入完成领域服务的注入。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">public class User extends JpaAggregate &#123;</span><br><span class="line">    @Autowired</span><br><span class="line">    private PasswordEncoder passwordEncoder;</span><br><span class="line">    private String password;</span><br><span class="line"></span><br><span class="line">    public void updatePassword(String pwd)&#123;</span><br><span class="line">        setPassword(passwordEncoder.encode(pwd));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public boolean checkPassword(String pwd)&#123;</span><br><span class="line">        return passwordEncoder.matches(pwd, getPassword());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>User</strong> 直接使用 <strong>@Autowired</strong> 注入领域服务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public class UserApplication extends AbstractApplication &#123;</span><br><span class="line">    @Autowired</span><br><span class="line">    private AutowireCapableBeanFactory beanFactory;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private UserRepository userRepository;</span><br><span class="line"></span><br><span class="line">    public void updatePassword(Long userId, String password)&#123;</span><br><span class="line">        User user = this.userRepository.getById(userId).orElseThrow(() -&gt; new AggregateNotFountException(String.valueOf(userId)));</span><br><span class="line">        this.beanFactory.autowireBean(user);</span><br><span class="line">        user.updatePassword(password);</span><br><span class="line">        this.userRepository.save(user);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public boolean checkPassword(Long userId, String password)&#123;</span><br><span class="line">        User user = this.userRepository.getById(userId).orElseThrow(() -&gt; new AggregateNotFountException(String.valueOf(userId)));</span><br><span class="line">        this.beanFactory.autowireBean(user);</span><br><span class="line">        return user.checkPassword(password);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>UserApplication</strong> 在获取 User 对象后，首先调用 <strong>autowireBean</strong> 完成 User 对象的依赖绑定，然后在进行业务处理。</p>
+<h5 id="2-7-3-服务定位器"><a href="#2-7-3-服务定位器" class="headerlink" title="2.7.3 服务定位器"></a>2.7.3 <strong>服务定位器</strong></h5><blockquote>
+<p>有时在实体中添加字段以维持领域服务引用，会使的实体变得臃肿。此时，我们可以通过服务定位器进行领域服务的查找。</p>
+</blockquote>
+<p>一般情况下，服务定位器会提供一组静态方法，以方便的获取其他服务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">public class ServiceLocator implements ApplicationContextAware &#123;</span><br><span class="line">    private static ApplicationContext APPLICATION;</span><br><span class="line">    @Override</span><br><span class="line">    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException &#123;</span><br><span class="line">        APPLICATION = applicationContext;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static &lt;T&gt; T getService(Class&lt;T&gt; service)&#123;</span><br><span class="line">        return APPLICATION.getBean(service);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>ServiceLocator</strong> 实现 <strong>ApplicationContextAware</strong> 接口，通过 Spring 回调将 ApplicationContext 绑定到静态字段 APPLICATION 上。<strong>getService</strong> 方法直接使用 ApplicationContext 获取领域服务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">public class User extends JpaAggregate &#123;</span><br><span class="line">    private String password;</span><br><span class="line"></span><br><span class="line">    public void updatePassword(String pwd)&#123;</span><br><span class="line">        setPassword(ServiceLocator.getService(PasswordEncoder.class).encode(pwd));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public boolean checkPassword(String pwd)&#123;</span><br><span class="line">        return ServiceLocator.getService(PasswordEncoder.class).matches(pwd, getPassword());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>User</strong> 对象直接使用静态方法获取领域服务。</p>
+<blockquote>
+<p>以上模式重点解决如果将领域服务注入到实体中，而 <strong>领域事件</strong> 模式从相反方向努力，解决如何阻止注入的发生。</p>
+</blockquote>
+<h5 id="2-7-4-领域事件解耦"><a href="#2-7-4-领域事件解耦" class="headerlink" title="2.7.4 领域事件解耦"></a>2.7.4 <strong>领域事件解耦</strong></h5><blockquote>
+<p>一种完全避免将领域服务注入到实体中的模式是领域事件。</p>
+</blockquote>
+<p>当重要的操作发生时，实体可以发布一个领域事件，注册了该事件的订阅器将处理该事件。此时，领域服务驻留在消息的订阅方内，而不是驻留在实体中。</p>
+<p>比较常见的实例是用户通知，例如，在用户激活后，为用户发送一个短信通知。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">public class User extends JpaAggregate &#123;</span><br><span class="line">    private UserStatus status;</span><br><span class="line">    private String name;</span><br><span class="line">    private String password;</span><br><span class="line"></span><br><span class="line">    public void activate()&#123;</span><br><span class="line">        setStatus(UserStatus.ACTIVATED);</span><br><span class="line"></span><br><span class="line">        registerEvent(new UserActivatedEvent(getName(), getId()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先，<strong>User</strong> 在成功 activate 后，将自动注册 <strong>UserActivatedEvent</strong> 事件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">public class UserApplication extends AbstractApplication &#123;</span><br><span class="line">    @Autowired</span><br><span class="line">    private PasswordEncoder passwordEncoder;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private UserRepository userRepository;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    private DomainEventBus domainEventBus = new DefaultDomainEventBus();</span><br><span class="line"></span><br><span class="line">    @PostConstruct</span><br><span class="line">    public void init()&#123;</span><br><span class="line">        this.domainEventBus.register(UserActivatedEvent.class, event -&gt; &#123;</span><br><span class="line">            sendSMSNotice(event.getUserId(), event.getName());</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void sendSMSNotice(Long userId, String name) &#123;</span><br><span class="line">        // 发送短信通知</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void activate(Long userId)&#123;</span><br><span class="line">        updaterFor(this.userRepository)</span><br><span class="line">                .publishBy(domainEventBus)</span><br><span class="line">                .id(userId)</span><br><span class="line">                .update(user -&gt; user.activate())</span><br><span class="line">                .call();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>UserApplication</strong> 通过 Spring 的回调方法 <strong>init</strong>，订阅 UserActivatedEvent 事件，在事件触发后执行发短信逻辑。<strong>activate</strong> 方法在成功更新 User 后，将对缓存的事件进行发布。</p>
+<h3 id="3-领域服务建模模式"><a href="#3-领域服务建模模式" class="headerlink" title="3. 领域服务建模模式"></a>3. 领域服务建模模式</h3><h4 id="3-1-独立接口是否有必要"><a href="#3-1-独立接口是否有必要" class="headerlink" title="3.1 独立接口是否有必要"></a>3.1 独立接口是否有必要</h4><blockquote>
+<p>很多情况下，独立接口时没有必要的。我们只需创建一个实现类即可，其命名与领域服务相同（名称来自通用语言）。</p>
+</blockquote>
+<p>但在下面情况下，独立接口时有必要的（独立接口对解耦是有好处的）：</p>
+<ul>
+<li>存在多个实现。</li>
+<li>领域服务的实现依赖基础框架的支持。</li>
+<li>测试环节需要 mock 对象。</li>
+</ul>
+<h4 id="3-2-避免静态方法"><a href="#3-2-避免静态方法" class="headerlink" title="3.2 避免静态方法"></a>3.2 避免静态方法</h4><blockquote>
+<p>对于行为建模，很多人第一反应是使用静态方法。但，领域服务比静态方法存在更多的好处。</p>
+</blockquote>
+<p>领域服务比静态方法要好的多：</p>
+<ol>
+<li>通过多态，适配多个实现，同时可以使用模板方法模式，对结构进行优化；</li>
+<li>通过依赖注入，获取其他资源；</li>
+<li>类名往往比方法名更能表达领域概念。</li>
+</ol>
+<blockquote>
+<p>从表现力角度出发，类的表现力大于方法，方法的表现力大于代码。</p>
+</blockquote>
+<h4 id="3-3-优先使用领域事件进行解耦"><a href="#3-3-优先使用领域事件进行解耦" class="headerlink" title="3.3 优先使用领域事件进行解耦"></a>3.3 优先使用领域事件进行解耦</h4><p>领域事件是最优雅的解耦方案，基本上没有之一。我们将在领域事件中进行详解。</p>
+<h4 id="3-4-策略模式"><a href="#3-4-策略模式" class="headerlink" title="3.4 策略模式"></a>3.4 策略模式</h4><blockquote>
+<p>当领域服务存在多个实现时，天然形成了策略模式。</p>
+</blockquote>
+<p>当领域服务存在多个实现时，可以根据上下文信息，动态选择具体的实现，以增加系统的灵活性。</p>
+<p>详见 PreferentialStrategy 实例。</p>
+<h3 id="4-小结"><a href="#4-小结" class="headerlink" title="4. 小结"></a>4. 小结</h3><ul>
+<li>有时，行为不属于实体或值对象，但它是一个重要的领域概念，这就暗示我们需要使用领域服务模式。</li>
+<li>领域服务代表领域概念，它是对通用语言的一种建模。</li>
+<li>领域服务主要使用实体或值对象组成无状态的操作。</li>
+<li>领域服务位于领域模型中，对于依赖基础设施的领域服务，其接口定义位于领域模型中。</li>
+<li>过多的领域服务会导致贫血模型，使之与问题域无法很好的配合。</li>
+<li>过少的领域服务会导致将不正确的行为添加到实体或值对象上，造成概念的混淆。</li>
+<li>当实体依赖领域服务时，可以使用手工注入、依赖注入和领域事件等多种方式进行处理。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/qrcode.jpg" alt="wenxinzizhu wechat" style="width: 200px; max-width: 100%;">
+    <div>扫一扫，关注微信公众号，获取最新动态</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/领域模型/" rel="tag"># 领域模型</a>
+          
+            <a href="/tags/战术模式/" rel="tag"># 战术模式</a>
+          
+            <a href="/tags/领域服务/" rel="tag"># 领域服务</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/01/ddd/tactics/entity/" rel="next" title="战术模式--实体">
+                <i class="fa fa-chevron-left"></i> 战术模式--实体
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wenxinzizhu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wenxinzizhu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-理解领域服务"><span class="nav-text">1 理解领域服务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-何时使用领域服务"><span class="nav-text">1.1 何时使用领域服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-避免贫血领域模型"><span class="nav-text">1.2 避免贫血领域模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-与应用服务的对比"><span class="nav-text">1.3 与应用服务的对比</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-与基础设施服务的对比"><span class="nav-text">1.4 与基础设施服务的对比</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-实现领域服务"><span class="nav-text">2. 实现领域服务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-封装业务概念"><span class="nav-text">2.1 封装业务概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-业务计算"><span class="nav-text">2.2 业务计算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-规则切换"><span class="nav-text">2.3 规则切换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-基础设施（第三方接口）隔离"><span class="nav-text">2.4 基础设施（第三方接口）隔离</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-模型概念转化"><span class="nav-text">2.5 模型概念转化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-在服务层中使用领域服务"><span class="nav-text">2.6 在服务层中使用领域服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-7-在领域层中使用领域服务"><span class="nav-text">2.7 在领域层中使用领域服务</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-7-1-手工链接"><span class="nav-text">2.7.1 手工链接</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-7-2-依赖注入"><span class="nav-text">2.7.2 依赖注入</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-7-3-服务定位器"><span class="nav-text">2.7.3 服务定位器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-7-4-领域事件解耦"><span class="nav-text">2.7.4 领域事件解耦</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-领域服务建模模式"><span class="nav-text">3. 领域服务建模模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-独立接口是否有必要"><span class="nav-text">3.1 独立接口是否有必要</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-避免静态方法"><span class="nav-text">3.2 避免静态方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-优先使用领域事件进行解耦"><span class="nav-text">3.3 优先使用领域事件进行解耦</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-策略模式"><span class="nav-text">3.4 策略模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-小结"><span class="nav-text">4. 小结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wenxinzizhu</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">30.7k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
