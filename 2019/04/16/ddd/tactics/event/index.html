@@ -102,7 +102,7 @@
 <meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/sync_context_async.png">
 <meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/inner_outer.png">
 <meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/spring_event_dispatcher.png">
-<meta property="og:updated_time" content="2019-04-16T09:52:40.584Z">
+<meta property="og:updated_time" content="2019-04-16T12:16:42.040Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="战术模式--领域事件">
 <meta name="twitter:description" content="使用领域事件来捕获发生在领域中的一些事情。 领域驱动实践者发现他们可以通过了解更多发生在问题域中的事件，来更好的理解问题域。这些事件，就是领域事件，主要是与领域专家一起进行知识提炼环节中获得。 领域事件，可以用于一个限界上下文内的领域模型，也可以使用消息队列在限界上下文间进行异步通信。 1 理解领域事件 领域事件是领域专家所关心的发生在领域中的一些事件。  将领域中所发生的活动建模成一系列离散事件">
@@ -504,7 +504,45 @@
 <p>为了统一，我们需要定义了一套接口和实现类，以基于观察者模式，完成事件的发布。</p>
 </blockquote>
 <p><img src="http://litao851025.gitee.io/books-image/ddd/event/publisher_subscriber_class.png" alt="发布领域事件"></p>
-<p>涉及接口和实现类如下：<br>接口或类 | 含义<br>—|—<br>DomainEventPublisher | 用于发布领域事件<br>DomainEventHandlerRegistry | 用于注册 DomainEventHandler<br>DomainEventBus | 扩展自 DomainEventPublisher 和 DomainEventHandlerRegistry 用于发布和管理领域事件处理器<br>DefaultDomainEventBus | DomainEventBus 默认实现<br>DomainEventHandler | 用于处理领域事件<br>DomainEventSubscriber | 用于判断是否接受领域事件<br>DomainEventExecutor | 用于执行领域事件处理器</p>
+<p>涉及接口和实现类如下：</p>
+<table>
+<thead>
+<tr>
+<th>接口或类</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DomainEventPublisher</td>
+<td>用于发布领域事件</td>
+</tr>
+<tr>
+<td>DomainEventHandlerRegistry</td>
+<td>用于注册 DomainEventHandler</td>
+</tr>
+<tr>
+<td>DomainEventBus</td>
+<td>扩展自 DomainEventPublisher 和 DomainEventHandlerRegistry 用于发布和管理领域事件处理器</td>
+</tr>
+<tr>
+<td>DefaultDomainEventBus</td>
+<td>DomainEventBus 默认实现</td>
+</tr>
+<tr>
+<td>DomainEventHandler</td>
+<td>用于处理领域事件</td>
+</tr>
+<tr>
+<td>DomainEventSubscriber</td>
+<td>用于判断是否接受领域事件</td>
+</tr>
+<tr>
+<td>DomainEventExecutor</td>
+<td>用于执行领域事件处理器</td>
+</tr>
+</tbody>
+</table>
 <p>使用实例如 <strong>DomainEventBusTest</strong> 所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">public class DomainEventBusTest &#123;</span><br><span class="line">    private DomainEventBus domainEventBus;</span><br><span class="line"></span><br><span class="line">    @Before</span><br><span class="line">    public void setUp() throws Exception &#123;</span><br><span class="line">        this.domainEventBus = new DefaultDomainEventBus();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @After</span><br><span class="line">    public void tearDown() throws Exception &#123;</span><br><span class="line">        this.domainEventBus = null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void publishTest()&#123;</span><br><span class="line">        // 创建事件处理器</span><br><span class="line">        TestEventHandler eventHandler = new TestEventHandler();</span><br><span class="line">        // 注册事件处理器</span><br><span class="line">        this.domainEventBus.register(TestEvent.class, eventHandler);</span><br><span class="line"></span><br><span class="line">        // 发布事件</span><br><span class="line">        this.domainEventBus.publish(new TestEvent(&quot;123&quot;));</span><br><span class="line"></span><br><span class="line">        // 检测事件处理器是够运行</span><br><span class="line">        Assert.assertEquals(&quot;123&quot;, eventHandler.data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Value</span><br><span class="line">    class TestEvent extends AbstractDomainEvent&#123;</span><br><span class="line">        private String data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class TestEventHandler implements DomainEventHandler&lt;TestEvent&gt;&#123;</span><br><span class="line">        private String data;</span><br><span class="line">        @Override</span><br><span class="line">        public void handle(TestEvent event) &#123;</span><br><span class="line">            this.data = event.getData();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <blockquote>
 <p>在构建完发布订阅结构后，需要将其与领域模型进行关联。领域模型如何获取 Publisher，事件处理器如何进行订阅。</p>
