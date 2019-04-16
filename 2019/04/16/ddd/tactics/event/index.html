@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="领域模型,战术模式,领域事件,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="使用领域事件来捕获发生在领域中的一些事情。 领域驱动实践者发现他们可以通过了解更多发生在问题域中的事件，来更好的理解问题域。这些事件，就是领域事件，主要是与领域专家一起进行知识提炼环节中获得。 领域事件，可以用于一个限界上下文内的领域模型，也可以使用消息队列在限界上下文间进行异步通信。 1 理解领域事件 领域事件是领域专家所关心的发生在领域中的一些事件。  将领域中所发生的活动建模成一系列离散事件">
+<meta name="keywords" content="领域模型,战术模式,领域事件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="战术模式--领域事件">
+<meta property="og:url" content="http://www.geekhalo.com/2019/04/16/ddd/tactics/event/index.html">
+<meta property="og:site_name" content="极客之光">
+<meta property="og:description" content="使用领域事件来捕获发生在领域中的一些事情。 领域驱动实践者发现他们可以通过了解更多发生在问题域中的事件，来更好的理解问题域。这些事件，就是领域事件，主要是与领域专家一起进行知识提炼环节中获得。 领域事件，可以用于一个限界上下文内的领域模型，也可以使用消息队列在限界上下文间进行异步通信。 1 理解领域事件 领域事件是领域专家所关心的发生在领域中的一些事件。  将领域中所发生的活动建模成一系列离散事件">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/event_view.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/common_event.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/publisher_subscriber_class.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/event_thread_local.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/event_entiry_cache.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/event_sync_1.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/sync_agg.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/sync_action_1.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/sync_action.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/event_store.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/sync_context_1.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/sync_context_sync.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/sync_context_async.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/inner_outer.png">
+<meta property="og:image" content="http://litao851025.gitee.io/books-image/ddd/event/spring_event_dispatcher.png">
+<meta property="og:updated_time" content="2019-04-16T09:52:40.584Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="战术模式--领域事件">
+<meta name="twitter:description" content="使用领域事件来捕获发生在领域中的一些事情。 领域驱动实践者发现他们可以通过了解更多发生在问题域中的事件，来更好的理解问题域。这些事件，就是领域事件，主要是与领域专家一起进行知识提炼环节中获得。 领域事件，可以用于一个限界上下文内的领域模型，也可以使用消息队列在限界上下文间进行异步通信。 1 理解领域事件 领域事件是领域专家所关心的发生在领域中的一些事件。  将领域中所发生的活动建模成一系列离散事件">
+<meta name="twitter:image" content="http://litao851025.gitee.io/books-image/ddd/event/event_view.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.geekhalo.com/2019/04/16/ddd/tactics/event/">
+
+
+
+
+
+  <title>战术模式--领域事件 | 极客之光</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39ab17e2f77f382076758346552f26ad";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">极客之光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">技术改变生活</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.geekhalo.com/2019/04/16/ddd/tactics/event/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wenxinzizhu">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="极客之光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">战术模式--领域事件</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-16T21:30:00+08:00">
+                2019-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/领域驱动设计/" itemprop="url" rel="index">
+                    <span itemprop="name">领域驱动设计</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/领域驱动设计/战术模式/" itemprop="url" rel="index">
+                    <span itemprop="name">战术模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  5.5k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  21
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>使用领域事件来捕获发生在领域中的一些事情。</p>
+<p>领域驱动实践者发现他们可以通过了解更多发生在问题域中的事件，来更好的理解问题域。这些事件，就是领域事件，主要是与领域专家一起进行知识提炼环节中获得。</p>
+<p>领域事件，可以用于一个限界上下文内的领域模型，也可以使用消息队列在限界上下文间进行异步通信。</p>
+<h3 id="1-理解领域事件"><a href="#1-理解领域事件" class="headerlink" title="1 理解领域事件"></a>1 理解领域事件</h3><blockquote>
+<p>领域事件是领域专家所关心的发生在领域中的一些事件。</p>
+</blockquote>
+<p>将领域中所发生的活动建模成一系列离散事件。每个事件都用领域对象表示。领域事件是领域模型的组成部分，表示领域中所发生的事情。</p>
+<p>领域事件的主要用途：</p>
+<ul>
+<li>保证聚合间的数据一致性</li>
+<li>替换批量处理</li>
+<li>实现事件源模式</li>
+<li>进行限界上下文集成</li>
+</ul>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/event/event_view.png" alt="事件主要用途"></p>
+<h3 id="2-实现领域事件"><a href="#2-实现领域事件" class="headerlink" title="2 实现领域事件"></a>2 实现领域事件</h3><blockquote>
+<p>领域事件表示已经发生的某种事实，该事实在发生后便不会改变。因此，领域事件通常建模成值对象。</p>
+</blockquote>
+<blockquote>
+<p>但，这也有特殊的情况，为了迎合序列化和反序列化框架需求，在建模时，经常会进行一定的妥协。</p>
+</blockquote>
+<h4 id="2-1-创建领域事件"><a href="#2-1-创建领域事件" class="headerlink" title="2.1 创建领域事件"></a>2.1 创建领域事件</h4><h5 id="2-1-1-事件命名"><a href="#2-1-1-事件命名" class="headerlink" title="2.1.1 事件命名"></a>2.1.1 <strong>事件命名</strong></h5><blockquote>
+<p>在建模领域事件时，我们应该根据限界上下文中的通用语言来命名事件。</p>
+</blockquote>
+<p>如果事件由聚合上的命令操作产生，通常根据该操作方法的名字来命名事件。事件名字表明聚合上的命令方法在执行成功后的事实。即事件命名需要反映过去发生过的事情。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public class AccountEnabledEvent extends AbstractAggregateEvent&lt;Long, Account&gt; &#123;</span><br><span class="line">    public AccountEnabledEvent(Account source) &#123;</span><br><span class="line">        super(source);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="2-1-2-事件属性"><a href="#2-1-2-事件属性" class="headerlink" title="2.1.2 事件属性"></a>2.1.2 <strong>事件属性</strong></h5><blockquote>
+<p>事件的属性主要用于驱动后续业务流程。当然，也会拥有一些通用属性。</p>
+</blockquote>
+<p>事件具有一些通用属性，如：</p>
+<ul>
+<li>唯一标识</li>
+<li>occurredOn 发生时间</li>
+<li>type 事件类型</li>
+<li>source 事件发生源（只针对由聚合产生的事件）</li>
+</ul>
+<p>通用属性可以使用事件接口来规范。</p>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/event/common_event.png" alt="事件通用属性"></p>
+<table>
+<thead>
+<tr>
+<th>接口或类</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DomainEvent</td>
+<td>通用领域事件接口</td>
+</tr>
+<tr>
+<td>AggregateEvent</td>
+<td>由聚合发布的通用领域事件接口</td>
+</tr>
+<tr>
+<td>AbstractDomainEvent</td>
+<td>DomainEvent 实现类，维护 id 和 创建时间</td>
+</tr>
+<tr>
+<td>AbstractAggregateEvent</td>
+<td>AggregateEvent 实现类，继承子 AbstractDomainEvent，并添加 source 属性</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>但，事件最主要的还是业务属性。我们需要考虑，是谁导致事件的发生，这可能涉及产生事件的聚合或其他参与该操作的聚合，也可能是其他任何类型的操作数据。</p>
+</blockquote>
+<h5 id="2-1-3-事件方法"><a href="#2-1-3-事件方法" class="headerlink" title="2.1.3 事件方法"></a>2.1.3 <strong>事件方法</strong></h5><blockquote>
+<p>事件是事实的描述，本身不会有太多的业务操作。</p>
+</blockquote>
+<p>领域事件通常被设计为不变对象，事件所携带的数据已经反映出该事件的来源。事件构造函数完成状态初始化，同时提供属性的 getter 方法。</p>
+<h5 id="2-1-4-事件唯一标识"><a href="#2-1-4-事件唯一标识" class="headerlink" title="2.1.4 事件唯一标识"></a>2.1.4 <strong>事件唯一标识</strong></h5><blockquote>
+<p>这里需要注意的是事件唯一标识，通常情况下，事件是不可变的，那为什么会涉及唯一标识的概念呢？</p>
+</blockquote>
+<p>对于从聚合中发布出来的领域事件，使用事件的名称、产生事件的标识、事件发生的时间等足以对不同的事件进行区分。但，这样会增加事件比较的复杂性。</p>
+<p>对于由调用方发布的事件，我们将领域事件建模成聚合，可以直接使用聚合的唯一标识作为事件的标识。</p>
+<p>事件唯一标识的引入，会大大减少事件比较的复杂性。但，其最大的意义在于限界上下文的集成。</p>
+<p>当我们需要将领域事件发布到外部的限界上下文时，唯一标识就是一种必然。为了保证事件投递的幂等性，在发送端，我们可能会进行多次发送尝试，直至明确发送成功为止；而在接收端，当接收到事件后，需要对事件进行重复性检测，以保障事件处理的幂等性。此时，事件的唯一标识便可以作为事件去重的依据。</p>
+<blockquote>
+<p>事件唯一标识，本身对领域建模影响不大，但对技术处理好处巨大。因此，将它作为通用属性进行管理。</p>
+</blockquote>
+<h4 id="2-2-发布领域事件"><a href="#2-2-发布领域事件" class="headerlink" title="2.2 发布领域事件"></a>2.2 发布领域事件</h4><blockquote>
+<p>我们如何避免领域事件与处理者间的耦合呢？</p>
+</blockquote>
+<p>一种简单高效的方式便是使用观察者模式，这种模式可以在领域事件和外部组件间进行解耦。</p>
+<h5 id="2-2-1-发布订阅模型"><a href="#2-2-1-发布订阅模型" class="headerlink" title="2.2.1 发布订阅模型"></a>2.2.1 <strong>发布订阅模型</strong></h5><blockquote>
+<p>为了统一，我们需要定义了一套接口和实现类，以基于观察者模式，完成事件的发布。</p>
+</blockquote>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/event/publisher_subscriber_class.png" alt="发布领域事件"></p>
+<p>涉及接口和实现类如下：<br>接口或类 | 含义<br>—|—<br>DomainEventPublisher | 用于发布领域事件<br>DomainEventHandlerRegistry | 用于注册 DomainEventHandler<br>DomainEventBus | 扩展自 DomainEventPublisher 和 DomainEventHandlerRegistry 用于发布和管理领域事件处理器<br>DefaultDomainEventBus | DomainEventBus 默认实现<br>DomainEventHandler | 用于处理领域事件<br>DomainEventSubscriber | 用于判断是否接受领域事件<br>DomainEventExecutor | 用于执行领域事件处理器</p>
+<p>使用实例如 <strong>DomainEventBusTest</strong> 所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">public class DomainEventBusTest &#123;</span><br><span class="line">    private DomainEventBus domainEventBus;</span><br><span class="line"></span><br><span class="line">    @Before</span><br><span class="line">    public void setUp() throws Exception &#123;</span><br><span class="line">        this.domainEventBus = new DefaultDomainEventBus();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @After</span><br><span class="line">    public void tearDown() throws Exception &#123;</span><br><span class="line">        this.domainEventBus = null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void publishTest()&#123;</span><br><span class="line">        // 创建事件处理器</span><br><span class="line">        TestEventHandler eventHandler = new TestEventHandler();</span><br><span class="line">        // 注册事件处理器</span><br><span class="line">        this.domainEventBus.register(TestEvent.class, eventHandler);</span><br><span class="line"></span><br><span class="line">        // 发布事件</span><br><span class="line">        this.domainEventBus.publish(new TestEvent(&quot;123&quot;));</span><br><span class="line"></span><br><span class="line">        // 检测事件处理器是够运行</span><br><span class="line">        Assert.assertEquals(&quot;123&quot;, eventHandler.data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Value</span><br><span class="line">    class TestEvent extends AbstractDomainEvent&#123;</span><br><span class="line">        private String data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class TestEventHandler implements DomainEventHandler&lt;TestEvent&gt;&#123;</span><br><span class="line">        private String data;</span><br><span class="line">        @Override</span><br><span class="line">        public void handle(TestEvent event) &#123;</span><br><span class="line">            this.data = event.getData();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>在构建完发布订阅结构后，需要将其与领域模型进行关联。领域模型如何获取 Publisher，事件处理器如何进行订阅。</p>
+</blockquote>
+<h5 id="2-2-2-基于-ThreadLocal-的事件发布"><a href="#2-2-2-基于-ThreadLocal-的事件发布" class="headerlink" title="2.2.2 基于 ThreadLocal 的事件发布"></a>2.2.2 <strong>基于 ThreadLocal 的事件发布</strong></h5><blockquote>
+<p>比较常用的方案便是将 DomainEventBus 绑定到线程上下文。这样，只要是同一调用线程都可以方便的获取 DomainEventBus 对象。</p>
+</blockquote>
+<p>具体的交互如下：<br><img src="http://litao851025.gitee.io/books-image/ddd/event/event_thread_local.png" alt="基于 ThreadLocal 的事件发布流程"></p>
+<p><strong>DomainEventBusHolder</strong> 用于管理 DomainEventBus。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public class DomainEventBusHolder &#123;</span><br><span class="line">    private static final ThreadLocal&lt;DomainEventBus&gt; THREAD_LOCAL = new ThreadLocal&lt;DomainEventBus&gt;()&#123;</span><br><span class="line">        @Override</span><br><span class="line">        protected DomainEventBus initialValue() &#123;</span><br><span class="line">            return new DefaultDomainEventBus();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    public static DomainEventPublisher getPubliser()&#123;</span><br><span class="line">        return THREAD_LOCAL.get();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static DomainEventHandlerRegistry getHandlerRegistry()&#123;</span><br><span class="line">        return THREAD_LOCAL.get();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void clean()&#123;</span><br><span class="line">        THREAD_LOCAL.remove();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>Account</strong> 的 enable 直接使用 DomainEventBusHolder 进行发布。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class Account extends JpaAggregate &#123;</span><br><span class="line"></span><br><span class="line">    public void enable()&#123;</span><br><span class="line">        AccountEnabledEvent event = new AccountEnabledEvent(this);</span><br><span class="line">        DomainEventBusHolder.getPubliser().publish(event);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class AccountEnabledEvent extends AbstractAggregateEvent&lt;Long, Account&gt; &#123;</span><br><span class="line">    public AccountEnabledEvent(Account source) &#123;</span><br><span class="line">        super(source);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>AccountApplication</strong> 完成订阅器注册以及业务方法调用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">public class AccountApplication extends AbstractApplication &#123;</span><br><span class="line">    private static final Logger LOGGER = LoggerFactory.getLogger(AccountApplication.class);</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private AccountRepository repository;</span><br><span class="line"></span><br><span class="line">    public void enable(Long id)&#123;</span><br><span class="line">        // 清理之前绑定的 Handler</span><br><span class="line">        DomainEventBusHolder.clean();</span><br><span class="line"></span><br><span class="line">        // 注册 EventHandler</span><br><span class="line">        AccountEnableEventHandler enableEventHandler = new AccountEnableEventHandler();</span><br><span class="line">        DomainEventBusHolder.getHandlerRegistry().register(AccountEnabledEvent.class, enableEventHandler);</span><br><span class="line"></span><br><span class="line">        Optional&lt;Account&gt; accountOptional = repository.getById(id);</span><br><span class="line">        if (accountOptional.isPresent()) &#123;</span><br><span class="line">            Account account = accountOptional.get();</span><br><span class="line">            // enable 使用 DomainEventBusHolder 直接发布事件</span><br><span class="line">            account.enable();</span><br><span class="line">            repository.save(account);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    class AccountEnableEventHandler implements DomainEventHandler&lt;AccountEnabledEvent&gt;&#123;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void handle(AccountEnabledEvent event) &#123;</span><br><span class="line">            LOGGER.info(&quot;handle enable event&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="2-2-3-基于实体缓存的事件发布"><a href="#2-2-3-基于实体缓存的事件发布" class="headerlink" title="2.2.3 基于实体缓存的事件发布"></a>2.2.3 <strong>基于实体缓存的事件发布</strong></h5><blockquote>
+<p>先将事件缓存在实体中，在实体状态成功持久化到存储后，再进行事件发布。</p>
+</blockquote>
+<p>具体交互如下：<br><img src="http://litao851025.gitee.io/books-image/ddd/event/event_entiry_cache.png" alt="基于实体缓存的事件发布"></p>
+<p>实例代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class Account extends JpaAggregate &#123;</span><br><span class="line"></span><br><span class="line">    public void enable()&#123;</span><br><span class="line">        AccountEnabledEvent event = new AccountEnabledEvent(this);</span><br><span class="line">        registerEvent(event);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>Account</strong> 的 <strong>enable</strong> 方法，调用 <strong>registerEvent</strong> 对事件进行注册。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">@MappedSuperclass</span><br><span class="line">public abstract class AbstractAggregate&lt;ID&gt; extends AbstractEntity&lt;ID&gt; implements Aggregate&lt;ID&gt; &#123;</span><br><span class="line">    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAggregate.class);</span><br><span class="line"></span><br><span class="line">    @JsonIgnore</span><br><span class="line">    @QueryTransient</span><br><span class="line">    @Transient</span><br><span class="line">    @org.springframework.data.annotation.Transient</span><br><span class="line">    private final transient List&lt;DomainEventItem&gt; events = Lists.newArrayList();</span><br><span class="line"></span><br><span class="line">    protected void registerEvent(DomainEvent event) &#123;</span><br><span class="line">        events.add(new DomainEventItem(event));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    protected void registerEvent(Supplier&lt;DomainEvent&gt; eventSupplier) &#123;</span><br><span class="line">        this.events.add(new DomainEventItem(eventSupplier));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    @JsonIgnore</span><br><span class="line">    public List&lt;DomainEvent&gt; getEvents() &#123;</span><br><span class="line">        return Collections.unmodifiableList(events.stream()</span><br><span class="line">                .map(eventSupplier -&gt; eventSupplier.getEvent())</span><br><span class="line">                .collect(Collectors.toList()));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void cleanEvents() &#123;</span><br><span class="line">        events.clear();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    private class DomainEventItem &#123;</span><br><span class="line">        DomainEventItem(DomainEvent event) &#123;</span><br><span class="line">            Preconditions.checkArgument(event != null);</span><br><span class="line">            this.domainEvent = event;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        DomainEventItem(Supplier&lt;DomainEvent&gt; supplier) &#123;</span><br><span class="line">            Preconditions.checkArgument(supplier != null);</span><br><span class="line">            this.domainEventSupplier = supplier;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        private DomainEvent domainEvent;</span><br><span class="line">        private Supplier&lt;DomainEvent&gt; domainEventSupplier;</span><br><span class="line"></span><br><span class="line">        public DomainEvent getEvent() &#123;</span><br><span class="line">            if (domainEvent != null) &#123;</span><br><span class="line">                return domainEvent;</span><br><span class="line">            &#125;</span><br><span class="line">            DomainEvent event = this.domainEventSupplier != null ? this.domainEventSupplier.get() : null;</span><br><span class="line">            domainEvent = event;</span><br><span class="line">            return domainEvent;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>registerEvent</strong> 方法在 <strong>AbstractAggregate</strong> 中，registerEvent 方法将事件保存到 events 集合，<strong>getEvents</strong> 方法获取所有事件，<strong>cleanEvents</strong> 方法清理缓存的事件。</p>
+<p>Application 实例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">@Service</span><br><span class="line">public class AccountApplication extends AbstractApplication &#123;</span><br><span class="line">    private static final Logger LOGGER = LoggerFactory.getLogger(AccountApplication.class);</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private AccountRepository repository;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private DomainEventBus domainEventBus;</span><br><span class="line"></span><br><span class="line">    @PostConstruct</span><br><span class="line">    public void init()&#123;</span><br><span class="line">        // 使用 Spring 生命周期注册事件处理器</span><br><span class="line">        this.domainEventBus.register(AccountEnabledEvent.class, new AccountEnableEventHandler());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void enable(Long id)&#123;</span><br><span class="line">        Optional&lt;Account&gt; accountOptional = repository.getById(id);</span><br><span class="line">        if (accountOptional.isPresent()) &#123;</span><br><span class="line">            Account account = accountOptional.get();</span><br><span class="line">            // enable 将事件缓存在 account 中</span><br><span class="line">            account.enable();</span><br><span class="line">            repository.save(account);</span><br><span class="line">            List&lt;DomainEvent&gt; events = account.getEvents();</span><br><span class="line">            if (!CollectionUtils.isEmpty(events))&#123;</span><br><span class="line">                // 成功持久化后，对事件进行发布</span><br><span class="line">                this.domainEventBus.publishAll(events);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class AccountEnableEventHandler implements DomainEventHandler&lt;AccountEnabledEvent&gt;&#123;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void handle(AccountEnabledEvent event) &#123;</span><br><span class="line">            LOGGER.info(&quot;handle enable event&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>AccountApplication</strong> 的 <strong>init</strong> 方法完成事件监听器的注册，<strong>enable</strong> 方法在实体成功持久化后，将缓存的事件通过 <strong>DomainEventBus</strong> 实例 publish 出去。</p>
+<h5 id="2-2-4-由调用方发布事件"><a href="#2-2-4-由调用方发布事件" class="headerlink" title="2.2.4 由调用方发布事件"></a>2.2.4 由调用方发布事件</h5><blockquote>
+<p>通常情况下，领域事件是由聚合的命令方法产生，并在命令方法执行成功后，进行事件的发布。<br>有时，领域事件并不是聚合中的命令方法产生的，而是由用户所发生的请求产生。</p>
+</blockquote>
+<p>此时，我们需要将领域事件建模成一个聚合，并且拥有自己的资源库。但，由于领域事件表示的是过去发生的事情，因此资源库只做追加操作，不能对事件进行修改和删除功能。</p>
+<p>例如，对用户点击事件进行发布。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">@Entity</span><br><span class="line">@Data</span><br><span class="line">public class ClickAction extends JpaAggregate implements DomainEvent &#123;</span><br><span class="line">    @Setter(AccessLevel.PRIVATE)</span><br><span class="line">    private Long userId;</span><br><span class="line">    @Setter(AccessLevel.PRIVATE)</span><br><span class="line">    private String menuId;</span><br><span class="line"></span><br><span class="line">    public ClickAction(Long userId, String menuId)&#123;</span><br><span class="line">        Preconditions.checkArgument(userId != null);</span><br><span class="line">        Preconditions.checkArgument(StringUtils.isNotEmpty(menuId));</span><br><span class="line"></span><br><span class="line">        setUserId(userId);</span><br><span class="line">        setMenuId(menuId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String id() &#123;</span><br><span class="line">        return String.valueOf(getId());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Date occurredOn() &#123;</span><br><span class="line">        return getCreateTime();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>ClickAction</strong> 继承自 <strong>JpaAggregate</strong> 实现 <strong>DomainEvent</strong> 接口，并重写 id 和 occurredOn 方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@Service</span><br><span class="line">public class ClickActionApplication extends AbstractApplication &#123;</span><br><span class="line">    @Autowired</span><br><span class="line">    private ClickActionRepository repository;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private DomainEventBus domainEventBus;</span><br><span class="line"></span><br><span class="line">    public void clickMenu(Long id, String menuId)&#123;</span><br><span class="line">        ClickAction clickAction = new ClickAction(id, menuId);</span><br><span class="line">        clickAction.prePersist();</span><br><span class="line">        this.repository.save(clickAction);</span><br><span class="line">        domainEventBus.publish(clickAction);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>ClickActionApplication</strong> 在成功保存 ClickAction 后，使用 DomainEventBus 对事件进行发布。</p>
+<h4 id="2-3-订阅领域事件"><a href="#2-3-订阅领域事件" class="headerlink" title="2.3 订阅领域事件"></a>2.3 订阅领域事件</h4><blockquote>
+<p>由什么组件向领域事件注册订阅器呢？大多数请求，由应用服务完成，有时也可以由领域服务进行注册。</p>
+</blockquote>
+<p>由于应用服务是领域模型的直接客户，它是注册领域事件订阅器的理想场所，即在应用服务调用领域方法之前，就完成了对事件的订阅。</p>
+<p>基于 ThreadLocal 进行订阅:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public void enable(Long id)&#123;</span><br><span class="line">    // 清理之前绑定的 Handler</span><br><span class="line">    DomainEventBusHolder.clean();</span><br><span class="line"></span><br><span class="line">    // 注册 EventHandler</span><br><span class="line">    AccountEnableEventHandler enableEventHandler = new AccountEnableEventHandler();</span><br><span class="line">    DomainEventBusHolder.getHandlerRegistry().register(AccountEnabledEvent.class, enableEventHandler);</span><br><span class="line"></span><br><span class="line">    Optional&lt;Account&gt; accountOptional = repository.getById(id);</span><br><span class="line">    if (accountOptional.isPresent()) &#123;</span><br><span class="line">        Account account = accountOptional.get();</span><br><span class="line">        // enable 使用 DomainEventBusHolder 直接发布事件</span><br><span class="line">        account.enable();</span><br><span class="line">        repository.save(account);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>基于实体缓存进行订阅:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">@PostConstruct</span><br><span class="line">public void init()&#123;</span><br><span class="line">    // 使用 Spring 生命周期注册事件处理器</span><br><span class="line">    this.domainEventBus.register(AccountEnabledEvent.class, new AccountEnableEventHandler());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public void enable(Long id)&#123;</span><br><span class="line">    Optional&lt;Account&gt; accountOptional = repository.getById(id);</span><br><span class="line">    if (accountOptional.isPresent()) &#123;</span><br><span class="line">        Account account = accountOptional.get();</span><br><span class="line">        // enable 将事件缓存在 account 中</span><br><span class="line">        account.enable();</span><br><span class="line">        repository.save(account);</span><br><span class="line">        List&lt;DomainEvent&gt; events = account.getEvents();</span><br><span class="line">        if (!CollectionUtils.isEmpty(events))&#123;</span><br><span class="line">            // 成功持久化后，对事件进行发布</span><br><span class="line">            this.domainEventBus.publishAll(events);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="2-4-处理领域事件"><a href="#2-4-处理领域事件" class="headerlink" title="2.4 处理领域事件"></a>2.4 处理领域事件</h4><blockquote>
+<p>完成事件发布后，让我们一起看下事件处理。</p>
+</blockquote>
+<h5 id="2-4-1-保证聚合间的数据一致性"><a href="#2-4-1-保证聚合间的数据一致性" class="headerlink" title="2.4.1 保证聚合间的数据一致性"></a>2.4.1 <strong>保证聚合间的数据一致性</strong></h5><blockquote>
+<p>我们通常将领域事件用于维护模型的一致性。在聚合建模中有一个原则，就是在一个事务中，只能对一个聚合进行修改，由此产生的变化必须在独立的事务中运行。</p>
+</blockquote>
+<p>在这种情况下，需要谨慎处理的事务的传播性。</p>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/event/event_sync_1.png" alt="保证聚合间的数据一致性"></p>
+<blockquote>
+<p>应用服务控制着事务。不要在事件通知过程中修改另一个聚合实例，因为这样会破坏聚合的一大原则：在一个事务中，只能对一个聚合进行修改。</p>
+</blockquote>
+<p>对于简单场景，我们可以使用特殊的事务隔离策略对聚合的修改进行隔离。具体流程如下：</p>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/event/sync_agg.png" alt="保证聚合间的数据一致性"></p>
+<p>但，最佳方案是使用异步处理。及每一个定义方都在各自独立的事务中修改额外的聚合实例。</p>
+<blockquote>
+<p>事件订阅方不应该在另一个聚合上执行命令方法，因为这样将破坏“在单个事务中只修改单个聚合实例”的原则。所有聚合实例间的最终一致性必须通过异步方式处理。</p>
+</blockquote>
+<p>详见，异步处理领域事件。</p>
+<h5 id="2-4-2-替换批量处理"><a href="#2-4-2-替换批量处理" class="headerlink" title="2.4.2 替换批量处理"></a>2.4.2 <strong>替换批量处理</strong></h5><blockquote>
+<p>批处理过程通常需要复杂的查询，并且需要庞大的事务支持。如果在接收到领域事件时，系统就立即处理，业务需求不仅得到了更快的满足，而且杜绝了批处理操作。</p>
+</blockquote>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/event/sync_action_1.png" alt="使用实时代替批量处理"></p>
+<p>在系统的非高峰时期，通常使用批处理进行一些系统的维护，比如删除过期数据、创建新的对象、通知用户、更新统计信息等。这些批处理往往需要复杂的查询，并需要庞大的事务支持。</p>
+<p>如果我们监听系统中的领域事件，在接收领域事件时，系统立即处理。这样，原本批量集中处理的过程就被分散成许多小的处理单元，业务需要也能更快的满足，用户可以可以及时的进行下一步操作。</p>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/event/sync_action.png" alt="使用实时代替批量处理"></p>
+<h5 id="2-4-3-实现事件源模式"><a href="#2-4-3-实现事件源模式" class="headerlink" title="2.4.3 实现事件源模式"></a>2.4.3 <strong>实现事件源模式</strong></h5><blockquote>
+<p>对于单个限界上下文中的所有领域事件，为它们维护一个事件存储具有很多的好处。</p>
+</blockquote>
+<p>对事件进行存储可以：</p>
+<ul>
+<li>将事件存储作为消息队列来使用，然后将领域事件通过消息设施发布出去。</li>
+<li>将事件存储用于基于 Rest 的事件通知。</li>
+<li>检查模型命名方法产生结果的历史记录。</li>
+<li>使用事件存储来进行业务预测和分析。</li>
+<li>使用事件来重建聚合实例。</li>
+<li>执行聚合的撤销操作。</li>
+</ul>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/event/event_store.png" alt="实现事件源模型"></p>
+<blockquote>
+<p>事件存储是个比较大的课题，将有专门章节进行讲解。</p>
+</blockquote>
+<h5 id="2-4-4-进行限界上下文集成"><a href="#2-4-4-进行限界上下文集成" class="headerlink" title="2.4.4 进行限界上下文集成"></a>2.4.4 <strong>进行限界上下文集成</strong></h5><blockquote>
+<p>基于领域事件的限界上下文集成，主要由消息队列和 REST 事件两种模式。</p>
+</blockquote>
+<p>在此，重心讲解基于消息队列的上下文集成。</p>
+<p>在不同的上下文中采用消息系统时，我们必须保证最终一致性。在这种情况下，我们至少需要在两种存储之间保存最终一致性：领域模型所使用的存储和消息队列所使用的持久化存储。我们必须保证在持久化领域模型时，对于的事件也已经成功发布。如果两种不同步，模型可能会处于不正确的状态。</p>
+<p>一般情况下，有三种方式：</p>
+<ol>
+<li>领域模型和消息共享持久化存储。在这种情况下，模型和事件的提交在一个事务中完成，从而保证两种的一致性。</li>
+<li>领域模型和消息由全局事务控制。这种情况下，模型和消息所用的持久化存储可以分离，但会降低系统性能。</li>
+<li>在领域持久化存储中，创建一个特殊的存储区域用于存储事件（也就是事件存储），从而在本地事务中完成领域和事件的存储。然后，通过后台服务将事件异步发送到消息队列中。<blockquote>
+<p>一般情况下，第三种，是比较优雅的解决方案。</p>
+</blockquote>
+</li>
+</ol>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/event/sync_context_1.png" alt="进行限界上下文集成"></p>
+<p>在一致性要求不高时，可以通过领域事件订阅器直接向消息队列发送事件。具体流程如下：</p>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/event/sync_context_sync.png" alt="进行限界上下文集成"></p>
+<p>对一致性要求高时，需要先将事件存储，然后通过后台线程加载并分发到消息队列。具体流程如下：</p>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/event/sync_context_async.png" alt="进行限界上下文集成"></p>
+<h4 id="2-5-异步处理领域事件"><a href="#2-5-异步处理领域事件" class="headerlink" title="2.5 异步处理领域事件"></a>2.5 异步处理领域事件</h4><blockquote>
+<p>领域事件可以与异步工作流程协同，包括限界上下文间使用消息队列进行异步通信。当然，在同一个限界上下文中，也可以启动异步处理流程。</p>
+</blockquote>
+<p>作为事件的发布者，不应关心是否执行异步处理。异常处理是由事件执行者决定。</p>
+<p><strong>DomainEventExecutor</strong> 提供对异步处理的支持。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">DomainEventExecutor eventExecutor  =</span><br><span class="line">                new ExecutorBasedDomainEventExecutor(&quot;EventHandler&quot;, 1, 100);</span><br><span class="line">this.domainEventBus.register(AccountEnabledEvent.class,</span><br><span class="line">        eventExecutor,</span><br><span class="line">        new AccountEnableEventHandler());</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>异步处理，就意味着放弃数据库事务的 ACID 特性，而选择使用最终一致性。</p>
+</blockquote>
+<h4 id="2-6-内部事件与外部事件"><a href="#2-6-内部事件与外部事件" class="headerlink" title="2.6 内部事件与外部事件"></a>2.6 内部事件与外部事件</h4><blockquote>
+<p>使用领域事件时需要对事件进行区分，以避免技术实现的问题。</p>
+</blockquote>
+<p>认识内部事件和外部事件之间的区别至关重要。</p>
+<ul>
+<li>内部事件，是一个领域模型内部的事件，不在有界上下文间进行共享。</li>
+<li>外部事件，是对外发布的事件，在多个有界上下文中进行共享。</li>
+</ul>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/event/inner_outer.png" alt="内部事件与外部事件"></p>
+<blockquote>
+<p>一般情况下，在典型的业务用例中，可能会有很多的内部事件，而只有一两个外部事件。</p>
+</blockquote>
+<h5 id="2-6-1-内部事件"><a href="#2-6-1-内部事件" class="headerlink" title="2.6.1 内部事件"></a>2.6.1 <strong>内部事件</strong></h5><blockquote>
+<p>内部事件存在于限界上下文内部，受限界上下文边界保护。</p>
+</blockquote>
+<p>内部事件被限制在单个有界上下文边界内部，所以可以直接引用领域对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public interface AggregateEvent&lt;ID, A extends Aggregate&lt;ID&gt;&gt; extends DomainEvent&#123;</span><br><span class="line">    A source();</span><br><span class="line"></span><br><span class="line">    default A getSource()&#123;</span><br><span class="line">        return source();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>比如 <strong>AggregateEvent</strong> 中的 <strong>source</strong> 指向发布该事件的聚合。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public class LikeSubmittedEvent extends AbstractAggregateEvent&lt;Long, Like&gt; &#123;</span><br><span class="line">    public LikeSubmittedEvent(Like source) &#123;</span><br><span class="line">        super(source);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public LikeSubmittedEvent(String id, Like source) &#123;</span><br><span class="line">        super(id, source);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>LikeSubmittedEvent</strong> 类直接引用 Like 聚合。</p>
+<h5 id="2-6-2-外部事件"><a href="#2-6-2-外部事件" class="headerlink" title="2.6.2 外部事件"></a>2.6.2 <strong>外部事件</strong></h5><blockquote>
+<p>外部事件存在于限界上下文间，被多个上下文共享。</p>
+</blockquote>
+<p>一般情况下，外部事件，只作为数据载体存在。常常采用平面结构，并公开所有属性。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Data</span><br><span class="line">public class SubmittedEvent &#123;</span><br><span class="line">    private Owner owner;</span><br><span class="line">    private Target target;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>SubmittedEvent</strong> 为扁平化结构，主要是对数据的封装。</p>
+<blockquote>
+<p>由于外部事件被多个上下文共享，版本管理就显得非常重要，以避免重大更改对其服务造成影响。</p>
+</blockquote>
+<h3 id="3-实现领域事件模式"><a href="#3-实现领域事件模式" class="headerlink" title="3 实现领域事件模式"></a>3 实现领域事件模式</h3><blockquote>
+<p>领域事件是一种通用模式，它的本质是将领域概念添加到发布-订阅模式。</p>
+</blockquote>
+<h4 id="3-1-封装领域事件的“发布-订阅”模式"><a href="#3-1-封装领域事件的“发布-订阅”模式" class="headerlink" title="3.1 封装领域事件的“发布-订阅”模式"></a>3.1 封装领域事件的“发布-订阅”模式</h4><blockquote>
+<p>发布-订阅是比较成熟的设计模式，具有很高的通用性。因此，建议针对领域需求进行封装。</p>
+</blockquote>
+<p>比如直接使用 <a href="https://gitee.com/litao851025/geekhalo-ddd" target="_blank" rel="noopener">geekhalo-ddd</a> 相关模块。</p>
+<p>定义领域事件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@Value</span><br><span class="line">public class LikeCancelledEvent extends AbstractAggregateEvent&lt;Long, Like&gt; &#123;</span><br><span class="line">    public LikeCancelledEvent(Like source) &#123;</span><br><span class="line">        super(source);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>订阅领域事件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">this.domainEventBus.register(LikeCancelledEvent.class, likeCancelledEvent-&gt;&#123;</span><br><span class="line">        CanceledEvent canceledEvent = new CanceledEvent();</span><br><span class="line">        canceledEvent.setOwner(likeCancelledEvent.getSource().getOwner());</span><br><span class="line">        canceledEvent.setTarget(likeCancelledEvent.getSource().getTarget());</span><br><span class="line">        this.redisBasedQueue.pushLikeEvent(canceledEvent);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure></p>
+<p>异步执行领域事件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">DomainEventExecutor eventExecutor  =</span><br><span class="line">                new ExecutorBasedDomainEventExecutor(&quot;LikeEventHandler&quot;, 1, 100);</span><br><span class="line">this.domainEventBus.register(LikeCancelledEvent.class, </span><br><span class="line">        eventExecutor, </span><br><span class="line">        likeCancelledEvent-&gt;&#123;</span><br><span class="line">            CanceledEvent canceledEvent = new CanceledEvent();</span><br><span class="line">            canceledEvent.setOwner(likeCancelledEvent.getSource().getOwner());</span><br><span class="line">            canceledEvent.setTarget(likeCancelledEvent.getSource().getTarget());</span><br><span class="line">            this.redisBasedQueue.pushLikeEvent(canceledEvent);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure></p>
+<h4 id="3-2-内存总线处理内部事件，消息队列处理外部事件"><a href="#3-2-内存总线处理内部事件，消息队列处理外部事件" class="headerlink" title="3.2 内存总线处理内部事件，消息队列处理外部事件"></a>3.2 内存总线处理内部事件，消息队列处理外部事件</h4><blockquote>
+<p>内存总线简单高效，同时支持同步、异步两个处理方案，比较适合处理繁杂的内部事件；消息队列虽然复杂，但擅长解决服务间通信问题，适合处理外部事件。</p>
+</blockquote>
+<h4 id="3-3-使用实体缓存领域事件"><a href="#3-3-使用实体缓存领域事件" class="headerlink" title="3.3 使用实体缓存领域事件"></a>3.3 使用实体缓存领域事件</h4><blockquote>
+<p>理论上，只有在业务成功完成后，才应该对外发布事件。因此，将领域事件缓存在实体中，并在完成业务操作后将其进行发布，是一种较好的解决方案。</p>
+</blockquote>
+<blockquote>
+<p>相比，使用 ThreadLocal 管理订阅器，并在事件 publish 时进行订阅回调，事件缓存方案有明显的优势。</p>
+</blockquote>
+<h4 id="3-4-使用-IOC-容器的事件发布功能"><a href="#3-4-使用-IOC-容器的事件发布功能" class="headerlink" title="3.4 使用 IOC 容器的事件发布功能"></a>3.4 使用 IOC 容器的事件发布功能</h4><blockquote>
+<p>IOC 容器为我们提供了很多使用功能，其中也包括发布-订阅功能，如 Spring。</p>
+</blockquote>
+<p>通常情况下，领域模型不应该直接依赖于 Spring 容器。因此，在领域中我们仍然使用内存总线，为其添加一个订阅者，将内存总线中的事件转发到 Spring 容器中。</p>
+<p><img src="http://litao851025.gitee.io/books-image/ddd/event/spring_event_dispatcher.png" alt="Spring 事件发布"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class SpringEventDispatcher implements ApplicationEventPublisherAware &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private DomainEventBus domainEventBus;</span><br><span class="line"></span><br><span class="line">    private ApplicationEventPublisher eventPublisher;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) &#123;</span><br><span class="line">        this.eventPublisher = applicationEventPublisher;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @PostConstruct</span><br><span class="line">    public void addListener()&#123;</span><br><span class="line">        this.domainEventBus.register(event-&gt;true, event -&gt; &#123;this.eventPublisher.publishEvent(event);&#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此时，我们就可以直接使用 Spring 的 EventListener 机制对领域事件进行处理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">public class RedisBasedQueueExporter &#123;</span><br><span class="line">    @Autowired</span><br><span class="line">    private RedisBasedQueue redisBasedQueue;</span><br><span class="line"></span><br><span class="line">    @EventListener</span><br><span class="line">    public void handle(LikeSubmittedEvent likeSubmittedEvent)&#123;</span><br><span class="line">        SubmittedEvent submittedEvent = new SubmittedEvent();</span><br><span class="line">        submittedEvent.setOwner(likeSubmittedEvent.getSource().getOwner());</span><br><span class="line">        submittedEvent.setTarget(likeSubmittedEvent.getSource().getTarget());</span><br><span class="line">        this.redisBasedQueue.pushLikeEvent(submittedEvent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @EventListener</span><br><span class="line">    public void handle(LikeCancelledEvent likeCancelledEvent)&#123;</span><br><span class="line">        CanceledEvent canceledEvent = new CanceledEvent();</span><br><span class="line">        canceledEvent.setOwner(likeCancelledEvent.getSource().getOwner());</span><br><span class="line">        canceledEvent.setTarget(likeCancelledEvent.getSource().getTarget());</span><br><span class="line">        this.redisBasedQueue.pushLikeEvent(canceledEvent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="4-小结"><a href="#4-小结" class="headerlink" title="4 小结"></a>4 小结</h3><ul>
+<li>领域事件是发生在问题域中的事实，它是通用语言的一部分。</li>
+<li>领域事件优先使用发布-订阅模式，会发布事件并且触发相应的事件处理器。</li>
+<li>限界上下文内，优先使用内部事件和内存总线；限界上下文间，优先使用外部事件和消息队列。</li>
+<li>领域事件使异步操作变得简单。</li>
+<li>领域事件为聚合间提供了最终一致性。</li>
+<li>领域事件可以将大的批量操作简化为许多小的业务操作。</li>
+<li>领域事件可以完成强大的事件存储。</li>
+<li>领域事件可以完成限界上下文间的集成。</li>
+<li>领域事件是更复杂架构（CQRS）的一种支持。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/qrcode.jpg" alt="wenxinzizhu wechat" style="width: 200px; max-width: 100%;">
+    <div>扫一扫，关注微信公众号，获取最新动态</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/领域模型/" rel="tag"># 领域模型</a>
+          
+            <a href="/tags/战术模式/" rel="tag"># 战术模式</a>
+          
+            <a href="/tags/领域事件/" rel="tag"># 领域事件</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/09/ddd/tactics/domain_service/" rel="next" title="战术模式--领域服务">
+                <i class="fa fa-chevron-left"></i> 战术模式--领域服务
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wenxinzizhu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wenxinzizhu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-理解领域事件"><span class="nav-text">1 理解领域事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-实现领域事件"><span class="nav-text">2 实现领域事件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-创建领域事件"><span class="nav-text">2.1 创建领域事件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-1-事件命名"><span class="nav-text">2.1.1 事件命名</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-2-事件属性"><span class="nav-text">2.1.2 事件属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-3-事件方法"><span class="nav-text">2.1.3 事件方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-4-事件唯一标识"><span class="nav-text">2.1.4 事件唯一标识</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-发布领域事件"><span class="nav-text">2.2 发布领域事件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-1-发布订阅模型"><span class="nav-text">2.2.1 发布订阅模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-2-基于-ThreadLocal-的事件发布"><span class="nav-text">2.2.2 基于 ThreadLocal 的事件发布</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-3-基于实体缓存的事件发布"><span class="nav-text">2.2.3 基于实体缓存的事件发布</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-4-由调用方发布事件"><span class="nav-text">2.2.4 由调用方发布事件</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-订阅领域事件"><span class="nav-text">2.3 订阅领域事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-处理领域事件"><span class="nav-text">2.4 处理领域事件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-1-保证聚合间的数据一致性"><span class="nav-text">2.4.1 保证聚合间的数据一致性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-2-替换批量处理"><span class="nav-text">2.4.2 替换批量处理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-3-实现事件源模式"><span class="nav-text">2.4.3 实现事件源模式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-4-进行限界上下文集成"><span class="nav-text">2.4.4 进行限界上下文集成</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-异步处理领域事件"><span class="nav-text">2.5 异步处理领域事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-内部事件与外部事件"><span class="nav-text">2.6 内部事件与外部事件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-6-1-内部事件"><span class="nav-text">2.6.1 内部事件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-6-2-外部事件"><span class="nav-text">2.6.2 外部事件</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-实现领域事件模式"><span class="nav-text">3 实现领域事件模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-封装领域事件的“发布-订阅”模式"><span class="nav-text">3.1 封装领域事件的“发布-订阅”模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-内存总线处理内部事件，消息队列处理外部事件"><span class="nav-text">3.2 内存总线处理内部事件，消息队列处理外部事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-使用实体缓存领域事件"><span class="nav-text">3.3 使用实体缓存领域事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-使用-IOC-容器的事件发布功能"><span class="nav-text">3.4 使用 IOC 容器的事件发布功能</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-小结"><span class="nav-text">4 小结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wenxinzizhu</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">36.2k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
